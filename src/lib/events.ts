@@ -14,6 +14,22 @@ export async function getPublishedEvents(
   return data as HublrEvent[];
 }
 
+export async function getUpcomingEvents(
+  supabase: SupabaseClient,
+  limit: number,
+): Promise<HublrEvent[]> {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("is_published", true)
+    .gte("event_date", new Date().toISOString())
+    .order("event_date", { ascending: true })
+    .limit(limit);
+
+  if (error) throw error;
+  return data as HublrEvent[];
+}
+
 export async function getAllEvents(
   supabase: SupabaseClient,
 ): Promise<HublrEvent[]> {
