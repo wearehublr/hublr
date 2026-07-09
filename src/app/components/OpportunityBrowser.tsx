@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import type { Opportunity, Category, Region, Status } from "@/types/opportunity";
 import {
   CATEGORIES,
@@ -10,42 +10,8 @@ import {
   STATUSES,
   STATUS_LABELS,
 } from "@/types/opportunity";
-
-function daysUntil(deadline: string | null): number | null {
-  if (!deadline) return null;
-  const ms = new Date(deadline).getTime() - Date.now();
-  return Math.ceil(ms / (1000 * 60 * 60 * 24));
-}
-
-function DeadlineBadge({ opportunity }: { opportunity: Opportunity }) {
-  if (!opportunity.deadline) {
-    return (
-      <span className="text-xs text-neutral-500 dark:text-neutral-400">
-        Rolling / no fixed deadline
-      </span>
-    );
-  }
-
-  const days = daysUntil(opportunity.deadline);
-  const formatted = new Date(opportunity.deadline).toLocaleDateString(
-    "en-GB",
-    { day: "numeric", month: "short", year: "numeric" },
-  );
-
-  let tone = "text-neutral-600 dark:text-neutral-300";
-  if (days !== null && days < 0) tone = "text-neutral-400 line-through";
-  else if (days !== null && days <= 7)
-    tone = "text-red-600 dark:text-red-400 font-medium";
-  else if (days !== null && days <= 21)
-    tone = "text-amber-600 dark:text-amber-400 font-medium";
-
-  return (
-    <span className={`text-xs ${tone}`}>
-      Deadline: {formatted}
-      {days !== null && days >= 0 ? ` (${days}d)` : ""}
-    </span>
-  );
-}
+import DeadlineBadge from "@/app/components/DeadlineBadge";
+import { trackApplication } from "@/app/opportunities/actions";
 
 const STATUS_DOT: Record<Status, string> = {
   open: "bg-emerald-500",
@@ -56,14 +22,25 @@ const STATUS_DOT: Record<Status, string> = {
 
 export default function OpportunityBrowser({
   opportunities,
+  isLoggedIn,
 }: {
   opportunities: Opportunity[];
+  isLoggedIn: boolean;
 }) {
   const [search, setSearch] = useState("");
   const [region, setRegion] = useState<Region | "all">("all");
   const [category, setCategory] = useState<Category | "all">("all");
   const [status, setStatus] = useState<Status | "all">("all");
   const [industry, setIndustry] = useState<string>("all");
+  const [tracked, setTracked] = useState<Set<string>>(new Set());
+  const [isPending, startTransition] = useTransition();
+
+  function handleTrack(id: string) {
+    startTransition(async () => {
+      await trackApplication(id);
+      setTracked((prev) => new Set(prev).add(id));
+    });
+  }
 
   const industries = useMemo(() => {
     const set = new Set<string>();
@@ -198,7 +175,7 @@ export default function OpportunityBrowser({
                 )}
               </div>
 
-              <DeadlineBadge opportunity={o} />
+              <DeadlineBadge deadline={o.deadline} />
 
               {o.notes && (
                 <p className="text-xs text-neutral-500 dark:text-neutral-400">
@@ -206,14 +183,33 @@ export default function OpportunityBrowser({
                 </p>
               )}
 
-              <a
-                href={o.apply_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-auto inline-flex items-center justify-center rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm font-medium px-3 py-1.5 hover:opacity-90"
-              >
-                Apply
-              </a>
+              <div className="mt-auto flex gap-2">
+                <a
+                  href={o.apply_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 inline-flex items-center justify-center rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm font-medium px-3 py-1.5 hover:opacity-90"
+                >
+                  Apply
+                </a>
+                {isLoggedIn ? (
+                  <button
+                    type="button"
+                    onClick={() => handleTrack(o.id)}
+                    disabled={isPending || tracked.has(o.id)}
+                    className="flex-1 inline-flex items-center justify-center rounded-md border border-neutral-300 dark:border-neutral-700 text-sm font-medium px-3 py-1.5 disabled:opacity-60"
+                  >
+                    {tracked.has(o.id) ? "Tracked ✓" : "Track"}
+                  </button>
+                ) : (
+                  <a
+                    href="/login"
+                    className="flex-1 inline-flex items-center justify-center rounded-md border border-neutral-300 dark:border-neutral-700 text-sm font-medium px-3 py-1.5"
+                  >
+                    Log in to track
+                  </a>
+                )}
+              </div>
             </li>
           ))}
         </ul>

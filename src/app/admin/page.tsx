@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getAllOpportunities } from "@/lib/opportunities";
 import QuickAddForm from "./QuickAddForm";
 import AdminOpportunityRow from "./AdminOpportunityRow";
-import { signOut } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -16,14 +15,6 @@ export default async function AdminPage() {
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
           Admin — Opportunity Tracker
         </h1>
-        <form action={signOut}>
-          <button
-            type="submit"
-            className="text-sm text-neutral-500 dark:text-neutral-400 hover:underline"
-          >
-            Sign out
-          </button>
-        </form>
       </div>
 
       <div className="flex flex-col gap-8">

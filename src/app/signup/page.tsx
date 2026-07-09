@@ -1,9 +1,9 @@
-import LoginForm from "./LoginForm";
+import SignupForm from "./SignupForm";
 
-export default function AdminLoginPage() {
+export default function SignupPage() {
   return (
     <main className="flex flex-1 items-center justify-center px-4 py-12">
-      <LoginForm />
+      <SignupForm />
     </main>
   );
 }

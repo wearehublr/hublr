@@ -24,5 +24,5 @@ export async function signIn(
     return { error: "Invalid email or password." };
   }
 
-  redirect("/admin");
+  redirect("/dashboard");
 }

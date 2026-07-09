@@ -15,6 +15,22 @@ export async function getPublishedOpportunities(
   return data as Opportunity[];
 }
 
+export async function getPublishedOpportunitiesByYear(
+  supabase: SupabaseClient,
+  cycleYear: number,
+): Promise<Opportunity[]> {
+  const { data, error } = await supabase
+    .from("opportunities")
+    .select("*")
+    .eq("is_published", true)
+    .eq("cycle_year", cycleYear)
+    .order("deadline", { ascending: true, nullsFirst: false })
+    .order("company", { ascending: true });
+
+  if (error) throw error;
+  return data as Opportunity[];
+}
+
 export async function getAllOpportunities(
   supabase: SupabaseClient,
 ): Promise<Opportunity[]> {

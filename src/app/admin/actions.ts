@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import {
   CATEGORIES,
@@ -17,7 +16,9 @@ async function requireAdmin() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("Unauthorized");
+  if (!user || user.email !== process.env.ADMIN_EMAIL) {
+    throw new Error("Unauthorized");
+  }
   return supabase;
 }
 
@@ -125,10 +126,4 @@ export async function deleteOpportunity(id: string) {
 
   revalidatePath("/admin");
   revalidatePath("/");
-}
-
-export async function signOut() {
-  const supabase = await createClient();
-  await supabase.auth.signOut();
-  redirect("/admin/login");
 }

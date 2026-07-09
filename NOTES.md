@@ -1,9 +1,16 @@
-# Future: automated discovery (not built yet)
+# Deferred work (not built yet)
 
-The schema already has what a later automation pass would need:
+## Email deadline reminders
+`/dashboard` shows an in-app "upcoming deadlines" widget today. Actual emails aren't sent. To add them:
 
-- `source_url` — where a listing was found.
-- `discovered_via` (`manual` | `auto`) — lets scraped rows be told apart from ones you typed in.
-- `is_published` — a scraper can insert rows with this set to `false` so they queue for review on `/admin` instead of going live immediately.
+- Sign up for an email service (e.g. [Resend](https://resend.com), free tier) and add its API key as an env var.
+- Add a Vercel Cron job (a route handler + a schedule in `vercel.json`) that runs daily, queries `applications` where `deadline` is within N days and `reminder_sent_at` is null, emails the user, and sets `reminder_sent_at` so they aren't emailed twice. The `reminder_sent_at` column already exists on `applications` for this.
 
-A reasonable phase 2: a Vercel Cron job (or a scheduled script) that checks a curated list of sources (company career pages, board RSS feeds, aggregator APIs) on a schedule, and inserts new candidate rows as `discovered_via: 'auto'`, `is_published: false`. You'd then review and publish them from `/admin` same as anything else. Not implemented in this pass — the admin flow is manual entry only for now.
+## Auto-discovery of new opportunities
+The `opportunities` table already has `source_url` and `discovered_via` (`manual` | `auto`) columns, plus `is_published`, so a future scraper could insert candidate rows with `discovered_via: 'auto'`, `is_published: false` for the admin to review on `/admin` before they go live. Not built — admin entry is manual only for now.
+
+## In-browser CV/cover letter editing
+`/documents` only supports uploading and managing files (PDF/DOCX) — there's no rich-text editor for writing or tweaking content directly in the app.
+
+## Branding
+Styling is intentionally neutral (no logo/brand colors were supplied). Swap in Job Seeker Hub branding in `src/app/components/NavBar.tsx` and `globals.css` whenever assets are ready.

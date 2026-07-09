@@ -1,8 +1,16 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const ADMIN_PATH_PREFIX = "/admin";
-const LOGIN_PATH = "/admin/login";
+const LOGIN_PATH = "/login";
+const DASHBOARD_PATH = "/dashboard";
+const AUTH_ONLY_PREFIXES = ["/dashboard", "/documents"];
+const LOGGED_OUT_ONLY_PATHS = ["/login", "/signup"];
+
+function redirectTo(request: NextRequest, pathname: string) {
+  const url = request.nextUrl.clone();
+  url.pathname = pathname;
+  return NextResponse.redirect(url);
+}
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -33,19 +41,19 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const pathname = request.nextUrl.pathname;
-  const isAdminRoute = pathname.startsWith(ADMIN_PATH_PREFIX);
-  const isLoginRoute = pathname === LOGIN_PATH;
+  const isAdmin = !!user && user.email === process.env.ADMIN_EMAIL;
 
-  if (isAdminRoute && !isLoginRoute && !user) {
-    const url = request.nextUrl.clone();
-    url.pathname = LOGIN_PATH;
-    return NextResponse.redirect(url);
+  if (pathname.startsWith("/admin")) {
+    if (!user) return redirectTo(request, LOGIN_PATH);
+    if (!isAdmin) return redirectTo(request, DASHBOARD_PATH);
   }
 
-  if (isLoginRoute && user) {
-    const url = request.nextUrl.clone();
-    url.pathname = ADMIN_PATH_PREFIX;
-    return NextResponse.redirect(url);
+  if (AUTH_ONLY_PREFIXES.some((p) => pathname.startsWith(p)) && !user) {
+    return redirectTo(request, LOGIN_PATH);
+  }
+
+  if (LOGGED_OUT_ONLY_PATHS.includes(pathname) && user) {
+    return redirectTo(request, DASHBOARD_PATH);
   }
 
   return response;

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import NavBar from "@/app/components/NavBar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "2027 Early Career Tracker",
+  title: "The Job Seeker Hub",
   description:
-    "Summer internships, off-cycle, grad schemes, co-op and spring internship opportunities for the 2027 cycle across the UK, EU, and US.",
+    "Track early career opportunities — summer internships, off-cycle, grad schemes, co-op and spring internships — across the UK, EU, and US.",
 };
 
 export default function RootLayout({
@@ -28,7 +29,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <NavBar />
+        {children}
+      </body>
     </html>
   );
 }

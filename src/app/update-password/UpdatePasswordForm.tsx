@@ -1,10 +1,10 @@
 "use client";
 
 import { useActionState } from "react";
-import { signIn } from "./actions";
+import { updatePassword } from "./actions";
 
-export default function LoginForm() {
-  const [state, formAction, pending] = useActionState(signIn, {
+export default function UpdatePasswordForm() {
+  const [state, formAction, pending] = useActionState(updatePassword, {
     error: null,
   });
 
@@ -14,30 +14,17 @@ export default function LoginForm() {
       className="flex w-full max-w-sm flex-col gap-4 rounded-lg border border-neutral-200 dark:border-neutral-800 p-6"
     >
       <div>
-        <h1 className="text-lg font-semibold">Admin sign in</h1>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          Only for managing the opportunity tracker.
-        </p>
+        <h1 className="text-lg font-semibold">Set a new password</h1>
       </div>
 
       <label className="flex flex-col gap-1 text-sm">
-        Email
-        <input
-          type="email"
-          name="email"
-          required
-          autoComplete="email"
-          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-neutral-400"
-        />
-      </label>
-
-      <label className="flex flex-col gap-1 text-sm">
-        Password
+        New password
         <input
           type="password"
           name="password"
           required
-          autoComplete="current-password"
+          minLength={8}
+          autoComplete="new-password"
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-neutral-400"
         />
       </label>
@@ -53,7 +40,7 @@ export default function LoginForm() {
         disabled={pending}
         className="mt-2 rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm font-medium px-3 py-2 hover:opacity-90 disabled:opacity-50"
       >
-        {pending ? "Signing in..." : "Sign in"}
+        {pending ? "Saving..." : "Save new password"}
       </button>
     </form>
   );
