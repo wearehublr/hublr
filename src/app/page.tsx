@@ -1,7 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import { getUserApplications } from "@/lib/applications";
-import { getRecentPublishedOpportunities } from "@/lib/opportunities";
-import { getUpcomingEvents } from "@/lib/events";
+import {
+  getPublishedOpportunitiesCount,
+  getRecentPublishedOpportunities,
+} from "@/lib/opportunities";
+import { getUpcomingEvents, getUpcomingEventsCount } from "@/lib/events";
+import { getPublishedInterviewResources } from "@/lib/interview-resources";
 import { filterUpcomingDeadlines } from "@/lib/deadlines";
 import MarketingHome from "@/app/components/MarketingHome";
 import HomeFeed from "@/app/components/HomeFeed";
@@ -17,14 +21,25 @@ export default async function Home() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return <MarketingHome />;
+    const [opportunitiesCount, eventsCount] = await Promise.all([
+      getPublishedOpportunitiesCount(supabase),
+      getUpcomingEventsCount(supabase),
+    ]);
+    return (
+      <MarketingHome
+        opportunitiesCount={opportunitiesCount}
+        eventsCount={eventsCount}
+      />
+    );
   }
 
-  const [applications, recentOpportunities, upcomingEvents] = await Promise.all([
-    getUserApplications(supabase, user.id),
-    getRecentPublishedOpportunities(supabase, 3),
-    getUpcomingEvents(supabase, 3),
-  ]);
+  const [applications, recentOpportunities, upcomingEvents, resources] =
+    await Promise.all([
+      getUserApplications(supabase, user.id),
+      getRecentPublishedOpportunities(supabase, 3),
+      getUpcomingEvents(supabase, 3),
+      getPublishedInterviewResources(supabase),
+    ]);
 
   const upcomingDeadlines = filterUpcomingDeadlines(
     applications,
@@ -38,6 +53,7 @@ export default async function Home() {
       upcomingDeadlines={upcomingDeadlines}
       recentOpportunities={recentOpportunities}
       upcomingEvents={upcomingEvents}
+      recentResources={resources.slice(0, 3)}
     />
   );
 }

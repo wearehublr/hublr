@@ -46,6 +46,18 @@ export async function getRecentPublishedOpportunities(
   return data as Opportunity[];
 }
 
+export async function getPublishedOpportunitiesCount(
+  supabase: SupabaseClient,
+): Promise<number> {
+  const { count, error } = await supabase
+    .from("opportunities")
+    .select("*", { count: "exact", head: true })
+    .eq("is_published", true);
+
+  if (error) throw error;
+  return count ?? 0;
+}
+
 export async function getAllOpportunities(
   supabase: SupabaseClient,
 ): Promise<Opportunity[]> {

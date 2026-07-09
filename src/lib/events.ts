@@ -30,6 +30,19 @@ export async function getUpcomingEvents(
   return data as HublrEvent[];
 }
 
+export async function getUpcomingEventsCount(
+  supabase: SupabaseClient,
+): Promise<number> {
+  const { count, error } = await supabase
+    .from("events")
+    .select("*", { count: "exact", head: true })
+    .eq("is_published", true)
+    .gte("event_date", new Date().toISOString());
+
+  if (error) throw error;
+  return count ?? 0;
+}
+
 export async function getAllEvents(
   supabase: SupabaseClient,
 ): Promise<HublrEvent[]> {

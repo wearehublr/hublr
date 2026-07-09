@@ -50,35 +50,70 @@ const FEATURES = [
   },
 ];
 
-export default function MarketingHome() {
+export default function MarketingHome({
+  opportunitiesCount,
+  eventsCount,
+}: {
+  opportunitiesCount: number;
+  eventsCount: number;
+}) {
   return (
     <main className="flex-1">
-      <section className="mx-auto w-full max-w-4xl px-4 py-16 sm:px-6 sm:py-24 text-center">
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-          Hublr
-        </h1>
-        <p className="mt-3 text-lg text-neutral-700 dark:text-neutral-200 max-w-xl mx-auto">
-          Helping students and early career professionals secure internships,
-          grad roles, and more.
-        </p>
-        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400 max-w-xl mx-auto">
-          Browse curated opportunities across the UK, EU, and US, then track
-          your applications, deadlines, and documents in one place.
-        </p>
+      <div className="bg-indigo-50 dark:bg-indigo-950/30 border-b border-indigo-100 dark:border-indigo-900">
+        <section className="mx-auto w-full max-w-4xl px-4 py-16 sm:px-6 sm:py-24 text-center">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
+            Hublr
+          </h1>
+          <p className="mt-3 text-lg text-neutral-700 dark:text-neutral-200 max-w-xl mx-auto">
+            Helping students and early career professionals secure
+            internships, grad roles, and more.
+          </p>
+          <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400 max-w-xl mx-auto">
+            Browse curated opportunities across the UK, EU, and US, then
+            track your applications, deadlines, and documents in one place.
+          </p>
 
-        <div className="mt-6 flex justify-center gap-3">
-          <Link
-            href="/signup"
-            className="rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm font-medium px-4 py-2 hover:opacity-90"
-          >
-            Get started
-          </Link>
-          <Link
-            href="/opportunities/2027"
-            className="rounded-md border border-neutral-300 dark:border-neutral-700 text-sm font-medium px-4 py-2"
-          >
-            Browse opportunities
-          </Link>
+          <div className="mt-6 flex justify-center gap-3">
+            <Link
+              href="/signup"
+              className="rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm font-medium px-4 py-2 hover:opacity-90"
+            >
+              Get started
+            </Link>
+            <Link
+              href="/opportunities/2027"
+              className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white/60 dark:bg-neutral-900/40 text-sm font-medium px-4 py-2"
+            >
+              Browse opportunities
+            </Link>
+          </div>
+        </section>
+      </div>
+
+      <section className="border-b border-neutral-200 dark:border-neutral-800">
+        <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 flex flex-col sm:flex-row items-center gap-8 sm:gap-16">
+          <div className="flex gap-10">
+            <div>
+              <p className="text-3xl font-bold tracking-tight">
+                {opportunitiesCount}
+              </p>
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                live opportunities
+              </p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold tracking-tight">
+                {eventsCount}
+              </p>
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                upcoming events
+              </p>
+            </div>
+          </div>
+          <p className="text-sm text-neutral-600 dark:text-neutral-300 max-w-sm">
+            All the best internships, grad schemes, and early career events
+            in one place — we do the searching, you do the applying.
+          </p>
         </div>
       </section>
 
