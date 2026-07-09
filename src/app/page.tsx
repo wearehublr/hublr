@@ -7,11 +7,29 @@ export default function Home() {
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
           Hublr
         </h1>
-        <p className="mt-3 text-neutral-600 dark:text-neutral-300 max-w-xl mx-auto">
-          Helping early career students in the UK find jobs — curated
-          opportunities across the UK, EU, and US, plus your applications,
-          deadlines, and documents in one place.
+        <p className="mt-3 text-lg text-neutral-700 dark:text-neutral-200 max-w-xl mx-auto">
+          Helping students and early career professionals secure internships,
+          grad roles, and more.
         </p>
+        <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400 max-w-xl mx-auto">
+          Browse curated opportunities across the UK, EU, and US, then track
+          your applications, deadlines, and documents in one place.
+        </p>
+
+        <div className="mt-6 flex justify-center gap-3">
+          <Link
+            href="/signup"
+            className="rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm font-medium px-4 py-2 hover:opacity-90"
+          >
+            Get started
+          </Link>
+          <Link
+            href="/opportunities/2027"
+            className="rounded-md border border-neutral-300 dark:border-neutral-700 text-sm font-medium px-4 py-2"
+          >
+            Browse opportunities
+          </Link>
+        </div>
       </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
