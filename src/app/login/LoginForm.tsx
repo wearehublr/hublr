@@ -17,7 +17,7 @@ export default function LoginForm() {
       <div>
         <h1 className="text-lg font-semibold">Log in</h1>
         <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          The Job Seeker Hub — early career tracker.
+          Hublr — early career tracker.
         </p>
       </div>
 

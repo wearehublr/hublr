@@ -13,4 +13,13 @@ The `opportunities` table already has `source_url` and `discovered_via` (`manual
 `/documents` only supports uploading and managing files (PDF/DOCX) — there's no rich-text editor for writing or tweaking content directly in the app.
 
 ## Branding
-Styling is intentionally neutral (no logo/brand colors were supplied). Swap in Job Seeker Hub branding in `src/app/components/NavBar.tsx` and `globals.css` whenever assets are ready.
+Styling is intentionally neutral (no logo/brand colors were supplied yet). Swap in Hublr branding in `src/app/components/NavBar.tsx` and `globals.css` whenever assets are ready.
+
+## Future business features (not built yet)
+Hublr's roadmap beyond the tracker itself, per the founder:
+
+- **Digital products for sale** — e.g. a shop/checkout section. Needs a payment provider (Stripe is the natural default) and product/order tables.
+- **Events** — an events listing, possibly with RSVP/ticketing.
+- **Book a meeting with the founder** — a booking section. Simplest path is embedding an existing scheduler (e.g. Calendly) as a `/book` page; a fully custom booking system (calendar/availability/confirmation emails) would be a much larger build.
+
+None of these are scoped or built yet — flagging here so they aren't lost, and so nav/IA decisions (e.g. adding a "Shop" or "Events" link to `NavBar.tsx`) can account for them later.

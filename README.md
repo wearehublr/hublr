@@ -1,6 +1,6 @@
-# The Job Seeker Hub — Early Career Tracker
+# Hublr — Early Career Tracker
 
-A multi-user early career opportunity tracker for the UK (mainly), EU, and US: summer internship, off-cycle, spring internship, co-op, and grad/full-time-analyst roles.
+Hublr helps early career students in the UK find jobs. This is the multi-user opportunity tracker: summer internship, off-cycle, spring internship, co-op, and grad/full-time-analyst roles across the UK (primary market), EU, and US.
 
 - `/` — landing page, links to the 2027 and 2026 trackers.
 - `/opportunities/2027`, `/opportunities/2026` — public, filterable by region, category, industry, status, and search. Logged-in users can "Track" a listing into their own pipeline.

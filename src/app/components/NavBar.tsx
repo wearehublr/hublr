@@ -13,7 +13,7 @@ export default async function NavBar() {
     <header className="border-b border-neutral-200 dark:border-neutral-800">
       <nav className="mx-auto max-w-6xl px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
         <Link href="/" className="font-semibold whitespace-nowrap">
-          The Job Seeker Hub
+          Hublr
         </Link>
 
         <div className="flex items-center gap-4 text-sm overflow-x-auto">

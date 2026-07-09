@@ -5,11 +5,12 @@ export default function Home() {
     <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-12 sm:px-6 sm:py-20">
       <header className="mb-10 text-center">
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
-          The Job Seeker Hub
+          Hublr
         </h1>
         <p className="mt-3 text-neutral-600 dark:text-neutral-300 max-w-xl mx-auto">
-          Curated early career opportunities across the UK, EU, and US —
-          track your applications, deadlines, and documents in one place.
+          Helping early career students in the UK find jobs — curated
+          opportunities across the UK, EU, and US, plus your applications,
+          deadlines, and documents in one place.
         </p>
       </header>
 

@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "The Job Seeker Hub",
+  title: "Hublr",
   description:
-    "Track early career opportunities — summer internships, off-cycle, grad schemes, co-op and spring internships — across the UK, EU, and US.",
+    "Hublr helps early career students in the UK find jobs — track internships, off-cycle, grad schemes, co-op and spring internships in one place.",
 };
 
 export default function RootLayout({
