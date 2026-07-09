@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getAllOpportunities } from "@/lib/opportunities";
+import AdminSubNav from "./AdminSubNav";
 import QuickAddForm from "./QuickAddForm";
 import AdminOpportunityRow from "./AdminOpportunityRow";
 
@@ -11,6 +12,7 @@ export default async function AdminPage() {
 
   return (
     <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
+      <AdminSubNav />
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
           Admin — Opportunity Tracker

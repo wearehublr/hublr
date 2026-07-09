@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/lib/require-admin";
 import {
   CATEGORIES,
   REGIONS,
@@ -10,17 +10,6 @@ import {
   type Region,
   type Status,
 } from "@/types/opportunity";
-
-async function requireAdmin() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user || user.email !== process.env.ADMIN_EMAIL) {
-    throw new Error("Unauthorized");
-  }
-  return supabase;
-}
 
 function str(formData: FormData, key: string): string | null {
   const v = formData.get(key);

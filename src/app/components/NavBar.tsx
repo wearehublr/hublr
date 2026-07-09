@@ -11,21 +11,24 @@ export default async function NavBar() {
 
   return (
     <header className="border-b border-neutral-200 dark:border-neutral-800">
-      <nav className="mx-auto max-w-6xl px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+      <nav className="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
         <Link href="/" className="font-semibold whitespace-nowrap">
           Hublr
         </Link>
 
-        <div className="flex items-center gap-4 text-sm overflow-x-auto">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
           <Link href="/opportunities/2027" className="whitespace-nowrap">
-            2027
+            Opportunities
           </Link>
-          <Link href="/opportunities/2026" className="whitespace-nowrap">
-            2026
+          <Link href="/events" className="whitespace-nowrap">
+            Events
+          </Link>
+          <Link href="/interview-prep" className="whitespace-nowrap">
+            Interview Prep
           </Link>
           {user && (
             <Link href="/dashboard" className="whitespace-nowrap">
-              Dashboard
+              Applications
             </Link>
           )}
           {user && (
@@ -33,6 +36,9 @@ export default async function NavBar() {
               Documents
             </Link>
           )}
+          <Link href="/book" className="whitespace-nowrap">
+            Book a meeting
+          </Link>
           {isAdmin && (
             <Link href="/admin" className="whitespace-nowrap">
               Admin
