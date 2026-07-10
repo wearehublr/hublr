@@ -6,11 +6,10 @@ export default function AboutPage() {
       </h1>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
-        Hublr is a student-led platform supporting international and
-        underrepresented students as they navigate the challenges of
-        entering the UK job market. It began with a simple mission: to
-        offer the kind of career support students often struggle to find
-        elsewhere.
+        Hublr is a student-led platform supporting underrepresented
+        students as they navigate the challenges of entering the UK job
+        market. It began with a simple mission: to offer the kind of
+        career support students often struggle to find elsewhere.
       </p>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
@@ -22,19 +21,11 @@ export default function AboutPage() {
       </p>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
-        Today, Hublr continues to grow through word of mouth and community
-        support. We are currently developing a series of career-focused
-        guides and tools, and we are working towards launching a
-        comprehensive online platform that brings all our services together
-        in one accessible space.
-      </p>
-
-      <p className="mt-4 text-neutral-700 dark:text-neutral-200">
-        The team behind Hublr is made up of ten dedicated volunteers, all
-        international students or recent graduates, who bring insight,
-        empathy, and first-hand experience to everything we do. Our aim is
-        to build a trusted, student-centred space where career support is
-        practical, honest, and inclusive.
+        The team behind Hublr is made up of ten dedicated volunteers,
+        students or recent graduates, who bring insight, empathy, and
+        first-hand experience to everything we do. Our aim is to build a
+        trusted, student-centred space where career support is practical,
+        honest, and inclusive.
       </p>
 
       <p className="mt-4 font-medium text-neutral-800 dark:text-neutral-100">
@@ -62,9 +53,10 @@ export default function AboutPage() {
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
         Muriel has also participated in selective insight programmes with
-        firms such as Goldman Sachs, Aon and Bloomberg. She has completed
-        multiple assessment centres and received offers from companies
-        including Amazon, Schroders, HSBC and UBS.
+        firms such as Goldman Sachs, Aon, Fidelity, Morgan Stanley and
+        Bloomberg. She has completed multiple assessment centres and
+        received offers from companies including Amazon, Schroders, HSBC
+        and UBS.
       </p>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
@@ -76,7 +68,7 @@ export default function AboutPage() {
       </p>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
-        Building on this experience, she has supported 60+ students in
+        Building on this experience, she has supported 150+ students in
         securing roles across finance, tech and consulting. Her approach
         focuses on helping candidates strengthen their positioning, improve
         their applications and perform effectively at each stage of the
