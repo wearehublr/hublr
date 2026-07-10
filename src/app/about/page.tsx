@@ -36,10 +36,11 @@ export default function AboutPage() {
       <div className="mt-8 rounded-lg border border-brand-light/40 dark:border-brand/40 bg-cream dark:bg-cream-dark p-5">
         <h2 className="font-semibold">For sponsors and partners</h2>
         <p className="mt-2 text-sm text-neutral-700 dark:text-neutral-200">
-          We also work with organisations who want to invest in the next
-          generation of talent, through sponsorship, mentoring, or
-          opportunities for our community. If that sounds like you,
-          we&apos;d love to hear from you.
+          We also work with individuals, corporate sponsors, and
+          organisations who want to invest in the next generation of
+          talent, through sponsorship, mentoring, or opportunities for our
+          community. If that sounds like you, we&apos;d love to hear from
+          you.
         </p>
         <Link
           href="/work-with-us"
@@ -104,15 +105,6 @@ export default function AboutPage() {
             className="underline"
           >
             LinkedIn
-          </a>
-          <span aria-hidden>·</span>
-          <a
-            href="https://wa.me/447340334521"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            WhatsApp
           </a>
           <span aria-hidden>·</span>
           <a href="/book" className="underline">
