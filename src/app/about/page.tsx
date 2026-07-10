@@ -6,10 +6,10 @@ export default function AboutPage() {
       </h1>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
-        Hublr is a student-led platform supporting underrepresented
-        students as they navigate the challenges of entering the UK job
-        market. It began with a simple mission: to offer the kind of
-        career support students often struggle to find elsewhere.
+        Hublr is a student-led platform supporting students as they
+        navigate the challenges of entering the UK job market. It began
+        with a simple mission: to offer the kind of career support
+        students often struggle to find elsewhere.
       </p>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
