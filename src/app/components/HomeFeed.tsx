@@ -21,7 +21,7 @@ export default function HomeFeed({
 }) {
   return (
     <main className="flex-1">
-      <div className="bg-indigo-50 dark:bg-indigo-950/30 border-b border-indigo-100 dark:border-indigo-900">
+      <div className="bg-cream dark:bg-cream-dark border-b border-brand-light/40 dark:border-brand/40">
         <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
           <p className="text-xs text-neutral-500 dark:text-neutral-400">
             Home

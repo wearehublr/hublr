@@ -91,7 +91,7 @@ export default function AdminResourceRow({
           <button
             type="submit"
             disabled={pending}
-            className="rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm font-medium px-3 py-1.5 disabled:opacity-50"
+            className="rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-3 py-1.5 disabled:opacity-50"
           >
             Save
           </button>

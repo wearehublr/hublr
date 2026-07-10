@@ -38,7 +38,7 @@ export default function UpdatePasswordForm() {
       <button
         type="submit"
         disabled={pending}
-        className="mt-2 rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm font-medium px-3 py-2 hover:opacity-90 disabled:opacity-50"
+        className="mt-2 rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-3 py-2 hover:opacity-90 disabled:opacity-50"
       >
         {pending ? "Saving..." : "Save new password"}
       </button>

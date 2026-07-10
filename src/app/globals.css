@@ -12,6 +12,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
+@theme {
+  /* Brand palette: warm cream + brown, echoing the original logo. */
+  --color-brand: #6b5a45;
+  --color-brand-light: #cdb89a;
+  --color-cream: #f1e8da;
+  --color-cream-dark: #2b241c;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;

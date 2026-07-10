@@ -12,7 +12,10 @@ export default async function NavBar() {
   return (
     <header className="border-b border-neutral-200 dark:border-neutral-800">
       <nav className="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
-        <Link href="/" className="font-semibold whitespace-nowrap">
+        <Link
+          href="/"
+          className="font-semibold whitespace-nowrap text-brand dark:text-brand-light"
+        >
           Hublr
         </Link>
 
@@ -61,7 +64,7 @@ export default async function NavBar() {
               </Link>
               <Link
                 href="/signup"
-                className="whitespace-nowrap rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 px-3 py-1.5 font-medium"
+                className="whitespace-nowrap rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 px-3 py-1.5 font-medium"
               >
                 Sign up
               </Link>

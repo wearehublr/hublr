@@ -59,7 +59,7 @@ export default function MarketingHome({
 }) {
   return (
     <main className="flex-1">
-      <div className="bg-indigo-50 dark:bg-indigo-950/30 border-b border-indigo-100 dark:border-indigo-900">
+      <div className="bg-cream dark:bg-cream-dark border-b border-brand-light/40 dark:border-brand/40">
         <section className="mx-auto w-full max-w-4xl px-4 py-16 sm:px-6 sm:py-24 text-center">
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
             Hublr
@@ -76,7 +76,7 @@ export default function MarketingHome({
           <div className="mt-6 flex justify-center gap-3">
             <Link
               href="/signup"
-              className="rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm font-medium px-4 py-2 hover:opacity-90"
+              className="rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-4 py-2 hover:opacity-90"
             >
               Get started
             </Link>
@@ -125,7 +125,7 @@ export default function MarketingHome({
           <ol className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             {STEPS.map((step, i) => (
               <li key={step.title}>
-                <span className="text-2xl font-bold text-neutral-300 dark:text-neutral-700">
+                <span className="text-2xl font-bold text-brand-light dark:text-brand">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <h3 className="mt-2 font-semibold">{step.title}</h3>
@@ -170,7 +170,7 @@ export default function MarketingHome({
           </p>
           <Link
             href="/signup"
-            className="mt-5 inline-flex rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 text-sm font-medium px-4 py-2 hover:opacity-90"
+            className="mt-5 inline-flex rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-4 py-2 hover:opacity-90"
           >
             Get started
           </Link>

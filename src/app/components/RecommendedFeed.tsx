@@ -69,7 +69,7 @@ export default function RecommendedFeed({
             onClick={() => setTab(t)}
             className={`rounded px-3 py-1.5 text-sm font-medium transition-colors ${
               tab === t
-                ? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900"
+                ? "bg-brand dark:bg-brand-light text-cream dark:text-neutral-900"
                 : "text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
             }`}
           >
