@@ -14,7 +14,7 @@ export default async function AdminTestimonialsPage() {
     <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
       <AdminSubNav />
       <h1 className="text-xl sm:text-2xl font-bold tracking-tight mb-8">
-        Admin — In Their Shoes
+        Admin: In Their Shoes
       </h1>
 
       <div className="flex flex-col gap-8">
@@ -30,7 +30,7 @@ export default async function AdminTestimonialsPage() {
             ))}
             {testimonials.length === 0 && (
               <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                No testimonials yet — add one above.
+                No testimonials yet. Add one above.
               </p>
             )}
           </div>

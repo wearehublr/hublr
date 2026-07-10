@@ -28,7 +28,7 @@ export default function AdminOpportunityRow({
   }
 
   function handleDelete() {
-    if (!confirm(`Delete "${opportunity.company} — ${opportunity.role_title}"?`))
+    if (!confirm(`Delete "${opportunity.company} · ${opportunity.role_title}"?`))
       return;
     startTransition(() => deleteOpportunity(opportunity.id));
   }
@@ -158,7 +158,7 @@ export default function AdminOpportunityRow({
     <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4 flex flex-col sm:flex-row sm:items-center gap-3">
       <div className="flex-1 min-w-0">
         <p className="font-medium truncate">
-          {opportunity.company} — {opportunity.role_title}
+          {opportunity.company} · {opportunity.role_title}
         </p>
         <p className="text-xs text-neutral-500 dark:text-neutral-400">
           {CATEGORY_LABELS[opportunity.category]} · {REGION_LABELS[opportunity.region]}

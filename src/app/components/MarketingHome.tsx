@@ -29,7 +29,7 @@ const FEATURES = [
   {
     title: "Event Tracker",
     description:
-      "Early career and networking events — workshops, panels, career fairs, and more.",
+      "Early career and networking events: workshops, panels, career fairs, and more.",
     href: "/events",
   },
   {
@@ -134,7 +134,7 @@ export default function MarketingHome({
           </div>
           <p className="text-sm text-neutral-600 dark:text-neutral-300 max-w-sm">
             All the best internships, grad schemes, and early career events
-            in one place — we do the searching, you do the applying.
+            in one place. We do the searching, you do the applying.
           </p>
         </div>
       </section>
@@ -272,7 +272,7 @@ export default function MarketingHome({
         <div className="mx-auto w-full max-w-4xl px-4 py-14 sm:px-6 text-center">
           <h2 className="text-xl font-semibold">Ready to get started?</h2>
           <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-            It&apos;s free — sign up and start tracking in a couple of minutes.
+            It&apos;s free. Sign up and start tracking in a couple of minutes.
           </p>
           <div className="mt-5 flex justify-center gap-3">
             <Link

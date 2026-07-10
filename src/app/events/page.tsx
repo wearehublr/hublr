@@ -15,7 +15,7 @@ export default async function EventsPage() {
           Events
         </h1>
         <p className="mt-2 text-sm sm:text-base text-neutral-600 dark:text-neutral-300 max-w-2xl">
-          Early career and networking events — workshops, panels, career
+          Early career and networking events: workshops, panels, career
           fairs, and more.
         </p>
       </header>

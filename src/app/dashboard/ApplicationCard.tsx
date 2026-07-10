@@ -33,7 +33,7 @@ export default function ApplicationCard({
   }
 
   function handleDelete() {
-    if (!confirm(`Stop tracking "${application.company} — ${application.role_title}"?`))
+    if (!confirm(`Stop tracking "${application.company} · ${application.role_title}"?`))
       return;
     startTransition(() => deleteApplication(application.id));
   }

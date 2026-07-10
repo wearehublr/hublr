@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Hublr",
   description:
-    "Hublr helps students and early career professionals secure internships, grad roles, and more — track opportunities, applications, deadlines, and documents in one place.",
+    "Hublr helps students and early career professionals secure internships, grad roles, and more. Track opportunities, applications, deadlines, and documents in one place.",
 };
 
 export default function RootLayout({

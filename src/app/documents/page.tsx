@@ -57,12 +57,12 @@ export default async function DocumentsPage() {
 
         <DocumentSection
           title="CVs"
-          emptyHint="No CVs yet — upload one above."
+          emptyHint="No CVs yet. Upload one above."
           documents={byType("cv")}
         />
         <DocumentSection
           title="Cover Letters"
-          emptyHint="No cover letters yet — upload one above."
+          emptyHint="No cover letters yet. Upload one above."
           documents={byType("cover_letter")}
         />
         {other.length > 0 && (

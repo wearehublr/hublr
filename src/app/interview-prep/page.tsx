@@ -22,7 +22,7 @@ export default async function InterviewPrepPage() {
 
       {resources.length === 0 ? (
         <p className="text-sm text-neutral-500 dark:text-neutral-400 py-12 text-center">
-          Nothing published yet — check back soon.
+          Nothing published yet. Check back soon.
         </p>
       ) : (
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">

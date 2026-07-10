@@ -30,7 +30,7 @@ export async function trackApplication(opportunityId: string) {
     stage: "saved",
   });
 
-  // 23505 = unique_violation — already tracked, nothing to do.
+  // 23505 = unique_violation, already tracked, nothing to do.
   if (error && error.code !== "23505") {
     throw new Error(error.message);
   }

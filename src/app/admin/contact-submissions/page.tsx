@@ -13,7 +13,7 @@ export default async function AdminContactSubmissionsPage() {
     <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
       <AdminSubNav />
       <h1 className="text-xl sm:text-2xl font-bold tracking-tight mb-8">
-        Admin — Work With Us Submissions
+        Admin: Work With Us Submissions
       </h1>
 
       <div className="flex flex-col gap-3">

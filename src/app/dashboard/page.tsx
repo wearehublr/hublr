@@ -40,8 +40,8 @@ export default async function DashboardPage() {
           <ul className="flex flex-col gap-1 text-sm">
             {upcoming.map((a) => (
               <li key={a.id}>
-                <span className="font-medium">{a.company}</span> —{" "}
-                {a.role_title} · deadline {a.deadline}
+                <span className="font-medium">{a.company}</span>{" "}
+                · {a.role_title} · deadline {a.deadline}
               </li>
             ))}
           </ul>
@@ -74,7 +74,7 @@ export default async function DashboardPage() {
 
         {applications.length === 0 && (
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            Nothing tracked yet — browse{" "}
+            Nothing tracked yet. Browse{" "}
             <Link href="/opportunities/2027" className="underline">
               2027 opportunities
             </Link>{" "}

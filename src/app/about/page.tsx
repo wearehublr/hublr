@@ -8,7 +8,7 @@ export default function AboutPage() {
       </h1>
 
       <p className="mt-4 text-lg text-neutral-800 dark:text-neutral-100">
-        Hublr helps students land internships, grad roles, and more — with
+        Hublr helps students land internships, grad roles, and more, with
         the kind of career support that&apos;s often hard to find
         elsewhere: practical, honest, and built by people who&apos;ve been
         through the process themselves.
@@ -23,7 +23,7 @@ export default function AboutPage() {
       </p>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
-        Behind Hublr is a team of ten volunteers — students and recent
+        Behind Hublr is a team of ten volunteers: students and recent
         graduates who bring first-hand insight, empathy, and genuine care
         to everything we do. We&apos;re building a trusted, student-centred
         space where career support is practical, honest, and inclusive.
@@ -37,7 +37,7 @@ export default function AboutPage() {
         <h2 className="font-semibold">For sponsors and partners</h2>
         <p className="mt-2 text-sm text-neutral-700 dark:text-neutral-200">
           We also work with organisations who want to invest in the next
-          generation of talent — through sponsorship, mentoring, or
+          generation of talent, through sponsorship, mentoring, or
           opportunities for our community. If that sounds like you,
           we&apos;d love to hear from you.
         </p>
@@ -75,20 +75,19 @@ export default function AboutPage() {
       </p>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
-        She has also gained exposure to early-stage investing as a
-        Ventures Intern at Cambridge Enterprise, the University of
-        Cambridge&apos;s commercialisation arm, conducting market analysis
-        and investment evaluation — a year after completing an Equity and
-        Venture Capital Financing Summer School at Bocconi University in
-        Italy.
+        A year after completing an Equity and Venture Capital Financing
+        Summer School at Bocconi University in Italy, she gained exposure
+        to early-stage investing as a Ventures Intern at Cambridge
+        Enterprise, the University of Cambridge&apos;s commercialisation
+        arm, conducting market analysis and investment evaluation.
       </p>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
         Drawing on this experience, she has helped 150+ students secure
-        roles across finance, tech, and consulting — with an approach
-        focused on strengthening candidates&apos; positioning, sharpening
-        their applications, and preparing them to perform at every stage
-        of the recruitment process.
+        roles across finance, tech, and consulting. Her approach focuses
+        on strengthening candidates&apos; positioning, sharpening their
+        applications, and preparing them to perform at every stage of the
+        recruitment process.
       </p>
 
       <div className="mt-8 rounded-lg border border-neutral-200 dark:border-neutral-800 p-5 text-sm">

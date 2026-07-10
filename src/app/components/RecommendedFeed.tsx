@@ -82,7 +82,7 @@ export default function RecommendedFeed({
         <div className="flex flex-col gap-3">
           {opportunities.length === 0 && (
             <p className="text-sm text-neutral-500 dark:text-neutral-400">
-              Nothing published yet — check back soon.
+              Nothing published yet. Check back soon.
             </p>
           )}
           {opportunities.map((o) => (
@@ -127,7 +127,7 @@ export default function RecommendedFeed({
         <div className="flex flex-col gap-3">
           {events.length === 0 && (
             <p className="text-sm text-neutral-500 dark:text-neutral-400">
-              Nothing on the calendar yet — check back soon.
+              Nothing on the calendar yet. Check back soon.
             </p>
           )}
           {events.map((e) => (
@@ -159,7 +159,7 @@ export default function RecommendedFeed({
         <div className="flex flex-col gap-3">
           {resources.length === 0 && (
             <p className="text-sm text-neutral-500 dark:text-neutral-400">
-              Nothing published yet — check back soon.
+              Nothing published yet. Check back soon.
             </p>
           )}
           {resources.map((r) => (

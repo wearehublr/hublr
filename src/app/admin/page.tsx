@@ -15,7 +15,7 @@ export default async function AdminPage() {
       <AdminSubNav />
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
-          Admin — Opportunity Tracker
+          Admin: Opportunity Tracker
         </h1>
       </div>
 
@@ -32,7 +32,7 @@ export default async function AdminPage() {
             ))}
             {opportunities.length === 0 && (
               <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                No opportunities yet — add one above.
+                No opportunities yet. Add one above.
               </p>
             )}
           </div>
