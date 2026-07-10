@@ -6,6 +6,8 @@ import {
 } from "@/lib/opportunities";
 import { getUpcomingEvents, getUpcomingEventsCount } from "@/lib/events";
 import { getPublishedInterviewResources } from "@/lib/interview-resources";
+import { getPublishedTestimonials } from "@/lib/testimonials";
+import { getPublishedNewsletterArticles } from "@/lib/newsletter-articles";
 import { filterUpcomingDeadlines } from "@/lib/deadlines";
 import MarketingHome from "@/app/components/MarketingHome";
 import HomeFeed from "@/app/components/HomeFeed";
@@ -21,14 +23,19 @@ export default async function Home() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const [opportunitiesCount, eventsCount] = await Promise.all([
-      getPublishedOpportunitiesCount(supabase),
-      getUpcomingEventsCount(supabase),
-    ]);
+    const [opportunitiesCount, eventsCount, testimonials, articles] =
+      await Promise.all([
+        getPublishedOpportunitiesCount(supabase),
+        getUpcomingEventsCount(supabase),
+        getPublishedTestimonials(supabase),
+        getPublishedNewsletterArticles(supabase),
+      ]);
     return (
       <MarketingHome
         opportunitiesCount={opportunitiesCount}
         eventsCount={eventsCount}
+        testimonials={testimonials}
+        articles={articles}
       />
     );
   }

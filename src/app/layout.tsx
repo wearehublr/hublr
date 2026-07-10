@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import NavBar from "@/app/components/NavBar";
+import Footer from "@/app/components/Footer";
 import SupabaseAuthListener from "@/app/components/SupabaseAuthListener";
 import "./globals.css";
 
@@ -34,6 +35,7 @@ export default function RootLayout({
         <SupabaseAuthListener />
         <NavBar />
         {children}
+        <Footer />
       </body>
     </html>
   );
