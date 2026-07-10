@@ -1,78 +1,94 @@
+import Link from "next/link";
+
 export default function AboutPage() {
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-12 sm:px-6 sm:py-16">
       <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-        Introduction
+        About Hublr
       </h1>
 
-      <p className="mt-4 text-neutral-700 dark:text-neutral-200">
-        Hublr is a student-led platform supporting students as they
-        navigate the challenges of entering the UK job market. It began
-        with a simple mission: to offer the kind of career support
-        students often struggle to find elsewhere.
+      <p className="mt-4 text-lg text-neutral-800 dark:text-neutral-100">
+        Hublr helps students land internships, grad roles, and more — with
+        the kind of career support that&apos;s often hard to find
+        elsewhere: practical, honest, and built by people who&apos;ve been
+        through the process themselves.
       </p>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
-        It began as a grassroots initiative offering free CV and cover
-        letter reviews, mock interview preparation, and weekly newsletters
-        featuring job opportunities. These services were designed to fill
-        the gaps in existing university career support, providing students
-        with practical, relevant, and culturally aware guidance.
+        We started as a grassroots initiative offering free CV and cover
+        letter reviews, mock interview preparation, and a weekly newsletter
+        of job opportunities. Those services have since grown into a full
+        toolkit, designed to close the gaps that university career support
+        often leaves behind.
       </p>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
-        The team behind Hublr is made up of ten dedicated volunteers,
-        students or recent graduates, who bring insight, empathy, and
-        first-hand experience to everything we do. Our aim is to build a
-        trusted, student-centred space where career support is practical,
-        honest, and inclusive.
+        Behind Hublr is a team of ten volunteers — students and recent
+        graduates who bring first-hand insight, empathy, and genuine care
+        to everything we do. We&apos;re building a trusted, student-centred
+        space where career support is practical, honest, and inclusive.
       </p>
 
       <p className="mt-4 font-medium text-neutral-800 dark:text-neutral-100">
-        One built with heart: for students, by students.
+        Built with heart: for students, by students.
       </p>
+
+      <div className="mt-8 rounded-lg border border-brand-light/40 dark:border-brand/40 bg-cream dark:bg-cream-dark p-5">
+        <h2 className="font-semibold">For sponsors and partners</h2>
+        <p className="mt-2 text-sm text-neutral-700 dark:text-neutral-200">
+          We also work with organisations who want to invest in the next
+          generation of talent — through sponsorship, mentoring, or
+          opportunities for our community. If that sounds like you,
+          we&apos;d love to hear from you.
+        </p>
+        <Link
+          href="/work-with-us"
+          className="mt-3 inline-flex text-sm font-medium underline"
+        >
+          Partner with us
+        </Link>
+      </div>
 
       <h2 className="mt-10 text-lg font-semibold">The founder</h2>
 
       <p className="mt-2 text-neutral-700 dark:text-neutral-200">
-        Muriel Tokam is the Founder of Hublr and currently works in asset
-        management, following the completion of her MSc in Banking &amp;
-        Finance at King&apos;s College London.
+        Hublr is founded by Muriel Tokam, who currently works in asset
+        management following her MSc in Banking &amp; Finance at
+        King&apos;s College London.
       </p>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
-        Her experience spans both finance and recruitment. She previously
-        completed an HR Summer Internship at HSBC, where she gained direct
-        insight into how candidates are assessed throughout the hiring
-        process. She also completed a six-month placement with the
-        Placements Team at Loughborough Business School during her BSc in
-        Economics, where she reviewed hundreds of CVs and cover letters and
-        supported over 50 students in securing year-long placements across
-        industries, including banking, technology and consulting.
+        Her experience spans both finance and recruitment. During an HR
+        Summer Internship at HSBC, she saw first-hand how candidates are
+        assessed throughout the hiring process. Later, during a six-month
+        placement with the Placements Team at Loughborough Business School,
+        she reviewed hundreds of CVs and cover letters and helped over 50
+        students secure year-long placements across banking, technology,
+        and consulting.
       </p>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
-        Muriel has also participated in selective insight programmes with
-        firms such as Goldman Sachs, Aon, Fidelity, Morgan Stanley and
-        Bloomberg. She has completed multiple assessment centres and
-        received offers from companies including Amazon, Schroders, HSBC
-        and UBS.
+        She has since taken part in selective insight programmes with
+        firms including Goldman Sachs, Aon, Fidelity, Morgan Stanley, and
+        Bloomberg, and completed multiple assessment centres, receiving
+        offers from companies including Amazon, Schroders, HSBC, and UBS.
       </p>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
-        A year after completing an Equity and Venture Capital Financing
-        Summer School at Bocconi University in Italy, she gained exposure to
-        early-stage investing as a Ventures Intern at Cambridge Enterprise,
-        the University of Cambridge&apos;s commercialisation arm, where she
-        conducted market analysis and investment evaluation.
+        She has also gained exposure to early-stage investing as a
+        Ventures Intern at Cambridge Enterprise, the University of
+        Cambridge&apos;s commercialisation arm, conducting market analysis
+        and investment evaluation — a year after completing an Equity and
+        Venture Capital Financing Summer School at Bocconi University in
+        Italy.
       </p>
 
       <p className="mt-4 text-neutral-700 dark:text-neutral-200">
-        Building on this experience, she has supported 150+ students in
-        securing roles across finance, tech and consulting. Her approach
-        focuses on helping candidates strengthen their positioning, improve
-        their applications and perform effectively at each stage of the
-        recruitment process.
+        Drawing on this experience, she has helped 150+ students secure
+        roles across finance, tech, and consulting — with an approach
+        focused on strengthening candidates&apos; positioning, sharpening
+        their applications, and preparing them to perform at every stage
+        of the recruitment process.
       </p>
 
       <div className="mt-8 rounded-lg border border-neutral-200 dark:border-neutral-800 p-5 text-sm">
