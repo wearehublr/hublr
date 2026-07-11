@@ -1,7 +1,7 @@
 "use server";
 
-import { Resend } from "resend";
 import { createClient } from "@/lib/supabase/server";
+import { sendEmail } from "@/lib/email";
 import {
   SUBMISSION_TYPES,
   SUBMISSION_TYPE_LABELS,
@@ -16,29 +16,21 @@ async function notifyAdmin(fields: {
   email: string;
   message: string;
 }) {
-  const apiKey = process.env.RESEND_API_KEY;
   const adminEmail = process.env.ADMIN_EMAIL;
-  if (!apiKey || !adminEmail) return;
+  if (!adminEmail) return;
 
-  try {
-    const resend = new Resend(apiKey);
-    await resend.emails.send({
-      from: "Hublr <onboarding@resend.dev>",
-      to: adminEmail,
-      subject: `New Work With Us submission: ${fields.name}`,
-      text: [
-        `Type: ${SUBMISSION_TYPE_LABELS[fields.submission_type]}`,
-        `Name: ${fields.name}`,
-        `Email: ${fields.email}`,
-        fields.message ? `Message: ${fields.message}` : null,
-      ]
-        .filter(Boolean)
-        .join("\n"),
-    });
-  } catch {
-    // Notification email is a nice-to-have, not require the submission to
-    // fail if Resend has a hiccup.
-  }
+  await sendEmail({
+    to: adminEmail,
+    subject: `New Work With Us submission: ${fields.name}`,
+    text: [
+      `Type: ${SUBMISSION_TYPE_LABELS[fields.submission_type]}`,
+      `Name: ${fields.name}`,
+      `Email: ${fields.email}`,
+      fields.message ? `Message: ${fields.message}` : null,
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  });
 }
 
 export async function submitContactForm(

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { sendEmail } from "@/lib/email";
 
 export async function trackApplication(opportunityId: string) {
   const supabase = await createClient();
@@ -33,6 +34,23 @@ export async function trackApplication(opportunityId: string) {
   // 23505 = unique_violation, already tracked, nothing to do.
   if (error && error.code !== "23505") {
     throw new Error(error.message);
+  }
+
+  if (!error && user.email) {
+    await sendEmail({
+      to: user.email,
+      subject: `You're tracking ${opportunity.company} - ${opportunity.role_title}`,
+      text: [
+        `You're now tracking this opportunity on Hublr:`,
+        ``,
+        `${opportunity.company} - ${opportunity.role_title}`,
+        opportunity.deadline ? `Deadline: ${opportunity.deadline}` : `Deadline: rolling / not fixed`,
+        ``,
+        `Apply here: ${opportunity.apply_url}`,
+        ``,
+        `We'll remind you by email as the deadline approaches.`,
+      ].join("\n"),
+    });
   }
 
   revalidatePath("/dashboard");
