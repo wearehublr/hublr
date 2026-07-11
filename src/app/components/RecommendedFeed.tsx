@@ -97,7 +97,10 @@ export default function RecommendedFeed({
                 </p>
                 <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
                   {REGION_LABELS[o.region]}
-                  {o.country ? ` · ${o.country}` : ""} ·{" "}
+                  {o.city || o.country
+                    ? ` · ${[o.city, o.country].filter(Boolean).join(", ")}`
+                    : ""}{" "}
+                  ·{" "}
                   {CATEGORY_LABELS[o.category]}
                 </p>
                 <div className="mt-1">

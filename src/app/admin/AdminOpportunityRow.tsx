@@ -90,6 +90,12 @@ export default function AdminOpportunityRow({
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
         />
         <input
+          name="city"
+          defaultValue={opportunity.city ?? ""}
+          placeholder="City"
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+        />
+        <input
           name="industry"
           defaultValue={opportunity.industry ?? ""}
           placeholder="Industry"
@@ -162,7 +168,10 @@ export default function AdminOpportunityRow({
         </p>
         <p className="text-xs text-neutral-500 dark:text-neutral-400">
           {CATEGORY_LABELS[opportunity.category]} · {REGION_LABELS[opportunity.region]}
-          {opportunity.country ? ` (${opportunity.country})` : ""} ·{" "}
+          {opportunity.city || opportunity.country
+            ? ` (${[opportunity.city, opportunity.country].filter(Boolean).join(", ")})`
+            : ""}{" "}
+          ·{" "}
           {STATUS_LABELS[opportunity.status]}
           {opportunity.deadline ? ` · Deadline ${opportunity.deadline}` : ""}
           {!opportunity.is_published ? " · UNPUBLISHED" : ""}

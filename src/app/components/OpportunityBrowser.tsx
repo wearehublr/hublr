@@ -166,7 +166,9 @@ export default function OpportunityBrowser({
                 </span>
                 <span className="rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5">
                   {REGION_LABELS[o.region]}
-                  {o.country ? ` · ${o.country}` : ""}
+                  {o.city || o.country
+                    ? ` · ${[o.city, o.country].filter(Boolean).join(", ")}`
+                    : ""}
                 </span>
                 {o.industry && (
                   <span className="rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5">

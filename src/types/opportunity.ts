@@ -49,6 +49,7 @@ export interface Opportunity {
   category: Category;
   region: Region;
   country: string | null;
+  city: string | null;
   industry: string | null;
   cycle_year: number;
   status: Status;
@@ -71,6 +72,7 @@ export type OpportunityInput = Pick<
     Pick<
       Opportunity,
       | "country"
+      | "city"
       | "industry"
       | "cycle_year"
       | "status"
