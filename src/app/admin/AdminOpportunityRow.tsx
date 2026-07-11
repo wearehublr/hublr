@@ -136,7 +136,15 @@ export default function AdminOpportunityRow({
           name="notes"
           defaultValue={opportunity.notes ?? ""}
           rows={1}
-          placeholder="Notes"
+          placeholder="Notes (short blurb shown on cards)"
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm col-span-full"
+        />
+
+        <textarea
+          name="full_description"
+          defaultValue={opportunity.full_description ?? ""}
+          rows={6}
+          placeholder="Full job description (shown on the opportunity's own page)"
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm col-span-full"
         />
 

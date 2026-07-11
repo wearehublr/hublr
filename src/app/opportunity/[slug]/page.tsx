@@ -75,6 +75,15 @@ export default async function OpportunityDetailPage({
         </p>
       )}
 
+      {opportunity.full_description && (
+        <div className="mt-6">
+          <h2 className="text-sm font-semibold">Full job description</h2>
+          <p className="mt-2 text-sm text-neutral-700 dark:text-neutral-300 whitespace-pre-line">
+            {opportunity.full_description}
+          </p>
+        </div>
+      )}
+
       <div className="mt-8 flex gap-2 max-w-sm">
         <a
           href={opportunity.apply_url}

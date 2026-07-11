@@ -57,6 +57,7 @@ export interface Opportunity {
   deadline: string | null;
   apply_url: string;
   notes: string | null;
+  full_description: string | null;
   source_url: string | null;
   discovered_via: "manual" | "auto";
   is_published: boolean;
@@ -79,6 +80,7 @@ export type OpportunityInput = Pick<
       | "open_date"
       | "deadline"
       | "notes"
+      | "full_description"
       | "source_url"
       | "is_published"
     >

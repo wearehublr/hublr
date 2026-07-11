@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://wearehublr.com",
+  ),
   title: "Hublr",
   description:
     "Hublr helps students and early career professionals secure internships, grad roles, and more. Track opportunities, applications, deadlines, and documents in one place.",

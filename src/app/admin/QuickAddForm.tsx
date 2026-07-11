@@ -131,8 +131,15 @@ export default function QuickAddForm() {
 
       <textarea
         name="notes"
-        placeholder="Notes (optional)"
+        placeholder="Notes (optional, short blurb shown on cards)"
         rows={1}
+        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm col-span-full"
+      />
+
+      <textarea
+        name="full_description"
+        placeholder="Full job description (optional, shown on the opportunity's own page)"
+        rows={4}
         className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm col-span-full"
       />
 
