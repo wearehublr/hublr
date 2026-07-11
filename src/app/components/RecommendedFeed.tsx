@@ -10,6 +10,7 @@ import type { InterviewResource } from "@/types/interview-resource";
 import { RESOURCE_TYPE_LABELS } from "@/types/interview-resource";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import { trackApplication } from "@/app/opportunities/actions";
+import { buildOpportunitySlug } from "@/lib/slug";
 
 function BookmarkIcon({ filled }: { filled: boolean }) {
   return (
@@ -90,7 +91,10 @@ export default function RecommendedFeed({
               key={o.id}
               className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4 flex items-start justify-between gap-3"
             >
-              <div className="min-w-0">
+              <Link
+                href={`/opportunity/${buildOpportunitySlug(o)}`}
+                className="min-w-0 hover:underline"
+              >
                 <p className="font-semibold">{o.role_title}</p>
                 <p className="text-sm text-orange-600 dark:text-orange-400">
                   {o.company}
@@ -106,7 +110,7 @@ export default function RecommendedFeed({
                 <div className="mt-1">
                   <DeadlineBadge deadline={o.deadline} />
                 </div>
-              </div>
+              </Link>
               <button
                 onClick={() => handleTrack(o.id)}
                 disabled={isPending || tracked.has(o.id)}

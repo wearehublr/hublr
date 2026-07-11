@@ -58,6 +58,21 @@ export async function getPublishedOpportunitiesCount(
   return count ?? 0;
 }
 
+export async function getPublishedOpportunityById(
+  supabase: SupabaseClient,
+  id: string,
+): Promise<Opportunity | null> {
+  const { data, error } = await supabase
+    .from("opportunities")
+    .select("*")
+    .eq("id", id)
+    .eq("is_published", true)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data as Opportunity | null;
+}
+
 export async function getAllOpportunities(
   supabase: SupabaseClient,
 ): Promise<Opportunity[]> {

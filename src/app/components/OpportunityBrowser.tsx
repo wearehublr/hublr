@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import type { Opportunity, Category, Region, Status } from "@/types/opportunity";
 import {
@@ -12,6 +13,7 @@ import {
 } from "@/types/opportunity";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import { trackApplication } from "@/app/opportunities/actions";
+import { buildOpportunitySlug } from "@/lib/slug";
 
 const STATUS_DOT: Record<Status, string> = {
   open: "bg-emerald-500",
@@ -148,12 +150,15 @@ export default function OpportunityBrowser({
               className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4 flex flex-col gap-2 bg-white dark:bg-neutral-900"
             >
               <div className="flex items-start justify-between gap-2">
-                <div>
+                <Link
+                  href={`/opportunity/${buildOpportunitySlug(o)}`}
+                  className="hover:underline"
+                >
                   <p className="font-semibold leading-tight">{o.company}</p>
                   <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-tight">
                     {o.role_title}
                   </p>
-                </div>
+                </Link>
                 <span
                   className={`mt-1 h-2 w-2 shrink-0 rounded-full ${STATUS_DOT[o.status]}`}
                   title={STATUS_LABELS[o.status]}
