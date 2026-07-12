@@ -37,6 +37,7 @@ export const MAX_INTERESTED_INDUSTRIES = 3;
 
 export interface Profile {
   id: string;
+  preferred_name: string | null;
   university: string | null;
   degree: string | null;
   study_year: string | null;

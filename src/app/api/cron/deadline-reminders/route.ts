@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/lib/email";
+import { getPreferredName } from "@/lib/profiles";
 
 export const dynamic = "force-dynamic";
 
@@ -51,10 +52,14 @@ export async function GET(request: NextRequest) {
       const email = userData?.user?.email;
       if (!email) continue;
 
+      const preferredName = await getPreferredName(supabase, application.user_id);
+
       await sendEmail({
         to: email,
         subject: `Deadline ${milestone.label}: ${application.company} - ${application.role_title}`,
         text: [
+          `Hi ${preferredName ?? "there"},`,
+          ``,
           `Your tracked application is due ${milestone.label}:`,
           ``,
           `${application.company} - ${application.role_title}`,

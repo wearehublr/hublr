@@ -32,6 +32,22 @@ export default function ProfileForm({ profile }: { profile: Profile | null }) {
       action={formAction}
       className="flex flex-col gap-4 max-w-xl"
     >
+      <div>
+        <label className="text-sm font-medium mb-1 block" htmlFor="preferred_name">
+          Preferred name
+        </label>
+        <input
+          id="preferred_name"
+          name="preferred_name"
+          defaultValue={profile?.preferred_name ?? ""}
+          placeholder="What should we call you?"
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm w-full"
+        />
+        <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+          Used across the site and in emails from Hublr.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <input
           name="university"

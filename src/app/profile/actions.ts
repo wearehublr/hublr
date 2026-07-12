@@ -39,6 +39,7 @@ export async function updateProfile(
 
   const { error } = await supabase.from("profiles").upsert({
     id: user.id,
+    preferred_name: str(formData, "preferred_name"),
     university: str(formData, "university"),
     degree: str(formData, "degree"),
     study_year: str(formData, "study_year"),
