@@ -7,6 +7,7 @@ import { CATEGORY_LABELS, REGION_LABELS, STATUS_LABELS, VISA_SPONSORSHIP_LABELS 
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import TrackButton from "@/app/components/TrackButton";
 import ApplyButton from "@/app/components/ApplyButton";
+import CompanyLogo from "@/app/components/CompanyLogo";
 
 export default async function OpportunityDetailPage({
   params,
@@ -39,13 +40,16 @@ export default async function OpportunityDetailPage({
         ← Back to {opportunity.cycle_year} opportunities
       </Link>
 
-      <header className="mt-4">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-          {opportunity.role_title}
-        </h1>
-        <p className="mt-1 text-lg text-neutral-600 dark:text-neutral-300">
-          {opportunity.company}
-        </p>
+      <header className="mt-4 flex items-start gap-4">
+        <CompanyLogo company={opportunity.company} logoUrl={opportunity.logo_url} size={56} />
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+            {opportunity.role_title}
+          </h1>
+          <p className="mt-1 text-lg text-neutral-600 dark:text-neutral-300">
+            {opportunity.company}
+          </p>
+        </div>
       </header>
 
       <div className="mt-4 flex flex-wrap gap-1.5 text-xs">

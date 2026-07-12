@@ -4,6 +4,7 @@ import { getVisaSponsorshipOpportunities } from "@/lib/opportunities";
 import { getPublishedInternationalResources } from "@/lib/international-resources";
 import { INTL_RESOURCE_TYPE_LABELS } from "@/types/international-resource";
 import { buildOpportunitySlug } from "@/lib/slug";
+import CompanyLogo from "@/app/components/CompanyLogo";
 
 export const dynamic = "force-dynamic";
 
@@ -44,12 +45,15 @@ export default async function InternationalPage() {
               >
                 <Link
                   href={`/opportunity/${buildOpportunitySlug(o)}`}
-                  className="hover:underline"
+                  className="hover:underline flex items-start gap-3"
                 >
-                  <p className="font-semibold leading-tight">{o.company}</p>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-tight">
-                    {o.role_title}
-                  </p>
+                  <CompanyLogo company={o.company} logoUrl={o.logo_url} size={32} />
+                  <div>
+                    <p className="font-semibold leading-tight">{o.company}</p>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-tight">
+                      {o.role_title}
+                    </p>
+                  </div>
                 </Link>
               </li>
             ))}

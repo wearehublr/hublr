@@ -9,6 +9,7 @@ import { EVENT_TYPE_LABELS } from "@/types/event";
 import type { InterviewResource } from "@/types/interview-resource";
 import { RESOURCE_TYPE_LABELS } from "@/types/interview-resource";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
+import CompanyLogo from "@/app/components/CompanyLogo";
 import { trackApplication } from "@/app/opportunities/actions";
 import { buildOpportunitySlug } from "@/lib/slug";
 
@@ -93,8 +94,10 @@ export default function RecommendedFeed({
             >
               <Link
                 href={`/opportunity/${buildOpportunitySlug(o)}`}
-                className="min-w-0 hover:underline"
+                className="min-w-0 hover:underline flex items-start gap-3"
               >
+                <CompanyLogo company={o.company} logoUrl={o.logo_url} size={32} />
+                <div className="min-w-0">
                 <p className="font-semibold">{o.role_title}</p>
                 <p className="text-sm text-orange-600 dark:text-orange-400">
                   {o.company}
@@ -109,6 +112,7 @@ export default function RecommendedFeed({
                 </p>
                 <div className="mt-1">
                   <DeadlineBadge deadline={o.deadline} />
+                </div>
                 </div>
               </Link>
               <button

@@ -14,6 +14,7 @@ import {
   VISA_SPONSORSHIP_LABELS,
 } from "@/types/opportunity";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
+import CompanyLogo from "@/app/components/CompanyLogo";
 import { trackApplication } from "@/app/opportunities/actions";
 import { buildOpportunitySlug } from "@/lib/slug";
 import { notifyApplyClick } from "@/lib/apply-tracking";
@@ -169,15 +170,18 @@ export default function OpportunityBrowser({
               className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4 flex flex-col gap-2 bg-white dark:bg-neutral-900"
             >
               <div className="flex items-start justify-between gap-2">
-                <Link
-                  href={`/opportunity/${buildOpportunitySlug(o)}`}
-                  className="hover:underline"
-                >
-                  <p className="font-semibold leading-tight">{o.company}</p>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-tight">
-                    {o.role_title}
-                  </p>
-                </Link>
+                <div className="flex items-start gap-3 min-w-0">
+                  <CompanyLogo company={o.company} logoUrl={o.logo_url} />
+                  <Link
+                    href={`/opportunity/${buildOpportunitySlug(o)}`}
+                    className="hover:underline min-w-0"
+                  >
+                    <p className="font-semibold leading-tight">{o.company}</p>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-tight">
+                      {o.role_title}
+                    </p>
+                  </Link>
+                </div>
                 <span
                   className={`mt-1 h-2 w-2 shrink-0 rounded-full ${STATUS_DOT[o.status]}`}
                   title={STATUS_LABELS[o.status]}

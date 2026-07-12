@@ -87,6 +87,12 @@ export default function QuickAddForm() {
         className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm sm:col-span-2 lg:col-span-2"
       />
       <input
+        name="logo_url"
+        type="url"
+        placeholder="Logo image URL (optional)"
+        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm sm:col-span-2"
+      />
+      <input
         name="country"
         placeholder="Country (optional)"
         className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"

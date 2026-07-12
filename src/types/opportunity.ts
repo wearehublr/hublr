@@ -58,6 +58,7 @@ export interface Opportunity {
   role_title: string;
   category: Category;
   region: Region;
+  logo_url: string | null;
   country: string | null;
   city: string | null;
   industry: string | null;
@@ -83,6 +84,7 @@ export type OpportunityInput = Pick<
   Partial<
     Pick<
       Opportunity,
+      | "logo_url"
       | "country"
       | "city"
       | "industry"
