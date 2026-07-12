@@ -75,8 +75,8 @@ export default async function DashboardPage() {
         {applications.length === 0 && (
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
             Nothing tracked yet. Browse{" "}
-            <Link href="/opportunities/2027" className="underline">
-              2027 opportunities
+            <Link href="/opportunities" className="underline">
+              opportunities
             </Link>{" "}
             and hit &quot;Track&quot;, or add one manually above.
           </p>

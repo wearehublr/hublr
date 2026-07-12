@@ -126,7 +126,7 @@ export default function RecommendedFeed({
             </div>
           ))}
           <Link
-            href="/opportunities/2027"
+            href="/opportunities"
             className="text-sm underline text-orange-600 dark:text-orange-400 mt-1"
           >
             View all opportunities

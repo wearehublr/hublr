@@ -34,10 +34,10 @@ export default async function OpportunityDetailPage({
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
       <Link
-        href={`/opportunities/${opportunity.cycle_year}`}
+        href="/opportunities"
         className="text-sm text-neutral-500 dark:text-neutral-400 hover:underline"
       >
-        ← Back to {opportunity.cycle_year} opportunities
+        ← Back to opportunities
       </Link>
 
       <header className="mt-4 flex items-start gap-4">

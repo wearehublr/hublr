@@ -20,7 +20,7 @@ export default async function NavBar() {
         </Link>
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-          <Link href="/opportunities/2027" className="whitespace-nowrap">
+          <Link href="/opportunities" className="whitespace-nowrap">
             Opportunities
           </Link>
           <Link href="/events" className="whitespace-nowrap">

@@ -24,7 +24,7 @@ const FEATURES = [
     title: "Opportunities Tracker",
     description:
       "See which internships, off-cycle, grad schemes and more are live right now, and their deadlines, across the UK, EU, and US.",
-    href: "/opportunities/2027",
+    href: "/opportunities",
   },
   {
     title: "Event Tracker",
@@ -103,7 +103,7 @@ export default function MarketingHome({
               Sign up to get started
             </Link>
             <Link
-              href="/opportunities/2027"
+              href="/opportunities"
               className="rounded-full border border-brand/30 dark:border-brand-light/30 bg-white/60 dark:bg-neutral-900/40 text-sm font-semibold px-6 py-3"
             >
               Browse opportunities

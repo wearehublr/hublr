@@ -39,6 +39,7 @@ export default function OpportunityBrowser({
   const [status, setStatus] = useState<Status | "all">("all");
   const [industry, setIndustry] = useState<string>("all");
   const [visaSponsorship, setVisaSponsorship] = useState<VisaSponsorship | "all">("all");
+  const [year, setYear] = useState<number | "all">("all");
   const [tracked, setTracked] = useState<Set<string>>(new Set());
   const [isPending, startTransition] = useTransition();
 
@@ -57,9 +58,16 @@ export default function OpportunityBrowser({
     return Array.from(set).sort();
   }, [opportunities]);
 
+  const years = useMemo(() => {
+    const set = new Set<number>();
+    for (const o of opportunities) set.add(o.cycle_year);
+    return Array.from(set).sort((a, b) => b - a);
+  }, [opportunities]);
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return opportunities.filter((o) => {
+      if (year !== "all" && o.cycle_year !== year) return false;
       if (region !== "all" && o.region !== region) return false;
       if (category !== "all" && o.category !== category) return false;
       if (status !== "all" && o.status !== status) return false;
@@ -73,7 +81,7 @@ export default function OpportunityBrowser({
         return false;
       return true;
     });
-  }, [opportunities, search, region, category, status, industry, visaSponsorship]);
+  }, [opportunities, search, year, region, category, status, industry, visaSponsorship]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -85,6 +93,23 @@ export default function OpportunityBrowser({
           onChange={(e) => setSearch(e.target.value)}
           className="w-full sm:w-64 rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-neutral-400"
         />
+
+        {years.length > 1 && (
+          <select
+            value={year}
+            onChange={(e) =>
+              setYear(e.target.value === "all" ? "all" : Number(e.target.value))
+            }
+            className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm font-medium"
+          >
+            <option value="all">All years</option>
+            {years.map((y) => (
+              <option key={y} value={y}>
+                {y}
+              </option>
+            ))}
+          </select>
+        )}
 
         <select
           value={region}
