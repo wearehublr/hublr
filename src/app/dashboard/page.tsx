@@ -4,9 +4,11 @@ import { getUserApplications } from "@/lib/applications";
 import { getUserDocuments } from "@/lib/documents";
 import { filterUpcomingDeadlines } from "@/lib/deadlines";
 import { getPreferredName } from "@/lib/profiles";
+import { getUserSavedSearches } from "@/lib/saved-searches";
 import { STAGES, STAGE_LABELS } from "@/types/application";
 import AddApplicationForm from "./AddApplicationForm";
 import ApplicationCard from "./ApplicationCard";
+import SavedSearchList from "./SavedSearchList";
 
 export const dynamic = "force-dynamic";
 
@@ -20,10 +22,11 @@ export default async function DashboardPage() {
 
   if (!user) return null;
 
-  const [applications, documents, preferredName] = await Promise.all([
+  const [applications, documents, preferredName, savedSearches] = await Promise.all([
     getUserApplications(supabase, user.id),
     getUserDocuments(supabase, user.id),
     getPreferredName(supabase, user.id),
+    getUserSavedSearches(supabase, user.id),
   ]);
 
   const upcoming = filterUpcomingDeadlines(applications, UPCOMING_WINDOW_DAYS);
@@ -51,6 +54,8 @@ export default async function DashboardPage() {
       )}
 
       <div className="flex flex-col gap-8">
+        <SavedSearchList savedSearches={savedSearches} />
+
         <AddApplicationForm />
 
         {STAGES.map((stage) => {

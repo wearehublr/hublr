@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendUserEmail } from "@/lib/email";
 import { getPreferredName } from "@/lib/profiles";
+import { processJobAlerts } from "@/lib/job-alerts";
 
 export const dynamic = "force-dynamic";
 
@@ -80,5 +81,7 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ sent });
+  const jobAlertsSent = await processJobAlerts(supabase);
+
+  return NextResponse.json({ sent, jobAlertsSent });
 }

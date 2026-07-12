@@ -16,6 +16,7 @@ import {
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import CompanyLogo from "@/app/components/CompanyLogo";
 import { trackApplication } from "@/app/opportunities/actions";
+import { saveSearch } from "@/app/opportunities/saved-search-actions";
 import { buildOpportunitySlug } from "@/lib/slug";
 import { notifyApplyClick } from "@/lib/apply-tracking";
 
@@ -42,11 +43,48 @@ export default function OpportunityBrowser({
   const [year, setYear] = useState<number | "all">("all");
   const [tracked, setTracked] = useState<Set<string>>(new Set());
   const [isPending, startTransition] = useTransition();
+  const [alertSaved, setAlertSaved] = useState(false);
+  const [alertSaving, setAlertSaving] = useState(false);
 
   function handleTrack(id: string) {
     startTransition(async () => {
       await trackApplication(id);
       setTracked((prev) => new Set(prev).add(id));
+    });
+  }
+
+  const activeFilterLabel = useMemo(() => {
+    const parts = [
+      region !== "all" ? REGION_LABELS[region] : null,
+      category !== "all" ? CATEGORY_LABELS[category] : null,
+      status !== "all" ? STATUS_LABELS[status] : null,
+      industry !== "all" ? industry : null,
+      visaSponsorship !== "all" ? VISA_SPONSORSHIP_LABELS[visaSponsorship] : null,
+      search.trim() ? `"${search.trim()}"` : null,
+    ].filter(Boolean);
+    return parts.length > 0 ? parts.join(" · ") : "All opportunities";
+  }, [region, category, status, industry, visaSponsorship, search]);
+
+  const hasActiveFilters =
+    region !== "all" ||
+    category !== "all" ||
+    status !== "all" ||
+    industry !== "all" ||
+    visaSponsorship !== "all" ||
+    search.trim() !== "";
+
+  function handleSaveAlert() {
+    setAlertSaving(true);
+    startTransition(async () => {
+      await saveSearch(activeFilterLabel, {
+        region: region === "all" ? null : region,
+        category: category === "all" ? null : category,
+        visaSponsorship: visaSponsorship === "all" ? null : visaSponsorship,
+        industry: industry === "all" ? null : industry,
+        keyword: search.trim() || null,
+      });
+      setAlertSaving(false);
+      setAlertSaved(true);
     });
   }
 
@@ -177,6 +215,21 @@ export default function OpportunityBrowser({
             </option>
           ))}
         </select>
+
+        {isLoggedIn && hasActiveFilters && (
+          <button
+            type="button"
+            onClick={handleSaveAlert}
+            disabled={alertSaving || alertSaved}
+            className="rounded-md border border-neutral-300 dark:border-neutral-700 text-sm font-medium px-3 py-2 disabled:opacity-60"
+          >
+            {alertSaved
+              ? "Alert saved ✓"
+              : alertSaving
+                ? "Saving..."
+                : "Get alerted for this search"}
+          </button>
+        )}
 
         <span className="sm:ml-auto text-sm text-neutral-500 dark:text-neutral-400">
           {filtered.length} of {opportunities.length} opportunities
