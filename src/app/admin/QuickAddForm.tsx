@@ -9,6 +9,8 @@ import {
   REGION_LABELS,
   STATUSES,
   STATUS_LABELS,
+  VISA_SPONSORSHIP_OPTIONS,
+  VISA_SPONSORSHIP_LABELS,
 } from "@/types/opportunity";
 
 const initialState = { error: null };
@@ -108,6 +110,17 @@ export default function QuickAddForm() {
         {STATUSES.map((s) => (
           <option key={s} value={s}>
             {STATUS_LABELS[s]}
+          </option>
+        ))}
+      </select>
+      <select
+        name="visa_sponsorship"
+        defaultValue="unknown"
+        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+      >
+        {VISA_SPONSORSHIP_OPTIONS.map((v) => (
+          <option key={v} value={v}>
+            {VISA_SPONSORSHIP_LABELS[v]}
           </option>
         ))}
       </select>

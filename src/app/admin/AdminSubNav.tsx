@@ -4,9 +4,11 @@ const LINKS = [
   { href: "/admin", label: "Opportunities" },
   { href: "/admin/events", label: "Events" },
   { href: "/admin/interview-prep", label: "Interview Prep" },
+  { href: "/admin/international", label: "International" },
   { href: "/admin/testimonials", label: "In Their Shoes" },
   { href: "/admin/newsletter", label: "Newsletter" },
   { href: "/admin/contact-submissions", label: "Work With Us Submissions" },
+  { href: "/admin/metrics", label: "Metrics" },
 ];
 
 export default function AdminSubNav() {

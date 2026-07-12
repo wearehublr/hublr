@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
-import type { Opportunity, Category, Region, Status } from "@/types/opportunity";
+import type { Opportunity, Category, Region, Status, VisaSponsorship } from "@/types/opportunity";
 import {
   CATEGORIES,
   CATEGORY_LABELS,
@@ -10,10 +10,13 @@ import {
   REGION_LABELS,
   STATUSES,
   STATUS_LABELS,
+  VISA_SPONSORSHIP_OPTIONS,
+  VISA_SPONSORSHIP_LABELS,
 } from "@/types/opportunity";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import { trackApplication } from "@/app/opportunities/actions";
 import { buildOpportunitySlug } from "@/lib/slug";
+import { notifyApplyClick } from "@/lib/apply-tracking";
 
 const STATUS_DOT: Record<Status, string> = {
   open: "bg-emerald-500",
@@ -34,6 +37,7 @@ export default function OpportunityBrowser({
   const [category, setCategory] = useState<Category | "all">("all");
   const [status, setStatus] = useState<Status | "all">("all");
   const [industry, setIndustry] = useState<string>("all");
+  const [visaSponsorship, setVisaSponsorship] = useState<VisaSponsorship | "all">("all");
   const [tracked, setTracked] = useState<Set<string>>(new Set());
   const [isPending, startTransition] = useTransition();
 
@@ -59,6 +63,8 @@ export default function OpportunityBrowser({
       if (category !== "all" && o.category !== category) return false;
       if (status !== "all" && o.status !== status) return false;
       if (industry !== "all" && o.industry !== industry) return false;
+      if (visaSponsorship !== "all" && o.visa_sponsorship !== visaSponsorship)
+        return false;
       if (
         q &&
         !`${o.company} ${o.role_title}`.toLowerCase().includes(q)
@@ -66,7 +72,7 @@ export default function OpportunityBrowser({
         return false;
       return true;
     });
-  }, [opportunities, search, region, category, status, industry]);
+  }, [opportunities, search, region, category, status, industry, visaSponsorship]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -133,6 +139,19 @@ export default function OpportunityBrowser({
           </select>
         )}
 
+        <select
+          value={visaSponsorship}
+          onChange={(e) => setVisaSponsorship(e.target.value as VisaSponsorship | "all")}
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+        >
+          <option value="all">Visa sponsorship: all</option>
+          {VISA_SPONSORSHIP_OPTIONS.map((v) => (
+            <option key={v} value={v}>
+              {VISA_SPONSORSHIP_LABELS[v]}
+            </option>
+          ))}
+        </select>
+
         <span className="sm:ml-auto text-sm text-neutral-500 dark:text-neutral-400">
           {filtered.length} of {opportunities.length} opportunities
         </span>
@@ -180,6 +199,11 @@ export default function OpportunityBrowser({
                     {o.industry}
                   </span>
                 )}
+                {o.visa_sponsorship === "yes" && (
+                  <span className="rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2 py-0.5">
+                    Sponsors visas
+                  </span>
+                )}
               </div>
 
               <DeadlineBadge deadline={o.deadline} />
@@ -192,9 +216,17 @@ export default function OpportunityBrowser({
 
               <div className="mt-auto flex gap-2">
                 <a
-                  href={o.apply_url}
+                  href={`/go/${o.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() =>
+                    isLoggedIn &&
+                    notifyApplyClick({
+                      id: o.id,
+                      company: o.company,
+                      role_title: o.role_title,
+                    })
+                  }
                   className="flex-1 inline-flex items-center justify-center rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-3 py-1.5 hover:opacity-90"
                 >
                   Apply

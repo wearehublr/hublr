@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getPublishedOpportunityById } from "@/lib/opportunities";
 import { opportunityIdFromSlug } from "@/lib/slug";
-import { CATEGORY_LABELS, REGION_LABELS, STATUS_LABELS } from "@/types/opportunity";
+import { CATEGORY_LABELS, REGION_LABELS, STATUS_LABELS, VISA_SPONSORSHIP_LABELS } from "@/types/opportunity";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import TrackButton from "@/app/components/TrackButton";
+import ApplyButton from "@/app/components/ApplyButton";
 
 export default async function OpportunityDetailPage({
   params,
@@ -63,6 +64,17 @@ export default async function OpportunityDetailPage({
         <span className="rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5">
           {STATUS_LABELS[opportunity.status]}
         </span>
+        {opportunity.visa_sponsorship !== "unknown" && (
+          <span
+            className={
+              opportunity.visa_sponsorship === "yes"
+                ? "rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2 py-0.5"
+                : "rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5"
+            }
+          >
+            {VISA_SPONSORSHIP_LABELS[opportunity.visa_sponsorship]}
+          </span>
+        )}
       </div>
 
       <div className="mt-3">
@@ -85,14 +97,12 @@ export default async function OpportunityDetailPage({
       )}
 
       <div className="mt-8 flex gap-2 max-w-sm">
-        <a
-          href={opportunity.apply_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex-1 inline-flex items-center justify-center rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-3 py-1.5 hover:opacity-90"
-        >
-          Apply
-        </a>
+        <ApplyButton
+          opportunityId={opportunity.id}
+          company={opportunity.company}
+          roleTitle={opportunity.role_title}
+          isLoggedIn={!!userData.user}
+        />
         <TrackButton
           opportunityId={opportunity.id}
           isLoggedIn={!!userData.user}

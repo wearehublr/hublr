@@ -42,6 +42,16 @@ export const STATUS_LABELS: Record<Status, string> = {
   rolling: "Rolling",
 };
 
+export const VISA_SPONSORSHIP_OPTIONS = ["yes", "no", "unknown"] as const;
+
+export type VisaSponsorship = (typeof VISA_SPONSORSHIP_OPTIONS)[number];
+
+export const VISA_SPONSORSHIP_LABELS: Record<VisaSponsorship, string> = {
+  yes: "Sponsors visas",
+  no: "No visa sponsorship",
+  unknown: "Unknown",
+};
+
 export interface Opportunity {
   id: string;
   company: string;
@@ -58,6 +68,7 @@ export interface Opportunity {
   apply_url: string;
   notes: string | null;
   full_description: string | null;
+  visa_sponsorship: VisaSponsorship;
   source_url: string | null;
   discovered_via: "manual" | "auto";
   is_published: boolean;
@@ -81,6 +92,7 @@ export type OpportunityInput = Pick<
       | "deadline"
       | "notes"
       | "full_description"
+      | "visa_sponsorship"
       | "source_url"
       | "is_published"
     >

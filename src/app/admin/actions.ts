@@ -6,9 +6,11 @@ import {
   CATEGORIES,
   REGIONS,
   STATUSES,
+  VISA_SPONSORSHIP_OPTIONS,
   type Category,
   type Region,
   type Status,
+  type VisaSponsorship,
 } from "@/types/opportunity";
 
 function str(formData: FormData, key: string): string | null {
@@ -50,6 +52,7 @@ export async function addOpportunity(
     industry: str(formData, "industry"),
     notes: str(formData, "notes"),
     full_description: str(formData, "full_description"),
+    visa_sponsorship: (str(formData, "visa_sponsorship") as VisaSponsorship | null) ?? "unknown",
     source_url: str(formData, "source_url"),
     deadline: str(formData, "deadline"),
     open_date: str(formData, "open_date"),
@@ -69,10 +72,13 @@ export async function updateOpportunity(id: string, formData: FormData) {
   const category = str(formData, "category") as Category | null;
   const region = str(formData, "region") as Region | null;
   const status = str(formData, "status") as Status | null;
+  const visa_sponsorship = str(formData, "visa_sponsorship") as VisaSponsorship | null;
 
   if (category && !CATEGORIES.includes(category)) throw new Error("Invalid category");
   if (region && !REGIONS.includes(region)) throw new Error("Invalid region");
   if (status && !STATUSES.includes(status)) throw new Error("Invalid status");
+  if (visa_sponsorship && !VISA_SPONSORSHIP_OPTIONS.includes(visa_sponsorship))
+    throw new Error("Invalid visa sponsorship value");
 
   const { error } = await supabase
     .from("opportunities")
@@ -85,6 +91,7 @@ export async function updateOpportunity(id: string, formData: FormData) {
       city: str(formData, "city"),
       industry: str(formData, "industry"),
       status: status ?? undefined,
+      visa_sponsorship: visa_sponsorship ?? undefined,
       apply_url: str(formData, "apply_url"),
       notes: str(formData, "notes"),
       full_description: str(formData, "full_description"),

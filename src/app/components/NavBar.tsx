@@ -29,6 +29,9 @@ export default async function NavBar() {
           <Link href="/interview-prep" className="whitespace-nowrap">
             Interview Prep
           </Link>
+          <Link href="/international" className="whitespace-nowrap">
+            International
+          </Link>
           {user && (
             <Link href="/dashboard" className="whitespace-nowrap">
               Applications
@@ -37,6 +40,11 @@ export default async function NavBar() {
           {user && (
             <Link href="/documents" className="whitespace-nowrap">
               Documents
+            </Link>
+          )}
+          {user && (
+            <Link href="/profile" className="whitespace-nowrap">
+              Profile
             </Link>
           )}
           <Link href="/book" className="whitespace-nowrap">

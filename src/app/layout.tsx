@@ -5,6 +5,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import SupabaseAuthListener from "@/app/components/SupabaseAuthListener";
+import ApplyConfirmationProvider from "@/app/components/ApplyConfirmationProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -43,6 +44,7 @@ export default function RootLayout({
         <NavBar />
         {children}
         <Footer />
+        <ApplyConfirmationProvider />
         <Analytics />
       </body>
       {gaId && <GoogleAnalytics gaId={gaId} />}

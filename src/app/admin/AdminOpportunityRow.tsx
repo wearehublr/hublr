@@ -9,6 +9,8 @@ import {
   REGION_LABELS,
   STATUSES,
   STATUS_LABELS,
+  VISA_SPONSORSHIP_OPTIONS,
+  VISA_SPONSORSHIP_LABELS,
 } from "@/types/opportunity";
 import { updateOpportunity, deleteOpportunity, togglePublish } from "./actions";
 
@@ -113,6 +115,17 @@ export default function AdminOpportunityRow({
             </option>
           ))}
         </select>
+        <select
+          name="visa_sponsorship"
+          defaultValue={opportunity.visa_sponsorship}
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+        >
+          {VISA_SPONSORSHIP_OPTIONS.map((v) => (
+            <option key={v} value={v}>
+              {VISA_SPONSORSHIP_LABELS[v]}
+            </option>
+          ))}
+        </select>
         <input
           name="deadline"
           type="date"
@@ -182,6 +195,9 @@ export default function AdminOpportunityRow({
           ·{" "}
           {STATUS_LABELS[opportunity.status]}
           {opportunity.deadline ? ` · Deadline ${opportunity.deadline}` : ""}
+          {opportunity.visa_sponsorship !== "unknown"
+            ? ` · ${VISA_SPONSORSHIP_LABELS[opportunity.visa_sponsorship]}`
+            : ""}
           {!opportunity.is_published ? " · UNPUBLISHED" : ""}
         </p>
       </div>
