@@ -47,6 +47,7 @@ export async function updateProfile(
     summary: str(formData, "summary"),
     student_status,
     interested_industries,
+    email_notifications_enabled: formData.get("email_notifications_enabled") === "on",
   });
 
   if (error) return { error: error.message };

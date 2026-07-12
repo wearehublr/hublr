@@ -27,3 +27,16 @@ export async function getPreferredName(
 
   return data?.preferred_name ?? null;
 }
+
+export async function getEmailNotificationsEnabled(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<boolean> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("email_notifications_enabled")
+    .eq("id", userId)
+    .maybeSingle();
+
+  return data?.email_notifications_enabled ?? true;
+}

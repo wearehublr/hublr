@@ -136,6 +136,16 @@ export default function ProfileForm({ profile }: { profile: Profile | null }) {
         </div>
       </div>
 
+      <label className="flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          name="email_notifications_enabled"
+          defaultChecked={profile?.email_notifications_enabled ?? true}
+          className="h-4 w-4"
+        />
+        Email me when I track an opportunity and as deadlines approach
+      </label>
+
       {state?.error && (
         <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>
       )}

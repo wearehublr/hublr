@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendEmail } from "@/lib/email";
+import { sendUserEmail } from "@/lib/email";
 import { getPreferredName } from "@/lib/profiles";
 
 export const dynamic = "force-dynamic";
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
 
       const preferredName = await getPreferredName(supabase, application.user_id);
 
-      await sendEmail({
+      const wasSent = await sendUserEmail(supabase, application.user_id, {
         to: email,
         subject: `Deadline ${milestone.label}: ${application.company} - ${application.role_title}`,
         text: [
@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
         .update({ [milestone.column]: true, reminder_sent_at: new Date().toISOString() })
         .eq("id", application.id);
 
-      sent += 1;
+      if (wasSent) sent += 1;
     }
   }
 

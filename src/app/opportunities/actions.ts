@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { sendEmail } from "@/lib/email";
+import { sendUserEmail } from "@/lib/email";
 import { getPreferredName } from "@/lib/profiles";
 
 export async function trackApplication(opportunityId: string) {
@@ -39,7 +39,7 @@ export async function trackApplication(opportunityId: string) {
 
   if (!error && user.email) {
     const preferredName = await getPreferredName(supabase, user.id);
-    await sendEmail({
+    await sendUserEmail(supabase, user.id, {
       to: user.email,
       subject: `You're tracking ${opportunity.company} - ${opportunity.role_title}`,
       text: [

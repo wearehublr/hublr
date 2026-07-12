@@ -45,6 +45,7 @@ export interface Profile {
   summary: string | null;
   student_status: StudentStatus | null;
   interested_industries: string[];
+  email_notifications_enabled: boolean;
   created_at: string;
   updated_at: string;
 }
