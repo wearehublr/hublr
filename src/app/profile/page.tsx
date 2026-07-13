@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getProfile } from "@/lib/profiles";
 import ProfileForm from "./ProfileForm";
+import DeleteAccountSection from "./DeleteAccountSection";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ export default async function ProfilePage() {
       </p>
 
       <ProfileForm profile={profile} />
+      <DeleteAccountSection />
     </main>
   );
 }

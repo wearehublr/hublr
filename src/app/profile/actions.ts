@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import {
   MAX_INTERESTED_INDUSTRIES,
   STUDENT_STATUSES,
@@ -54,4 +55,43 @@ export async function updateProfile(
 
   revalidatePath("/profile");
   return { error: null };
+}
+
+export type DeleteAccountState = { error: string | null };
+
+export async function deleteAccount(
+  _prevState: DeleteAccountState,
+  formData: FormData,
+): Promise<DeleteAccountState> {
+  const confirmation = String(formData.get("confirmation") ?? "");
+  if (confirmation !== "DELETE") {
+    return { error: 'Type "DELETE" exactly to confirm.' };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  // Remove uploaded files first; deleting the DB rows (via cascade below)
+  // wouldn't clean up the actual storage objects.
+  const { data: documents } = await supabase
+    .from("documents")
+    .select("storage_path")
+    .eq("user_id", user.id);
+
+  if (documents && documents.length > 0) {
+    await supabase.storage
+      .from("documents")
+      .remove(documents.map((d) => d.storage_path));
+  }
+
+  await supabase.auth.signOut();
+
+  const adminSupabase = createAdminClient();
+  const { error } = await adminSupabase.auth.admin.deleteUser(user.id);
+  if (error) return { error: error.message };
+
+  redirect("/account-deleted");
 }
