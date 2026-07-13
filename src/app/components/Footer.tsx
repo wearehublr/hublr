@@ -27,6 +27,8 @@ const SOCIAL_LINKS = [
 const FOOTER_LINKS = [
   { href: "/about", label: "About us" },
   { href: "/work-with-us", label: "Work with us" },
+  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms of Service" },
 ];
 
 function currentYear() {
@@ -54,7 +56,7 @@ export default function Footer() {
           ))}
         </div>
 
-        <nav className="flex gap-6 text-sm text-neutral-500 dark:text-neutral-400">
+        <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-neutral-500 dark:text-neutral-400">
           {FOOTER_LINKS.map((link) => (
             <Link key={link.href} href={link.href} className="hover:underline">
               {link.label}

@@ -75,6 +75,18 @@ export default function SignupForm() {
         {pending ? "Creating account..." : "Sign up"}
       </button>
 
+      <p className="text-xs text-neutral-400 text-center">
+        By signing up, you agree to our{" "}
+        <Link href="/terms" className="underline">
+          Terms of Service
+        </Link>{" "}
+        and{" "}
+        <Link href="/privacy" className="underline">
+          Privacy Policy
+        </Link>
+        .
+      </p>
+
       <Link href="/login" className="text-sm underline text-center">
         Already have an account? Log in
       </Link>
