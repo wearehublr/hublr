@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/auth-actions";
+import MobileMenu, { type NavLink } from "./MobileMenu";
 
 export default async function NavBar() {
   const supabase = await createClient();
@@ -9,9 +10,21 @@ export default async function NavBar() {
   } = await supabase.auth.getUser();
   const isAdmin = !!user && user.email === process.env.ADMIN_EMAIL;
 
+  const links: NavLink[] = [
+    { href: "/opportunities", label: "Opportunities" },
+    { href: "/events", label: "Events" },
+    { href: "/interview-prep", label: "Interview Prep" },
+    { href: "/international", label: "International" },
+    ...(user ? [{ href: "/dashboard", label: "Applications" }] : []),
+    ...(user ? [{ href: "/documents", label: "Documents" }] : []),
+    ...(user ? [{ href: "/profile", label: "Profile" }] : []),
+    { href: "/book", label: "Book a meeting" },
+    ...(isAdmin ? [{ href: "/admin", label: "Admin" }] : []),
+  ];
+
   return (
     <header className="border-b border-neutral-200 dark:border-neutral-800">
-      <nav className="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
+      <nav className="relative mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
         <Link
           href="/"
           className="font-semibold whitespace-nowrap text-brand dark:text-brand-light"
@@ -19,42 +32,12 @@ export default async function NavBar() {
           Hublr
         </Link>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-          <Link href="/opportunities" className="whitespace-nowrap">
-            Opportunities
-          </Link>
-          <Link href="/events" className="whitespace-nowrap">
-            Events
-          </Link>
-          <Link href="/interview-prep" className="whitespace-nowrap">
-            Interview Prep
-          </Link>
-          <Link href="/international" className="whitespace-nowrap">
-            International
-          </Link>
-          {user && (
-            <Link href="/dashboard" className="whitespace-nowrap">
-              Applications
+        <div className="hidden sm:flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+          {links.map((l) => (
+            <Link key={l.href} href={l.href} className="whitespace-nowrap">
+              {l.label}
             </Link>
-          )}
-          {user && (
-            <Link href="/documents" className="whitespace-nowrap">
-              Documents
-            </Link>
-          )}
-          {user && (
-            <Link href="/profile" className="whitespace-nowrap">
-              Profile
-            </Link>
-          )}
-          <Link href="/book" className="whitespace-nowrap">
-            Book a meeting
-          </Link>
-          {isAdmin && (
-            <Link href="/admin" className="whitespace-nowrap">
-              Admin
-            </Link>
-          )}
+          ))}
 
           {user ? (
             <form action={signOut}>
@@ -79,6 +62,8 @@ export default async function NavBar() {
             </>
           )}
         </div>
+
+        <MobileMenu links={links} isLoggedIn={!!user} signOutAction={signOut} />
       </nav>
     </header>
   );
