@@ -4,7 +4,10 @@ export const CATEGORIES = [
   "spring_internship",
   "co_op",
   "placement_year",
+  "vacation_scheme",
+  "insight_program",
   "grad_scheme",
+  "training_contract",
   "full_time_analyst",
   "other",
 ] as const;
@@ -17,7 +20,10 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   spring_internship: "Spring Internship",
   co_op: "Co-op",
   placement_year: "Placement Year",
+  vacation_scheme: "Vacation Scheme",
+  insight_program: "Insight Programme (Year 12/13)",
   grad_scheme: "Grad Scheme",
+  training_contract: "Training Contract",
   full_time_analyst: "Full-Time / Analyst",
   other: "Other",
 };

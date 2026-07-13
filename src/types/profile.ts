@@ -1,4 +1,7 @@
 export const STUDY_YEARS = [
+  "Year 12",
+  "Year 13",
+  "Sixth Form",
   "1st year",
   "2nd year",
   "3rd year",
