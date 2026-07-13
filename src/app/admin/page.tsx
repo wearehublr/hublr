@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getAllOpportunities } from "@/lib/opportunities";
 import AdminSubNav from "./AdminSubNav";
 import QuickAddForm from "./QuickAddForm";
+import BulkImportForm from "./BulkImportForm";
 import AdminOpportunityRow from "./AdminOpportunityRow";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +22,7 @@ export default async function AdminPage() {
 
       <div className="flex flex-col gap-8">
         <QuickAddForm />
+        <BulkImportForm />
 
         <div>
           <h2 className="text-sm font-semibold mb-3">

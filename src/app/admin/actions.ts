@@ -109,6 +109,80 @@ export async function updateOpportunity(id: string, formData: FormData) {
   revalidatePath("/");
 }
 
+export type BulkOpportunityRow = {
+  company: string;
+  role_title: string;
+  category: Category;
+  region: Region;
+  apply_url: string;
+  cycle_year?: number;
+  status?: Status;
+  visa_sponsorship?: VisaSponsorship;
+  deadline?: string | null;
+  open_date?: string | null;
+  city?: string | null;
+  country?: string | null;
+  industry?: string | null;
+  notes?: string | null;
+  full_description?: string | null;
+  source_url?: string | null;
+  logo_url?: string | null;
+};
+
+export type BulkImportResult = { inserted: number; error: string | null };
+
+export async function bulkAddOpportunities(
+  rows: BulkOpportunityRow[],
+): Promise<BulkImportResult> {
+  const supabase = await requireAdmin();
+
+  if (rows.length === 0) return { inserted: 0, error: "No rows to import." };
+
+  for (const row of rows) {
+    if (!row.company || !row.role_title || !row.apply_url) {
+      return {
+        inserted: 0,
+        error: "Every row needs company, role_title, and apply_url.",
+      };
+    }
+    if (!CATEGORIES.includes(row.category)) {
+      return { inserted: 0, error: `Invalid category: ${row.category}` };
+    }
+    if (!REGIONS.includes(row.region)) {
+      return { inserted: 0, error: `Invalid region: ${row.region}` };
+    }
+  }
+
+  const { error, count } = await supabase.from("opportunities").insert(
+    rows.map((row) => ({
+      company: row.company,
+      role_title: row.role_title,
+      category: row.category,
+      region: row.region,
+      apply_url: row.apply_url,
+      cycle_year: row.cycle_year ?? 2027,
+      status: row.status ?? "open",
+      visa_sponsorship: row.visa_sponsorship ?? "unknown",
+      deadline: row.deadline || null,
+      open_date: row.open_date || null,
+      city: row.city || null,
+      country: row.country || null,
+      industry: row.industry || null,
+      notes: row.notes || null,
+      full_description: row.full_description || null,
+      source_url: row.source_url || null,
+      logo_url: row.logo_url || null,
+    })),
+    { count: "exact" },
+  );
+
+  if (error) return { inserted: 0, error: error.message };
+
+  revalidatePath("/admin");
+  revalidatePath("/");
+  return { inserted: count ?? rows.length, error: null };
+}
+
 export async function togglePublish(id: string, isPublished: boolean) {
   const supabase = await requireAdmin();
   const { error } = await supabase
