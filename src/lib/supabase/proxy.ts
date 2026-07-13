@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 const LOGIN_PATH = "/login";
-const DASHBOARD_PATH = "/dashboard";
+const DASHBOARD_PATH = "/opportunities";
 const AUTH_ONLY_PREFIXES = ["/dashboard", "/documents", "/profile"];
 const LOGGED_OUT_ONLY_PATHS = ["/login", "/signup"];
 

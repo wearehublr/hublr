@@ -267,6 +267,9 @@ export default function OpportunityBrowser({
               </div>
 
               <div className="flex flex-wrap gap-1.5 text-xs">
+                <span className="rounded-full bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 px-2 py-0.5 font-medium">
+                  {o.cycle_year}
+                </span>
                 <span className="rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5">
                   {CATEGORY_LABELS[o.category]}
                 </span>

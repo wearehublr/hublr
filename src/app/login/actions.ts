@@ -15,7 +15,10 @@ export async function signIn(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -24,5 +27,15 @@ export async function signIn(
     return { error: "Invalid email or password." };
   }
 
-  redirect("/dashboard");
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (!profile) redirect("/profile");
+  }
+
+  redirect("/opportunities");
 }

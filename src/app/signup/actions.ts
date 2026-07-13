@@ -28,7 +28,7 @@ export async function signUp(
     email,
     password,
     options: {
-      emailRedirectTo: `${origin}/auth/callback?next=/dashboard`,
+      emailRedirectTo: `${origin}/auth/callback?next=/profile`,
     },
   });
 
