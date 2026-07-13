@@ -16,9 +16,10 @@ export default function TermsPage() {
 
       <p className="mt-6 text-neutral-700 dark:text-neutral-200">
         These terms govern your use of wearehublr.com (&quot;Hublr&quot;),
-        run by Muriel Tokam. By creating an account or using the site, you
-        agree to them. If you don&apos;t agree, please don&apos;t use
-        Hublr.
+        operated by Hublr Ltd, a company registered in England and Wales
+        (company number 17076401). By creating an account or using the
+        site, you agree to them. If you don&apos;t agree, please
+        don&apos;t use Hublr.
       </p>
 
       <h2 className="mt-10 text-lg font-semibold">1. What Hublr is</h2>

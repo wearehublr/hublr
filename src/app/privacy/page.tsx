@@ -15,11 +15,12 @@ export default function PrivacyPolicyPage() {
       </p>
 
       <p className="mt-6 text-neutral-700 dark:text-neutral-200">
-        Hublr (&quot;Hublr&quot;, &quot;we&quot;, &quot;us&quot;) is run by
-        Muriel Tokam. This policy explains what personal data we collect
-        through wearehublr.com, why we collect it, who we share it with, and
-        the rights you have over it. If anything here isn&apos;t clear,
-        email{" "}
+        Hublr (&quot;Hublr&quot;, &quot;we&quot;, &quot;us&quot;) is operated
+        by Hublr Ltd, a company registered in England and Wales (company
+        number 17076401). This policy explains what personal data we
+        collect through wearehublr.com, why we collect it, who we share it
+        with, and the rights you have over it. If anything here isn&apos;t
+        clear, email{" "}
         <a href="mailto:wearehublr@gmail.com" className="underline">
           wearehublr@gmail.com
         </a>{" "}
