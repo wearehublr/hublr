@@ -10,18 +10,27 @@ async function send(options: {
   text: string;
 }): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return;
+  if (!apiKey) {
+    console.error("[email] RESEND_API_KEY is not set; skipping send.");
+    return;
+  }
 
   try {
     const resend = new Resend(apiKey);
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: FROM_ADDRESS,
       to: options.to,
       subject: options.subject,
       text: options.text,
     });
-  } catch {
+    // The Resend SDK returns API-level errors (e.g. unverified domain)
+    // in `error` rather than throwing, so this must be checked explicitly.
+    if (error) {
+      console.error("[email] Resend API returned an error:", error);
+    }
+  } catch (err) {
     // Email delivery is a nice-to-have, never block the calling action on it.
+    console.error("[email] Failed to send email:", err);
   }
 }
 
