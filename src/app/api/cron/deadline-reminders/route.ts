@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { sendUserEmail } from "@/lib/email";
 import { getPreferredName } from "@/lib/profiles";
 import { processJobAlerts } from "@/lib/job-alerts";
+import { closeExpiredOpportunities } from "@/lib/close-expired-opportunities";
 
 export const dynamic = "force-dynamic";
 
@@ -82,6 +83,7 @@ export async function GET(request: NextRequest) {
   }
 
   const jobAlertsSent = await processJobAlerts(supabase);
+  const opportunitiesClosed = await closeExpiredOpportunities(supabase);
 
-  return NextResponse.json({ sent, jobAlertsSent });
+  return NextResponse.json({ sent, jobAlertsSent, opportunitiesClosed });
 }
