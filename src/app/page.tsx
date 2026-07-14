@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getUserApplications } from "@/lib/applications";
 import {
   getPublishedOpportunitiesCount,
@@ -23,10 +24,11 @@ export default async function Home() {
   } = await supabase.auth.getUser();
 
   if (!user) {
+    const adminSupabase = createAdminClient();
     const [opportunitiesCount, eventsCount, testimonials, articles] =
       await Promise.all([
-        getPublishedOpportunitiesCount(supabase),
-        getUpcomingEventsCount(supabase),
+        getPublishedOpportunitiesCount(adminSupabase),
+        getUpcomingEventsCount(adminSupabase),
         getPublishedTestimonials(supabase),
         getPublishedNewsletterArticles(supabase),
       ]);

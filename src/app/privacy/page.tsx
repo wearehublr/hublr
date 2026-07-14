@@ -19,8 +19,8 @@ export default function PrivacyPolicyPage() {
         read this Privacy Policy alongside our{" "}
         <Link href="/terms" className="underline">
           Terms of Service
-        </Link>{" "}
-        — by using wearehublr.com (the &quot;Website&quot;), you agree to
+        </Link>
+        . By using wearehublr.com (the &quot;Website&quot;), you agree to
         both.
       </p>
 
@@ -51,7 +51,7 @@ export default function PrivacyPolicyPage() {
       <h2 className="mt-10 text-lg font-semibold">What is personal data?</h2>
       <p className="mt-2 text-neutral-700 dark:text-neutral-200">
         Personal data is any information that can identify you as a living
-        person — things like your name, email address, or university. Some
+        person: things like your name, email address, or university. Some
         categories of personal data are treated as more sensitive under UK
         law (for example, health information, ethnicity, or sexual
         orientation). To be clear: <strong>we don&apos;t ask for or
@@ -76,7 +76,7 @@ export default function PrivacyPolicyPage() {
       </ul>
       <p className="mt-3 text-neutral-700 dark:text-neutral-200">
         We don&apos;t hold employer or &quot;client&quot; accounts on
-        Hublr — sponsors and employers don&apos;t have logins or direct
+        Hublr: sponsors and employers don&apos;t have logins or direct
         access to Member data (see &quot;Who do we share your personal
         data with&quot; below).
       </p>
@@ -94,13 +94,13 @@ export default function PrivacyPolicyPage() {
           send you emails you&apos;ve asked for by using the service:
           deadline reminders, job alerts matching searches you&apos;ve
           saved, and confirmation that we&apos;ve received something
-          you&apos;ve submitted (you can turn these off anytime — see
+          you&apos;ve submitted (you can turn these off anytime; see
           &quot;Your rights&quot; below);
         </li>
         <li>
           report honest, aggregated statistics to the sponsors and
           employers who fund the opportunities we list (for example,
-          &quot;120 students clicked apply this month&quot;) — this never
+          &quot;120 students clicked apply this month&quot;); this never
           includes your individual identity or contact details; and
         </li>
         <li>understand how the Website is used, and improve it, using analytics.</li>
@@ -123,7 +123,7 @@ export default function PrivacyPolicyPage() {
         For Members, we may collect and process:
       </p>
       <ul className="mt-3 list-disc pl-5 space-y-2 text-neutral-700 dark:text-neutral-200">
-        <li>Your email address and password (password handling is managed by our authentication provider, Supabase — we never see it in plain text);</li>
+        <li>Your email address and password (password handling is managed by our authentication provider, Supabase; we never see it in plain text);</li>
         <li>Preferred name;</li>
         <li>University and degree subject;</li>
         <li>Study year (e.g. Year 12, Sixth Form, 1st–4th year, postgraduate, recent graduate);</li>
@@ -149,7 +149,7 @@ export default function PrivacyPolicyPage() {
         Testimonials published on the Website (real student stories) are
         only ever added by us, and only after the person featured has
         separately given their explicit consent to have their name, story,
-        and photo shared — we never publish this from a Member&apos;s
+        and photo shared; we never publish this from a Member&apos;s
         account data without asking first.
       </p>
 
@@ -169,8 +169,8 @@ export default function PrivacyPolicyPage() {
       </ul>
       <p className="mt-3 text-neutral-700 dark:text-neutral-200">
         We also collect data automatically through cookies and analytics
-        tools when you use the Website — see &quot;Cookies and
-        analytics&quot; below. We don&apos;t buy personal data from third
+        tools when you use the Website (see &quot;Cookies and
+        analytics&quot; below). We don&apos;t buy personal data from third
         parties or data brokers, and we don&apos;t source information
         about you from social media or other public sources.
       </p>
@@ -184,18 +184,18 @@ export default function PrivacyPolicyPage() {
       </p>
       <ul className="mt-3 list-disc pl-5 space-y-2 text-neutral-700 dark:text-neutral-200">
         <li>
-          <strong>Legitimate interest</strong> — running the core service:
+          <strong>Legitimate interest</strong>, to run the core service:
           creating your account, showing you relevant opportunities,
           sending you the transactional emails the service depends on
           (deadline reminders, job alerts, confirmations), and reporting
           aggregated, anonymised statistics to sponsors;
         </li>
         <li>
-          <strong>Consent</strong> — for non-essential cookies used for
+          <strong>Consent</strong>, for non-essential cookies used for
           analytics (see below), and you can withdraw this at any time; and
         </li>
         <li>
-          <strong>Legal compliance</strong> — where we&apos;re required by
+          <strong>Legal compliance</strong>, where we&apos;re required by
           law to process or disclose data, for example in response to a
           valid request from a regulator or law enforcement.
         </li>
@@ -210,14 +210,14 @@ export default function PrivacyPolicyPage() {
         us, and we require them to handle it securely:
       </p>
       <ul className="mt-3 list-disc pl-5 space-y-2 text-neutral-700 dark:text-neutral-200">
-        <li><strong>Supabase</strong> — hosts our database, authentication, and file storage (your uploaded documents);</li>
-        <li><strong>Vercel</strong> — hosts the Website, and provides cookieless usage analytics;</li>
-        <li><strong>Resend</strong> — delivers the transactional emails we send; and</li>
-        <li><strong>Google Analytics</strong> — provides usage analytics using cookies (see below).</li>
+        <li><strong>Supabase</strong>: hosts our database, authentication, and file storage (your uploaded documents);</li>
+        <li><strong>Vercel</strong>: hosts the Website, and provides cookieless usage analytics;</li>
+        <li><strong>Resend</strong>: delivers the transactional emails we send; and</li>
+        <li><strong>Google Analytics</strong>: provides usage analytics using cookies (see below).</li>
       </ul>
       <p className="mt-3 text-neutral-700 dark:text-neutral-200">
         Sponsors and employers only ever receive aggregated, anonymised
-        statistics (e.g. total click counts) — never your individual
+        statistics (e.g. total click counts), never your individual
         identity, contact details, profile, or documents. Beyond the
         providers listed above, we won&apos;t disclose your personal data
         to anyone else unless we&apos;re legally required to.
@@ -280,11 +280,11 @@ export default function PrivacyPolicyPage() {
         Under UK data protection law, you have the right to:
       </p>
       <ul className="mt-3 list-disc pl-5 space-y-2 text-neutral-700 dark:text-neutral-200">
-        <li><strong>Be informed</strong> — which is what this policy is for.</li>
+        <li><strong>Be informed</strong>, which is what this policy is for.</li>
         <li><strong>Access</strong> the personal data we hold about you.</li>
-        <li><strong>Rectification</strong> — correct inaccurate or incomplete data; most of this you can edit yourself on your profile page.</li>
+        <li><strong>Rectification</strong>: correct inaccurate or incomplete data; most of this you can edit yourself on your profile page.</li>
         <li>
-          <strong>Erasure</strong> — permanently delete your own account
+          <strong>Erasure</strong>: permanently delete your own account
           and all associated data anytime from the &quot;Danger zone&quot;
           section of your{" "}
           <Link href="/profile" className="underline">
@@ -292,8 +292,8 @@ export default function PrivacyPolicyPage() {
           </Link>
           , with no need to contact us.
         </li>
-        <li><strong>Restrict or object to processing</strong> — for example, opting out of analytics, or turning off email notifications from your profile.</li>
-        <li><strong>Data portability</strong> — request a copy of your data in a portable format.</li>
+        <li><strong>Restrict or object to processing</strong>, for example, opting out of analytics, or turning off email notifications from your profile.</li>
+        <li><strong>Data portability</strong>: request a copy of your data in a portable format.</li>
         <li><strong>Withdraw consent</strong> at any time, where consent is the basis for processing (this doesn&apos;t affect anything already done lawfully before you withdraw it).</li>
       </ul>
       <p className="mt-3 text-neutral-700 dark:text-neutral-200">
@@ -301,7 +301,7 @@ export default function PrivacyPolicyPage() {
         <a href="mailto:wearehublr@gmail.com" className="underline">
           wearehublr@gmail.com
         </a>{" "}
-        and let us know who you are — we may need to verify your identity
+        and let us know who you are. We may need to verify your identity
         before acting on a request. We aim to respond within one month.
         We don&apos;t charge a fee for reasonable requests, but may charge
         a reasonable fee, or decline, if a request is manifestly
@@ -341,7 +341,7 @@ export default function PrivacyPolicyPage() {
         Any changes we make to this policy will be posted on this page,
         and we&apos;ll update the &quot;Last updated&quot; date above. It
         is important that the personal data we hold about you stays
-        accurate — please keep your profile up to date.
+        accurate. Please keep your profile up to date.
       </p>
 
       <h2 className="mt-10 text-lg font-semibold">Contact</h2>

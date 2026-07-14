@@ -79,7 +79,7 @@ export default function TermsPage() {
       </p>
 
       <h2 className="mt-10 text-lg font-semibold">
-        4. Fair usage — what you&apos;re allowed to do
+        4. Fair usage: what you&apos;re allowed to do
       </h2>
       <p className="mt-2 text-neutral-700 dark:text-neutral-200">
         The Website is made available for your own use in connection with
@@ -105,7 +105,7 @@ export default function TermsPage() {
       </ul>
 
       <h2 className="mt-10 text-lg font-semibold">
-        5. Keeping the Website safe — what you&apos;re not allowed to do
+        5. Keeping the Website safe: what you&apos;re not allowed to do
       </h2>
       <p className="mt-2 text-neutral-700 dark:text-neutral-200">
         We use reasonable endeavours to keep the Website safe for everyone
@@ -157,7 +157,7 @@ export default function TermsPage() {
         <Link href="/privacy" className="underline">
           Privacy Policy
         </Link>
-        , which forms part of these Terms. Please read it carefully — by
+        , which forms part of these Terms. Please read it carefully. By
         using the Website, you agree to be bound by it.
       </p>
 
@@ -254,15 +254,15 @@ export default function TermsPage() {
       <h2 className="mt-10 text-lg font-semibold">13. Variation</h2>
       <p className="mt-2 text-neutral-700 dark:text-neutral-200">
         We may revise these Terms at any time by updating this page. You
-        should check back from time to time, as changes are binding on you
-        — we&apos;ll give as much notice as we reasonably can.
+        should check back from time to time, as changes are binding on you.
+        We&apos;ll give as much notice as we reasonably can.
       </p>
       <p className="mt-3 text-neutral-700 dark:text-neutral-200">
         We may also suspend or discontinue Hublr at any time, giving as
         much notice as we reasonably can. If we sell or transfer Hublr to
         another company, we may transfer our rights and obligations under
         these Terms, and any information we hold about you, to that
-        company without further consent — this won&apos;t change your
+        company without further consent. This won&apos;t change your
         rights over how that information can be used.
       </p>
 
