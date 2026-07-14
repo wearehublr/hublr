@@ -3,16 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const LOGIN_PATH = "/login";
 const DASHBOARD_PATH = "/opportunities";
-const AUTH_ONLY_PREFIXES = [
-  "/dashboard",
-  "/documents",
-  "/profile",
-  "/opportunities",
-  "/opportunity",
-  "/events",
-  "/interview-prep",
-  "/international",
-];
+const AUTH_ONLY_PREFIXES = ["/dashboard", "/documents", "/profile"];
 const LOGGED_OUT_ONLY_PATHS = ["/login", "/signup"];
 
 function redirectTo(request: NextRequest, pathname: string) {

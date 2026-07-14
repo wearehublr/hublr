@@ -40,7 +40,13 @@ function EventDateBadge({ eventDate }: { eventDate: string }) {
   );
 }
 
-export default function EventBrowser({ events }: { events: HublrEvent[] }) {
+export default function EventBrowser({
+  events,
+  isLoggedIn,
+}: {
+  events: HublrEvent[];
+  isLoggedIn: boolean;
+}) {
   const [search, setSearch] = useState("");
   const [eventType, setEventType] = useState<EventType | "all">("all");
   const [locationType, setLocationType] = useState<LocationType | "all">("all");
@@ -132,16 +138,24 @@ export default function EventBrowser({ events }: { events: HublrEvent[] }) {
                 </p>
               )}
 
-              {e.registration_url && (
-                <a
-                  href={e.registration_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-auto inline-flex items-center justify-center rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-3 py-1.5 hover:opacity-90"
-                >
-                  Register
-                </a>
-              )}
+              {e.registration_url &&
+                (isLoggedIn ? (
+                  <a
+                    href={e.registration_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-auto inline-flex items-center justify-center rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-3 py-1.5 hover:opacity-90"
+                  >
+                    Register
+                  </a>
+                ) : (
+                  <a
+                    href="/login?next=/events"
+                    className="mt-auto inline-flex items-center justify-center rounded-md border border-neutral-300 dark:border-neutral-700 text-sm font-medium px-3 py-1.5"
+                  >
+                    Log in to register
+                  </a>
+                ))}
             </li>
           ))}
         </ul>

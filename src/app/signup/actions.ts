@@ -22,13 +22,16 @@ export async function signUp(
     };
   }
 
+  const rawNext = String(formData.get("next") ?? "");
+  const next = rawNext.startsWith("/") ? rawNext : "/profile";
+
   const origin = await getOrigin();
   const supabase = await createClient();
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: `${origin}/auth/callback?next=/profile`,
+      emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
     },
   });
 

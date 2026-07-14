@@ -1,9 +1,15 @@
 import LoginForm from "./LoginForm";
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const { next } = await searchParams;
+
   return (
     <main className="flex flex-1 items-center justify-center px-4 py-12">
-      <LoginForm />
+      <LoginForm next={next} />
     </main>
   );
 }

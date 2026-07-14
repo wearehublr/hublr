@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { signUp } from "./actions";
 
-export default function SignupForm() {
+export default function SignupForm({ next }: { next?: string }) {
   const [state, formAction, pending] = useActionState(signUp, {
     error: null,
     success: false,
   });
+  const loginHref = next ? `/login?next=${encodeURIComponent(next)}` : "/login";
 
   if (state.success) {
     return (
@@ -18,7 +19,7 @@ export default function SignupForm() {
           We sent you a confirmation link. Click it to finish creating your
           account, then log in.
         </p>
-        <Link href="/login" className="text-sm underline mt-2">
+        <Link href={loginHref} className="text-sm underline mt-2">
           Back to log in
         </Link>
       </div>
@@ -36,6 +37,8 @@ export default function SignupForm() {
           Track applications, deadlines, and documents in one place.
         </p>
       </div>
+
+      {next && <input type="hidden" name="next" value={next} />}
 
       <label className="flex flex-col gap-1 text-sm">
         Email
@@ -87,7 +90,7 @@ export default function SignupForm() {
         .
       </p>
 
-      <Link href="/login" className="text-sm underline text-center">
+      <Link href={loginHref} className="text-sm underline text-center">
         Already have an account? Log in
       </Link>
     </form>

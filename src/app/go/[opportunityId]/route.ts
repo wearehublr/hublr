@@ -8,6 +8,16 @@ export async function GET(
   const { opportunityId } = await params;
   const supabase = await createClient();
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.redirect(
+      new URL(`/login?next=/go/${opportunityId}`, request.url),
+    );
+  }
+
   const { data: opportunity } = await supabase
     .from("opportunities")
     .select("apply_url")
@@ -17,10 +27,6 @@ export async function GET(
   if (!opportunity) {
     return NextResponse.redirect(new URL("/", request.url));
   }
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
   await supabase.from("link_clicks").insert({
     opportunity_id: opportunityId,

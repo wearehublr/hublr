@@ -7,6 +7,9 @@ export const dynamic = "force-dynamic";
 export default async function EventsPage() {
   const supabase = await createClient();
   const events = await getPublishedEvents(supabase);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
@@ -20,7 +23,7 @@ export default async function EventsPage() {
         </p>
       </header>
 
-      <EventBrowser events={events} />
+      <EventBrowser events={events} isLoggedIn={!!user} />
     </main>
   );
 }

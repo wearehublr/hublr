@@ -27,6 +27,11 @@ export async function signIn(
     return { error: "Invalid email or password." };
   }
 
+  const next = String(formData.get("next") ?? "");
+  if (next.startsWith("/")) {
+    redirect(next);
+  }
+
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")

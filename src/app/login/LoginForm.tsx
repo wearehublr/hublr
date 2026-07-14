@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { signIn } from "./actions";
 
-export default function LoginForm() {
+export default function LoginForm({ next }: { next?: string }) {
   const [state, formAction, pending] = useActionState(signIn, {
     error: null,
   });
+  const signupHref = next ? `/signup?next=${encodeURIComponent(next)}` : "/signup";
 
   return (
     <form
@@ -20,6 +21,8 @@ export default function LoginForm() {
           Hublr: helping you secure internships, grad roles, and more.
         </p>
       </div>
+
+      {next && <input type="hidden" name="next" value={next} />}
 
       <label className="flex flex-col gap-1 text-sm">
         Email
@@ -58,7 +61,7 @@ export default function LoginForm() {
       </button>
 
       <div className="flex justify-between text-sm">
-        <Link href="/signup" className="underline">
+        <Link href={signupHref} className="underline">
           Create account
         </Link>
         <Link href="/reset-password" className="underline">
