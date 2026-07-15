@@ -2,7 +2,7 @@ import { Resend } from "resend";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getEmailNotificationsEnabled } from "@/lib/profiles";
 
-const FROM_ADDRESS = "Hublr <notifications@wearehublr.com>";
+const FROM_ADDRESS = "Hublr <noreply@wearehublr.com>";
 
 async function send(options: {
   to: string;
