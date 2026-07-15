@@ -239,8 +239,12 @@ export default function PrivacyPolicyPage() {
       <h2 className="mt-10 text-lg font-semibold">Cookies and analytics</h2>
       <p className="mt-2 text-neutral-700 dark:text-neutral-200">
         We use Google Analytics, which sets cookies to recognise repeat
-        visits and measure site usage. You can opt out at any time using
-        your browser&apos;s cookie settings, or Google&apos;s{" "}
+        visits and measure site usage. It only loads if you accept it in
+        the cookie banner shown on your first visit; if you decline, no
+        Google Analytics cookies are set. You can change your mind at any
+        time by clearing your browser&apos;s cookies for this site, which
+        brings the banner back, or using your browser&apos;s cookie
+        settings, or Google&apos;s{" "}
         <a
           href="https://tools.google.com/dlpage/gaoptout"
           target="_blank"

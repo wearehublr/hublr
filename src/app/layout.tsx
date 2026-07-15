@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import NavBar from "@/app/components/NavBar";
 import Footer from "@/app/components/Footer";
 import SupabaseAuthListener from "@/app/components/SupabaseAuthListener";
 import ApplyConfirmationProvider from "@/app/components/ApplyConfirmationProvider";
+import AnalyticsConsent from "@/app/components/AnalyticsConsent";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -46,8 +46,8 @@ export default function RootLayout({
         <Footer />
         <ApplyConfirmationProvider />
         <Analytics />
+        {gaId && <AnalyticsConsent gaId={gaId} />}
       </body>
-      {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>
   );
 }
