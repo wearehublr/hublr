@@ -25,11 +25,9 @@ export default async function NavBar() {
   return (
     <header className="border-b border-neutral-200 dark:border-neutral-800">
       <nav className="relative mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
-        <Link
-          href="/"
-          className="font-semibold whitespace-nowrap text-brand dark:text-brand-light"
-        >
-          Hublr
+        <Link href="/" className="font-semibold whitespace-nowrap">
+          <span className="text-brand dark:text-brand-light">Hub</span>
+          <span className="text-brand-light dark:text-brand">lr</span>
         </Link>
 
         <div className="hidden sm:flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
