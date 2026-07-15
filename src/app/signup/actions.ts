@@ -36,7 +36,17 @@ export async function signUp(
   });
 
   if (error) {
-    return { error: error.message, success: false };
+    console.error("[signup] Supabase signUp error:", {
+      message: error.message,
+      status: error.status,
+      code: error.code,
+      name: error.name,
+    });
+    const message =
+      typeof error.message === "string" && error.message.trim().length > 0
+        ? error.message
+        : "Something went wrong creating your account. Please try again in a moment.";
+    return { error: message, success: false };
   }
 
   return { error: null, success: true };
