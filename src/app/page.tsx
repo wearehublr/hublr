@@ -38,7 +38,7 @@ export default async function Home() {
         opportunitiesCount={opportunitiesCount}
         eventsCount={eventsCount}
         testimonials={testimonials}
-        articles={articles}
+        articles={articles.slice(0, 3)}
       />
     );
   }
