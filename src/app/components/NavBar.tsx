@@ -15,6 +15,7 @@ export default async function NavBar() {
     { href: "/events", label: "Events" },
     { href: "/interview-prep", label: "Interview Prep" },
     { href: "/international", label: "International" },
+    { href: "/newsletter", label: "Newsletter" },
     ...(user ? [{ href: "/dashboard", label: "Applications" }] : []),
     ...(user ? [{ href: "/documents", label: "Documents" }] : []),
     ...(user ? [{ href: "/profile", label: "Profile" }] : []),

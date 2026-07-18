@@ -1,6 +1,6 @@
 import type { Application } from "@/types/application";
 
-const ACTIVE_STAGES = new Set([
+export const ACTIVE_STAGES = new Set([
   "saved",
   "applied",
   "oa_assessment",

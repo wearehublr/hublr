@@ -8,7 +8,10 @@ import { getUpcomingEvents, getUpcomingEventsCount } from "@/lib/events";
 import { getPublishedInterviewResources } from "@/lib/interview-resources";
 import { getPublishedTestimonials } from "@/lib/testimonials";
 import { getPublishedNewsletterArticles } from "@/lib/newsletter-articles";
-import { filterUpcomingDeadlines } from "@/lib/deadlines";
+import { getUserDocuments } from "@/lib/documents";
+import { getUserSavedSearches } from "@/lib/saved-searches";
+import { getPreferredName } from "@/lib/profiles";
+import { filterUpcomingDeadlines, ACTIVE_STAGES } from "@/lib/deadlines";
 import MarketingHome from "@/app/components/MarketingHome";
 import HomeFeed from "@/app/components/HomeFeed";
 
@@ -40,19 +43,34 @@ export default async function Home() {
     );
   }
 
-  const [applications, recentOpportunities, upcomingEvents, resources] =
-    await Promise.all([
-      getUserApplications(supabase, user.id),
-      getRecentPublishedOpportunities(supabase, 3),
-      getUpcomingEvents(supabase, 3),
-      getPublishedInterviewResources(supabase),
-    ]);
+  const [
+    applications,
+    recentOpportunities,
+    upcomingEvents,
+    resources,
+    documents,
+    savedSearches,
+    newsletterArticles,
+    preferredName,
+  ] = await Promise.all([
+    getUserApplications(supabase, user.id),
+    getRecentPublishedOpportunities(supabase, 3),
+    getUpcomingEvents(supabase, 3),
+    getPublishedInterviewResources(supabase),
+    getUserDocuments(supabase, user.id),
+    getUserSavedSearches(supabase, user.id),
+    getPublishedNewsletterArticles(supabase),
+    getPreferredName(supabase, user.id),
+  ]);
 
   const upcomingDeadlines = filterUpcomingDeadlines(
     applications,
     UPCOMING_WINDOW_DAYS,
   );
-  const name = user.email?.split("@")[0] ?? "there";
+  const activeApplicationsCount = applications.filter((a) =>
+    ACTIVE_STAGES.has(a.stage),
+  ).length;
+  const name = preferredName ?? user.email?.split("@")[0] ?? "there";
 
   return (
     <HomeFeed
@@ -61,6 +79,10 @@ export default async function Home() {
       recentOpportunities={recentOpportunities}
       upcomingEvents={upcomingEvents}
       recentResources={resources.slice(0, 3)}
+      activeApplicationsCount={activeApplicationsCount}
+      documents={documents}
+      savedSearches={savedSearches}
+      newsletterArticles={newsletterArticles.slice(0, 3)}
     />
   );
 }

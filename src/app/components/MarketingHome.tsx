@@ -231,9 +231,14 @@ export default function MarketingHome({
       {articles.length > 0 && (
         <section className="border-b border-neutral-200 dark:border-neutral-800">
           <div className="mx-auto w-full max-w-4xl px-4 py-14 sm:px-6">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400 mb-8">
-              Get the latest
-            </h2>
+            <div className="flex items-baseline justify-between mb-8">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+                Get the latest
+              </h2>
+              <Link href="/newsletter" className="text-sm underline">
+                See all articles
+              </Link>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {articles.map((a) => (
                 <a
