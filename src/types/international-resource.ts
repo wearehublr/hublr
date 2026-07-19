@@ -14,6 +14,7 @@ export interface InternationalResource {
   description: string | null;
   resource_type: IntlResourceType;
   link_url: string;
+  source_name: string | null;
   is_paid: boolean;
   price_label: string | null;
   is_published: boolean;

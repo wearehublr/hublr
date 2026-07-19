@@ -60,6 +60,13 @@ export default function AdminResourceRow({
         <input
           name="link_url"
           defaultValue={resource.link_url}
+          placeholder="Reference URL (internal only)"
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+        />
+        <input
+          name="source_name"
+          defaultValue={resource.source_name ?? ""}
+          placeholder="Source name shown publicly (e.g. GOV.UK)"
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
         />
 

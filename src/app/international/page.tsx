@@ -25,6 +25,12 @@ export default async function InternationalPage() {
           Opportunities known to sponsor visas, plus guidance for
           international applicants.
         </p>
+        <Link
+          href="/international/guide"
+          className="mt-4 inline-flex items-center rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-3 py-1.5 hover:opacity-90"
+        >
+          Read the full guide: visas, sponsorship &amp; applying →
+        </Link>
       </header>
 
       <section className="mb-12">
@@ -97,14 +103,11 @@ export default async function InternationalPage() {
                   </p>
                 )}
 
-                <a
-                  href={r.link_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-auto inline-flex items-center justify-center rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-3 py-1.5 hover:opacity-90"
-                >
-                  {r.is_paid ? "View guide" : "Read"}
-                </a>
+                {r.source_name && (
+                  <p className="mt-auto text-xs text-neutral-500 dark:text-neutral-400">
+                    Source: {r.source_name}
+                  </p>
+                )}
               </li>
             ))}
           </ul>

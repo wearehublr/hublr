@@ -50,8 +50,13 @@ export default function QuickAddForm() {
       </select>
       <input
         name="link_url"
-        placeholder="Link URL *"
+        placeholder="Reference URL * (internal only, not shown publicly)"
         required
+        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+      />
+      <input
+        name="source_name"
+        placeholder="Source name shown publicly (e.g. GOV.UK, UKCISA)"
         className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
       />
 
