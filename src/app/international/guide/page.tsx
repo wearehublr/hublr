@@ -71,13 +71,11 @@ export default function InternationalGuidePage() {
       </p>
 
       <p className="mt-6 text-neutral-700 dark:text-neutral-200">
-        UK visa rules, salary thresholds, and fees change fairly often. The
-        figures below are accurate as of the date above, based on official
-        UK government guidance. Treat this as a practical map of how the
-        pieces fit together, not legal advice — for anything that affects
-        your own status, confirm the current position with your
-        university&apos;s international student advisers before you act on
-        it.
+        Visa rules change fairly often, so the figures below are accurate
+        as of the date above. This isn&apos;t legal advice, just a plain
+        explanation of how the pieces fit together. If something here
+        affects your own status, check with your university&apos;s
+        international student advisers before you act on it.
       </p>
 
       {/* Section 1: Visa basics */}
@@ -85,39 +83,40 @@ export default function InternationalGuidePage() {
         The three visas you&apos;ll actually deal with
       </h2>
       <p className="mt-2 text-neutral-700 dark:text-neutral-200">
-        Most international students move through these in order: Student
-        visa while you study, Graduate visa once you finish, then (if you
-        find a sponsoring employer) a Skilled Worker visa.
+        Most people move through these in order. You&apos;re probably on a
+        Student visa now, you&apos;ll likely switch to a Graduate visa once
+        you finish, and if you find an employer willing to sponsor you,
+        you&apos;ll move onto a Skilled Worker visa after that.
       </p>
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
         <VisaCard
           name="Student visa"
           tagline="What you're on right now"
           points={[
-            "Lets you work up to 20 hours a week in term time (10 hours for below-degree courses), and full-time in official vacations.",
-            "The 20-hour limit is a hard weekly cap, not an average — you can't bank hours from a quiet week.",
-            "Term-time is defined by your university's calendar, not your personal timetable (finishing exams early doesn't count as a vacation).",
-            "£558 to apply, extend, or switch to this visa from inside the UK, plus the healthcare surcharge.",
+            "You can work up to 20 hours a week in term time (10 for below-degree courses), and full-time during official vacations.",
+            "That 20 hours is a hard cap each week, not an average, so you can't work 30 one week to make up for a quiet one.",
+            "Term-time follows your university's calendar, not your own. Finishing your exams early doesn't count as a vacation.",
+            "Costs £558 to apply, extend, or switch to from inside the UK, on top of the healthcare surcharge.",
           ]}
         />
         <VisaCard
           name="Graduate visa"
           tagline="The bridge after you finish"
           points={[
-            "No employer or sponsor needed — you can work in almost any job, full-time, for anyone.",
-            "Lasts 2 years if you apply on or before 31 December 2026 (18 months if you apply from 1 January 2027); 3 years for a PhD.",
-            "£937 application fee, plus the healthcare surcharge (£2,070 for 2 years / £3,105 for 3 years / £1,152.50 for 18 months).",
-            "Cannot be extended. You must switch to another visa (usually Skilled Worker) before it runs out — there's no grace period.",
+            "No employer needed. You can work pretty much any job, full-time, for anyone.",
+            "Lasts 2 years if you apply on or before 31 December 2026, and 18 months after that. PhD graduates get 3 years.",
+            "Costs £937 to apply, plus a healthcare surcharge (£2,070 for 2 years, £3,105 for 3, £1,152.50 for 18 months).",
+            "You can't extend it. Once it's close to running out you need to have already switched to something else, usually Skilled Worker.",
           ]}
         />
         <VisaCard
           name="Skilled Worker visa"
           tagline="The one that needs sponsorship"
           points={[
-            "Your employer must hold a Home Office sponsor licence and issue you a Certificate of Sponsorship.",
-            "Minimum salary is £41,700/year, or the specific ‘going rate’ for your job code, whichever is higher.",
-            "Under 26, a recent graduate, or still on a Student/Graduate visa? You may qualify to be paid as little as £33,400/year (70% of the going rate) — ask recruiters directly, many don't volunteer this.",
-            "That discounted rate is capped at 4 years total UK stay, counting any time already spent on a Graduate visa.",
+            "Your employer needs a Home Office sponsor licence and has to issue you a Certificate of Sponsorship.",
+            "The minimum salary is £41,700 a year, or whatever the 'going rate' is for your specific job code, whichever is higher.",
+            "If you're under 26, a recent graduate, or still on a Student or Graduate visa, you might only need to be paid £33,400. A lot of recruiters won't bring this up unprompted, so ask.",
+            "That lower rate has a catch: your total time in the UK on it can't go past 4 years, and that includes any time you already spent on a Graduate visa.",
           ]}
         />
       </div>
@@ -127,24 +126,26 @@ export default function InternationalGuidePage() {
         Right to work, explained (so you can explain it to employers too)
       </h2>
       <p className="mt-2 text-neutral-700 dark:text-neutral-200">
-        Every UK employer has to run a right to work check on every hire.
-        If you have a digital immigration status (Student visa, Graduate
-        visa, Skilled Worker visa), you generate a share code through your
-        UKVI account and give it to the employer, who checks it against
-        the live Home Office record. The code is valid for 90 days, and
-        you can generate a new one as often as you need.
+        Every UK employer has to check that you&apos;re allowed to work
+        before they hire you. If your immigration status is digital, which
+        covers Student, Graduate, and Skilled Worker visas, you generate a
+        share code through your UKVI account and hand it over. The
+        employer checks it against the live Home Office record. It&apos;s
+        valid for 90 days, and you can generate a new one whenever you
+        need to.
       </p>
       <p className="mt-3 text-neutral-700 dark:text-neutral-200">
-        The mistake worth avoiding: <strong>a passed right to work check
-        is not the same thing as sponsorship.</strong> A company can happily
-        confirm you&apos;re allowed to work today, on your current Graduate
-        visa, while having no ability to keep you on once that visa expires
-        if they don&apos;t hold a sponsor licence. When an application form
-        asks &quot;do you require visa sponsorship, now or in the
-        future?&quot;, answer precisely — if your Graduate visa still has
-        18 months left, you don&apos;t need sponsorship <em>now</em>, but
-        say clearly that you will eventually. Vague or evasive answers here
-        tend to cost people interviews later, not save them.
+        Here&apos;s where people trip up: passing a right to work check is
+        not the same thing as being sponsored. An employer can confirm
+        today, truthfully, that you&apos;re allowed to work, because your
+        current Graduate visa is valid. That says nothing about whether
+        they can keep employing you once it expires, unless they hold a
+        sponsor licence. So when an application form asks whether you
+        need sponsorship now or in future, answer both parts. If your
+        visa has eighteen months left, say you don&apos;t need it yet,
+        but that you will.
+        Being vague here tends to cost people interviews later, not save
+        them.
       </p>
 
       {/* Section 3: Which companies sponsor */}
@@ -152,30 +153,26 @@ export default function InternationalGuidePage() {
         Which companies actually sponsor
       </h2>
       <p className="mt-2 text-neutral-700 dark:text-neutral-200">
-        We tag opportunities on Hublr where sponsorship is known, and you
-        can browse those directly on the{" "}
+        We tag opportunities on Hublr where sponsorship is known. You can
+        browse those on the{" "}
         <Link href="/international" className="underline">
           International Students
         </Link>{" "}
-        page. For anything not tagged, the Home Office keeps a public
-        register of every employer currently approved to sponsor Skilled
-        Worker visas — check the{" "}
-        <Link href="/international" className="underline">
-          Resources &amp; guidance
-        </Link>{" "}
-        section below the sponsor list for the link.
+        page. For anything we haven&apos;t tagged yet, the Home Office
+        keeps a public register of every employer currently licensed to
+        sponsor Skilled Worker visas, you&apos;ll find the link in the
+        Resources section on that same page.
       </p>
       <p className="mt-3 text-neutral-700 dark:text-neutral-200">
-        As a general pattern (never a guarantee): large employers with big
-        graduate schemes — Big 4 accountancy firms, bulge-bracket banks,
-        large consultancies, and big tech — are more likely to hold a
-        sponsor licence than small firms and startups, because holding one
-        carries ongoing compliance costs that only make sense at scale.
-        Sponsorship can also vary by programme within the same company —
-        a firm might sponsor its graduate scheme but not a single insight
-        day. Always check the register or ask HR directly before investing
-        hours in an application, rather than assuming from company size or
-        reputation alone.
+        As a rough pattern, not a guarantee: bigger employers with large
+        graduate schemes, think Big 4 accountancy firms, the bigger banks,
+        large consultancies, and big tech, are more likely to hold a
+        sponsor licence than a small firm or startup, simply because the
+        ongoing compliance cost only really pays off at scale. It can also
+        vary within the same company. A firm might sponsor its graduate
+        scheme but not a one-off insight day. Worth checking the register
+        or just asking HR directly rather than assuming based on how well
+        known the company is.
       </p>
 
       {/* Section 4: Route types */}
@@ -184,91 +181,86 @@ export default function InternationalGuidePage() {
         actually mean
       </h2>
       <p className="mt-2 text-neutral-700 dark:text-neutral-200">
-        UK early-career recruitment uses a specific set of terms that
-        don&apos;t always translate directly from other countries&apos;
-        systems. Here&apos;s what each one actually involves, and where
-        visa status comes into play.
+        UK recruitment has its own vocabulary that doesn&apos;t always map
+        onto how other countries describe the same kind of programme.
+        Here&apos;s what each one actually involves, and where visa
+        status matters.
       </p>
       <div className="mt-4 grid grid-cols-1 gap-3">
         <RouteCard
           name="Spring Week / Insight Programme"
           when="2–5 days, usually Easter"
-          description="Aimed at first-year students only (or second year of a four-year degree). No job offer at the end, but strong performers are often fast-tracked straight to Summer Internship interviews, skipping the usual application stage. Usually unpaid or a small stipend, so visa sponsorship isn't relevant here — your existing Student visa work rights cover it."
+          description="Open to first-year students only, or second-years on a four-year degree. There's no job at the end of it, but if you do well you're often fast-tracked straight to Summer Internship interviews without applying again. Usually unpaid or a small stipend, so sponsorship doesn't come into it; your existing Student visa work rights cover it."
         />
         <RouteCard
           name="Placement Year / Industrial Placement"
           when="9–12 months, penultimate year of a sandwich degree"
-          description="A paid, full academic year placement built into some degree courses. Because you're still enrolled as a student throughout, this normally runs under your Student visa, not a Skilled Worker visa — but confirm the hours and status with your university's immigration team before you start, since a full-time placement changes your usual term-time work pattern."
+          description="A paid placement built into some degree courses, running a full academic year. You're still enrolled as a student the whole time, so it normally sits under your Student visa rather than needing a Skilled Worker visa, but check the hours with your university's immigration team before you start, since full-time work changes your usual term-time pattern."
         />
         <RouteCard
           name="Summer Internship"
           when="6–10 weeks, penultimate-year students"
-          description="The main pipeline into graduate schemes at most large employers — strong performance often converts directly into a graduate offer without a second full application. This is where it's worth asking about sponsorship early, since the same employer relationship usually carries through to the full-time role."
+          description="The main route into graduate schemes at most large employers. A strong summer often converts straight into a graduate offer, no second application needed. Worth asking about sponsorship early here, since the same employer relationship usually carries through."
         />
         <RouteCard
           name="Off-cycle Internship"
           when="Similar length, different start month (often January)"
-          description="Common at banks and asset managers to backfill smaller, specific team needs outside the main summer cohort. Smaller intake, sometimes less publicised, so it's worth checking employer websites directly rather than relying only on aggregator listings."
+          description="Banks and asset managers use these to backfill smaller team needs outside the main summer intake. Smaller cohort, sometimes less publicised, so it's worth checking employer websites directly rather than relying only on aggregator listings."
         />
         <RouteCard
           name="Full-time Graduate Programme"
           when="The actual job"
-          description="This is where the Skilled Worker visa question becomes real and immediate. Get a clear, specific answer on sponsorship before you accept an offer, not after — 'we sponsor for the right candidates' is not a clear answer, ask what that means for you by name."
+          description="This is where the Skilled Worker question gets real. Get a specific answer on sponsorship before you accept, not after. 'We sponsor for the right candidates' isn't an answer, ask what that means for you by name."
         />
       </div>
 
       {/* Section 5: Timelines */}
       <h2 className="mt-12 text-lg font-semibold">Timelines that matter</h2>
       <p className="mt-2 text-neutral-700 dark:text-neutral-200">
-        Two clocks run at once, and it&apos;s easy to let one slip while
-        you&apos;re focused on the other:
+        There are two clocks running at once, and it&apos;s easy to be
+        watching one while the other quietly runs down. Recruitment cycles move on
+        their own schedule: spring weeks open roughly January to March,
+        summer internship applications open the September before and
+        often close early once enough strong applications come in, and
+        graduate schemes generally run September to January. Applying in
+        the first few weeks a cycle opens makes a real difference to your
+        odds compared to applying near the deadline.
       </p>
-      <ul className="mt-3 list-disc pl-5 space-y-2 text-neutral-700 dark:text-neutral-200">
-        <li>
-          <strong>Recruitment clock:</strong> Spring weeks open roughly
-          January&#8211;March. Summer internship applications open
-          September&#8211;December the year before, with many employers
-          running rolling deadlines that close early once enough strong
-          applications come in. Graduate scheme applications generally run
-          September&#8211;January. Applying in the first few weeks a
-          cycle opens meaningfully improves your odds versus applying near
-          the deadline.
-        </li>
-        <li>
-          <strong>Visa clock:</strong> You can apply for your Graduate
-          visa as soon as your university confirms course completion to
-          the Home Office — you don&apos;t need to wait for your graduation
-          ceremony or certificate. Start conversations about sponsorship
-          with employers months before your Graduate visa expires, not in
-          the final weeks — switching visas takes time, and a Certificate
-          of Sponsorship has to be issued before you can apply.
-        </li>
-      </ul>
+      <p className="mt-3 text-neutral-700 dark:text-neutral-200">
+        Your visa runs on a separate clock. You can apply for your
+        Graduate visa as soon as your university tells the Home Office
+        you&apos;ve completed your course, you don&apos;t need to wait
+        for the ceremony or the certificate. Start talking to employers about
+        sponsorship months before your Graduate visa is due to expire, not
+        in the final few weeks. Switching visas takes time, and a
+        Certificate of Sponsorship has to exist before you can even apply.
+      </p>
 
       {/* Section 6: Common mistakes */}
       <h2 className="mt-12 text-lg font-semibold">Common mistakes</h2>
       <ul className="mt-3 list-disc pl-5 space-y-2 text-neutral-700 dark:text-neutral-200">
         <li>
-          Applying broadly before checking sponsorship, then finding out
-          weeks later the employer doesn&apos;t hold a sponsor licence.
+          Applying broadly first and checking sponsorship later, then
+          finding out weeks in that the employer doesn&apos;t hold a
+          licence at all.
         </li>
         <li>
           Assuming a passed right to work check means sponsorship is
-          sorted — they&apos;re legally different things (see above).
+          sorted. They&apos;re different things, as above.
         </li>
         <li>
-          Letting the Graduate visa deadline creep up. It can&apos;t be
-          extended, and there&apos;s no grace period once it expires.
+          Letting the Graduate visa deadline creep up on you. It
+          can&apos;t be extended, and there&apos;s no grace period once
+          it&apos;s gone.
         </li>
         <li>
-          Not mentioning the under-26/recent-graduate salary discount when
-          a recruiter says a role &quot;doesn&apos;t meet the salary
-          threshold&quot; — some recruiters aren&apos;t aware of it either.
+          Not mentioning the under-26 or recent-graduate salary discount
+          when a recruiter says a role doesn&apos;t meet the threshold.
+          Some of them don&apos;t know about it either.
         </li>
         <li>
-          Treating &quot;does this role need sponsorship&quot; as assumed
-          rather than confirmed. Always get it confirmed explicitly at
-          offer stage, in writing.
+          Treating sponsorship as assumed rather than confirmed. Get it in
+          writing at offer stage, every time.
         </li>
       </ul>
 
@@ -276,41 +268,33 @@ export default function InternationalGuidePage() {
       <h2 className="mt-12 text-lg font-semibold">
         Interview and workplace culture notes
       </h2>
-      <ul className="mt-3 list-disc pl-5 space-y-2 text-neutral-700 dark:text-neutral-200">
-        <li>
-          <strong>Competency-based interviews are standard.</strong> Most
-          UK graduate recruitment uses the STAR method (Situation, Task,
-          Action, Result). Prepare specific stories from your own
-          experience, not general statements about your strengths.
-        </li>
-        <li>
-          <strong>Assessment centres are common</strong> for banking,
-          consulting, and Big 4 recruitment: group exercises, case studies,
-          numerical and verbal reasoning tests, and sometimes a recorded
-          video interview before you speak to a person at all.
-        </li>
-        <li>
-          <strong>Understated confidence lands better than overt
-          self-promotion.</strong> UK interview culture tends to reward
-          letting specific, detailed examples make the case for you,
-          rather than broad claims about being &quot;the best&quot; at
-          something.
-        </li>
-        <li>
-          <strong>Dress code varies more than you&apos;d expect.</strong>{" "}
-          Some tech firms and startups genuinely mean &quot;smart
-          casual&quot;; most banks, law firms, and Big 4 firms mean
-          business formal even when the invite says otherwise. When
-          unsure, dress slightly smarter than what&apos;s stated.
-        </li>
-      </ul>
+      <p className="mt-2 text-neutral-700 dark:text-neutral-200">
+        Most UK graduate recruitment runs on competency-based interviews,
+        built around the STAR method (Situation, Task, Action, Result).
+        Come with specific stories from your own experience rather than
+        general statements about your strengths, since that&apos;s what
+        interviewers are actually listening for.
+      </p>
+      <p className="mt-3 text-neutral-700 dark:text-neutral-200">
+        Assessment centres are common for banking, consulting, and Big 4
+        recruitment: group exercises, case studies, numerical and verbal
+        reasoning tests, and often a recorded video interview before
+        you&apos;ve spoken to an actual person. Interview style also
+        tends to reward understatement over self-promotion. Specific,
+        detailed examples land better than broad claims about being the
+        best at something. And dress codes vary more than you&apos;d
+        expect: some tech firms and startups genuinely mean smart casual,
+        while most banks, law firms, and Big 4 firms mean business formal
+        even when the invite says otherwise. When you&apos;re not sure,
+        dress slightly smarter than what&apos;s stated.
+      </p>
 
       {/* Section 8: Where to go next, on Hublr */}
       <h2 className="mt-12 text-lg font-semibold">Where to go next</h2>
       <p className="mt-2 text-neutral-700 dark:text-neutral-200">
-        Salary thresholds and fees in particular change more often than
-        you&apos;d think, so double-check anything time-sensitive before
-        you make a decision that depends on it.
+        Salary thresholds and fees change more often than you&apos;d
+        think, so double-check anything time-sensitive before you make a
+        decision that depends on it.
       </p>
       <ul className="mt-3 list-disc pl-5 space-y-2 text-neutral-700 dark:text-neutral-200">
         <li>
