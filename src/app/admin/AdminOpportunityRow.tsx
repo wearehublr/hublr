@@ -132,34 +132,42 @@ export default function AdminOpportunityRow({
             </option>
           ))}
         </select>
-        <input
-          name="deadline"
-          type="date"
-          title="Deadline"
-          defaultValue={opportunity.deadline ?? ""}
-          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
-        />
-        <input
-          name="open_date"
-          type="date"
-          title="Applications open"
-          defaultValue={opportunity.open_date ?? ""}
-          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
-        />
-        <input
-          name="posted_date"
-          type="date"
-          title="Posted date"
-          defaultValue={opportunity.posted_date ?? ""}
-          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
-        />
-        <input
-          name="start_date"
-          type="date"
-          title="Role start date"
-          defaultValue={opportunity.start_date ?? ""}
-          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
-        />
+        <label className="flex flex-col gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+          Posted date
+          <input
+            name="posted_date"
+            type="date"
+            defaultValue={opportunity.posted_date ?? ""}
+            className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100"
+          />
+        </label>
+        <label className="flex flex-col gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+          Applications open
+          <input
+            name="open_date"
+            type="date"
+            defaultValue={opportunity.open_date ?? ""}
+            className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100"
+          />
+        </label>
+        <label className="flex flex-col gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+          Application deadline
+          <input
+            name="deadline"
+            type="date"
+            defaultValue={opportunity.deadline ?? ""}
+            className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100"
+          />
+        </label>
+        <label className="flex flex-col gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+          Role start date
+          <input
+            name="start_date"
+            type="date"
+            defaultValue={opportunity.start_date ?? ""}
+            className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100"
+          />
+        </label>
         <input
           name="source_url"
           defaultValue={opportunity.source_url ?? ""}

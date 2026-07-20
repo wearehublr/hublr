@@ -130,30 +130,38 @@ export default function QuickAddForm() {
           </option>
         ))}
       </select>
-      <input
-        name="deadline"
-        type="date"
-        title="Deadline (optional)"
-        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
-      />
-      <input
-        name="open_date"
-        type="date"
-        title="Applications open (optional)"
-        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
-      />
-      <input
-        name="posted_date"
-        type="date"
-        title="Posted date (optional)"
-        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
-      />
-      <input
-        name="start_date"
-        type="date"
-        title="Role start date (optional)"
-        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
-      />
+      <label className="flex flex-col gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+        Posted date (optional)
+        <input
+          name="posted_date"
+          type="date"
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100"
+        />
+      </label>
+      <label className="flex flex-col gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+        Applications open (optional)
+        <input
+          name="open_date"
+          type="date"
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100"
+        />
+      </label>
+      <label className="flex flex-col gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+        Application deadline (optional)
+        <input
+          name="deadline"
+          type="date"
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100"
+        />
+      </label>
+      <label className="flex flex-col gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+        Role start date (optional)
+        <input
+          name="start_date"
+          type="date"
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100"
+        />
+      </label>
       <input
         name="source_url"
         placeholder="Source URL (optional)"
