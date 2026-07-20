@@ -57,6 +57,8 @@ export async function addOpportunity(
     source_url: str(formData, "source_url"),
     deadline: str(formData, "deadline"),
     open_date: str(formData, "open_date"),
+    posted_date: str(formData, "posted_date"),
+    start_date: str(formData, "start_date"),
     status: (str(formData, "status") as Status | null) ?? "open",
   });
 
@@ -100,6 +102,8 @@ export async function updateOpportunity(id: string, formData: FormData) {
       source_url: str(formData, "source_url"),
       deadline: str(formData, "deadline"),
       open_date: str(formData, "open_date"),
+      posted_date: str(formData, "posted_date"),
+      start_date: str(formData, "start_date"),
     })
     .eq("id", id);
 
@@ -120,6 +124,8 @@ export type BulkOpportunityRow = {
   visa_sponsorship?: VisaSponsorship;
   deadline?: string | null;
   open_date?: string | null;
+  posted_date?: string | null;
+  start_date?: string | null;
   city?: string | null;
   country?: string | null;
   industry?: string | null;
@@ -165,6 +171,8 @@ export async function bulkAddOpportunities(
       visa_sponsorship: row.visa_sponsorship ?? "unknown",
       deadline: row.deadline || null,
       open_date: row.open_date || null,
+      posted_date: row.posted_date || null,
+      start_date: row.start_date || null,
       city: row.city || null,
       country: row.country || null,
       industry: row.industry || null,

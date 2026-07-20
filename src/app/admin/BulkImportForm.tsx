@@ -26,6 +26,8 @@ const RECOGNIZED_FIELDS = [
   "visa_sponsorship",
   "deadline",
   "open_date",
+  "posted_date",
+  "start_date",
   "city",
   "country",
   "industry",
@@ -105,6 +107,8 @@ function toBulkRow(raw: Record<string, string>): BulkOpportunityRow {
     visa_sponsorship: (raw.visa_sponsorship as VisaSponsorship) || undefined,
     deadline: raw.deadline || null,
     open_date: raw.open_date || null,
+    posted_date: raw.posted_date || null,
+    start_date: raw.start_date || null,
     city: raw.city || null,
     country: raw.country || null,
     industry: raw.industry || null,
@@ -177,7 +181,9 @@ export default function BulkImportForm() {
         <code>role_title</code>, <code>category</code>, <code>region</code>,{" "}
         <code>apply_url</code>. Optional: <code>cycle_year</code>,{" "}
         <code>status</code>, <code>visa_sponsorship</code>,{" "}
-        <code>deadline</code>, <code>open_date</code>, <code>city</code>,{" "}
+        <code>deadline</code>, <code>open_date</code>,{" "}
+        <code>posted_date</code>, <code>start_date</code>,{" "}
+        <code>city</code>,{" "}
         <code>country</code>, <code>industry</code>, <code>notes</code>,{" "}
         <code>full_description</code>, <code>source_url</code>,{" "}
         <code>logo_url</code>.

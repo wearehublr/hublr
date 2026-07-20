@@ -82,6 +82,8 @@ export interface Opportunity {
   status: Status;
   open_date: string | null;
   deadline: string | null;
+  start_date: string | null;
+  posted_date: string | null;
   apply_url: string;
   notes: string | null;
   full_description: string | null;
@@ -108,6 +110,8 @@ export type OpportunityInput = Pick<
       | "status"
       | "open_date"
       | "deadline"
+      | "start_date"
+      | "posted_date"
       | "notes"
       | "full_description"
       | "visa_sponsorship"

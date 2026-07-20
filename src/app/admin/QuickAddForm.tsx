@@ -139,7 +139,19 @@ export default function QuickAddForm() {
       <input
         name="open_date"
         type="date"
-        title="Opens (optional)"
+        title="Applications open (optional)"
+        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+      />
+      <input
+        name="posted_date"
+        type="date"
+        title="Posted date (optional)"
+        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+      />
+      <input
+        name="start_date"
+        type="date"
+        title="Role start date (optional)"
         className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
       />
       <input

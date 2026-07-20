@@ -135,13 +135,29 @@ export default function AdminOpportunityRow({
         <input
           name="deadline"
           type="date"
+          title="Deadline"
           defaultValue={opportunity.deadline ?? ""}
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
         />
         <input
           name="open_date"
           type="date"
+          title="Applications open"
           defaultValue={opportunity.open_date ?? ""}
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+        />
+        <input
+          name="posted_date"
+          type="date"
+          title="Posted date"
+          defaultValue={opportunity.posted_date ?? ""}
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+        />
+        <input
+          name="start_date"
+          type="date"
+          title="Role start date"
+          defaultValue={opportunity.start_date ?? ""}
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
         />
         <input
@@ -200,6 +216,8 @@ export default function AdminOpportunityRow({
             : ""}{" "}
           ·{" "}
           {STATUS_LABELS[opportunity.status]}
+          {opportunity.posted_date ? ` · Posted ${opportunity.posted_date}` : ""}
+          {opportunity.start_date ? ` · Starts ${opportunity.start_date}` : ""}
           {opportunity.deadline ? ` · Deadline ${opportunity.deadline}` : ""}
           {opportunity.visa_sponsorship !== "unknown"
             ? ` · ${VISA_SPONSORSHIP_LABELS[opportunity.visa_sponsorship]}`

@@ -9,6 +9,14 @@ import TrackButton from "@/app/components/TrackButton";
 import ApplyButton from "@/app/components/ApplyButton";
 import CompanyLogo from "@/app/components/CompanyLogo";
 
+function formatDate(date: string): string {
+  return new Date(date).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
 export default async function OpportunityDetailPage({
   params,
 }: {
@@ -84,8 +92,18 @@ export default async function OpportunityDetailPage({
         )}
       </div>
 
-      <div className="mt-3">
+      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
         <DeadlineBadge deadline={opportunity.deadline} />
+        {opportunity.posted_date && (
+          <span className="text-xs text-neutral-500 dark:text-neutral-400">
+            Posted: {formatDate(opportunity.posted_date)}
+          </span>
+        )}
+        {opportunity.start_date && (
+          <span className="text-xs text-neutral-500 dark:text-neutral-400">
+            Start date: {formatDate(opportunity.start_date)}
+          </span>
+        )}
       </div>
 
       {opportunity.notes && (
