@@ -39,11 +39,15 @@ export async function addEvent(
 
   const { error } = await supabase.from("events").insert({
     title,
+    company: str(formData, "company"),
+    logo_url: str(formData, "logo_url"),
     event_type,
     location_type,
     event_date: new Date(event_date).toISOString(),
+    deadline: str(formData, "deadline"),
     location: str(formData, "location"),
     description: str(formData, "description"),
+    full_description: str(formData, "full_description"),
     registration_url: str(formData, "registration_url"),
     source_url: str(formData, "source_url"),
   });
@@ -71,11 +75,15 @@ export async function updateEvent(id: string, formData: FormData) {
     .from("events")
     .update({
       title: str(formData, "title"),
+      company: str(formData, "company"),
+      logo_url: str(formData, "logo_url"),
       event_type,
       location_type,
       event_date: event_date ? new Date(event_date).toISOString() : undefined,
+      deadline: str(formData, "deadline"),
       location: str(formData, "location"),
       description: str(formData, "description"),
+      full_description: str(formData, "full_description"),
       registration_url: str(formData, "registration_url"),
       source_url: str(formData, "source_url"),
     })

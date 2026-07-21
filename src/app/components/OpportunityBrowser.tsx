@@ -19,12 +19,21 @@ import { trackApplication } from "@/app/opportunities/actions";
 import { saveSearch } from "@/app/opportunities/saved-search-actions";
 import { buildOpportunitySlug } from "@/lib/slug";
 import { notifyApplyClick } from "@/lib/apply-tracking";
+import { compareByDate } from "@/lib/sort-by-date";
 
 const STATUS_DOT: Record<Status, string> = {
   open: "bg-emerald-500",
   upcoming: "bg-blue-500",
   rolling: "bg-violet-500",
   closed: "bg-neutral-400",
+};
+
+const SORT_OPTIONS = ["deadline", "company", "newest"] as const;
+type SortOption = (typeof SORT_OPTIONS)[number];
+const SORT_LABELS: Record<SortOption, string> = {
+  deadline: "Sort: Closest deadline",
+  company: "Sort: Company A-Z",
+  newest: "Sort: Newest added",
 };
 
 export default function OpportunityBrowser({
@@ -41,6 +50,7 @@ export default function OpportunityBrowser({
   const [industry, setIndustry] = useState<string>("all");
   const [visaSponsorship, setVisaSponsorship] = useState<VisaSponsorship | "all">("all");
   const [year, setYear] = useState<number | "all">("all");
+  const [sortBy, setSortBy] = useState<SortOption>("deadline");
   const [tracked, setTracked] = useState<Set<string>>(new Set());
   const [isPending, startTransition] = useTransition();
   const [alertSaved, setAlertSaved] = useState(false);
@@ -104,7 +114,7 @@ export default function OpportunityBrowser({
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return opportunities.filter((o) => {
+    const result = opportunities.filter((o) => {
       if (year !== "all" && o.cycle_year !== year) return false;
       if (region !== "all" && o.region !== region) return false;
       if (category !== "all" && o.category !== category) return false;
@@ -119,7 +129,29 @@ export default function OpportunityBrowser({
         return false;
       return true;
     });
-  }, [opportunities, search, year, region, category, status, industry, visaSponsorship]);
+
+    const sorted = [...result];
+    if (sortBy === "company") {
+      sorted.sort((a, b) => a.company.localeCompare(b.company));
+    } else if (sortBy === "newest") {
+      sorted.sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      );
+    } else {
+      sorted.sort((a, b) => compareByDate(a.deadline, b.deadline));
+    }
+    return sorted;
+  }, [
+    opportunities,
+    search,
+    year,
+    region,
+    category,
+    status,
+    industry,
+    visaSponsorship,
+    sortBy,
+  ]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -212,6 +244,18 @@ export default function OpportunityBrowser({
           {VISA_SPONSORSHIP_OPTIONS.map((v) => (
             <option key={v} value={v}>
               {VISA_SPONSORSHIP_LABELS[v]}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value as SortOption)}
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+        >
+          {SORT_OPTIONS.map((s) => (
+            <option key={s} value={s}>
+              {SORT_LABELS[s]}
             </option>
           ))}
         </select>

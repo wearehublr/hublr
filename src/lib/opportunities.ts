@@ -1,5 +1,14 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Opportunity } from "@/types/opportunity";
+import { compareByDate } from "@/lib/sort-by-date";
+
+function sortByDeadline(opportunities: Opportunity[]): Opportunity[] {
+  const sorted = [...opportunities].sort((a, b) =>
+    a.company.localeCompare(b.company),
+  );
+  sorted.sort((a, b) => compareByDate(a.deadline, b.deadline));
+  return sorted;
+}
 
 export async function getPublishedOpportunities(
   supabase: SupabaseClient,
@@ -7,12 +16,10 @@ export async function getPublishedOpportunities(
   const { data, error } = await supabase
     .from("opportunities")
     .select("*")
-    .eq("is_published", true)
-    .order("deadline", { ascending: true, nullsFirst: false })
-    .order("company", { ascending: true });
+    .eq("is_published", true);
 
   if (error) throw error;
-  return data as Opportunity[];
+  return sortByDeadline(data as Opportunity[]);
 }
 
 export async function getPublishedOpportunitiesByYear(
@@ -23,12 +30,10 @@ export async function getPublishedOpportunitiesByYear(
     .from("opportunities")
     .select("*")
     .eq("is_published", true)
-    .eq("cycle_year", cycleYear)
-    .order("deadline", { ascending: true, nullsFirst: false })
-    .order("company", { ascending: true });
+    .eq("cycle_year", cycleYear);
 
   if (error) throw error;
-  return data as Opportunity[];
+  return sortByDeadline(data as Opportunity[]);
 }
 
 export async function getRecentPublishedOpportunities(

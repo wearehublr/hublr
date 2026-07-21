@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { HublrEvent } from "@/types/event";
+import { compareByDate } from "@/lib/sort-by-date";
 
 export async function getPublishedEvents(
   supabase: SupabaseClient,
@@ -7,11 +8,15 @@ export async function getPublishedEvents(
   const { data, error } = await supabase
     .from("events")
     .select("*")
-    .eq("is_published", true)
-    .order("event_date", { ascending: true });
+    .eq("is_published", true);
 
   if (error) throw error;
-  return data as HublrEvent[];
+
+  const sorted = [...(data as HublrEvent[])].sort((a, b) =>
+    (a.company ?? a.title).localeCompare(b.company ?? b.title),
+  );
+  sorted.sort((a, b) => compareByDate(a.event_date, b.event_date));
+  return sorted;
 }
 
 export async function getUpcomingEvents(
@@ -41,6 +46,21 @@ export async function getUpcomingEventsCount(
 
   if (error) throw error;
   return count ?? 0;
+}
+
+export async function getPublishedEventById(
+  supabase: SupabaseClient,
+  id: string,
+): Promise<HublrEvent | null> {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("id", id)
+    .eq("is_published", true)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data as HublrEvent | null;
 }
 
 export async function getAllEvents(

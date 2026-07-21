@@ -13,6 +13,7 @@ export const CATEGORIES = [
   "full_time_analyst",
   "apprenticeship",
   "degree_apprenticeship",
+  "entry_level",
   "other",
 ] as const;
 
@@ -33,6 +34,7 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   full_time_analyst: "Full-Time / Analyst",
   apprenticeship: "Apprenticeship",
   degree_apprenticeship: "Degree Apprenticeship",
+  entry_level: "Entry Level",
   other: "Other",
 };
 

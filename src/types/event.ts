@@ -28,9 +28,13 @@ export const LOCATION_TYPE_LABELS: Record<LocationType, string> = {
 export interface HublrEvent {
   id: string;
   title: string;
+  company: string | null;
+  logo_url: string | null;
   description: string | null;
+  full_description: string | null;
   event_type: EventType;
   event_date: string;
+  deadline: string | null;
   location_type: LocationType;
   location: string | null;
   registration_url: string | null;

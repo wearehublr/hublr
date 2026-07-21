@@ -47,6 +47,18 @@ export default function AdminEventRow({ event }: { event: HublrEvent }) {
           defaultValue={event.title}
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm sm:col-span-2"
         />
+        <input
+          name="company"
+          defaultValue={event.company ?? ""}
+          placeholder="Company"
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+        />
+        <input
+          name="logo_url"
+          defaultValue={event.logo_url ?? ""}
+          placeholder="Logo image URL"
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+        />
         <select
           name="event_type"
           defaultValue={event.event_type}
@@ -82,6 +94,15 @@ export default function AdminEventRow({ event }: { event: HublrEvent }) {
           placeholder="Location"
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
         />
+        <label className="flex flex-col gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+          Application deadline
+          <input
+            name="deadline"
+            type="date"
+            defaultValue={event.deadline ?? ""}
+            className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100"
+          />
+        </label>
         <input
           name="registration_url"
           defaultValue={event.registration_url ?? ""}
@@ -99,7 +120,14 @@ export default function AdminEventRow({ event }: { event: HublrEvent }) {
           name="description"
           defaultValue={event.description ?? ""}
           rows={1}
-          placeholder="Description"
+          placeholder="Short description (shown on cards)"
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm col-span-full"
+        />
+        <textarea
+          name="full_description"
+          defaultValue={event.full_description ?? ""}
+          rows={4}
+          placeholder="Full event details (shown on the event's own page)"
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm col-span-full"
         />
 
@@ -126,12 +154,18 @@ export default function AdminEventRow({ event }: { event: HublrEvent }) {
   return (
     <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4 flex flex-col sm:flex-row sm:items-center gap-3">
       <div className="flex-1 min-w-0">
-        <p className="font-medium truncate">{event.title}</p>
+        <p className="font-medium truncate">
+          {event.company ? `${event.company} — ` : ""}
+          {event.title}
+        </p>
         <p className="text-xs text-neutral-500 dark:text-neutral-400">
           {EVENT_TYPE_LABELS[event.event_type]} ·{" "}
           {LOCATION_TYPE_LABELS[event.location_type]}
           {event.location ? ` (${event.location})` : ""} ·{" "}
           {new Date(event.event_date).toLocaleString("en-GB")}
+          {event.deadline
+            ? ` · Deadline: ${new Date(event.deadline).toLocaleDateString("en-GB")}`
+            : ""}
           {!event.is_published ? " · UNPUBLISHED" : ""}
         </p>
       </div>

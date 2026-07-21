@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import type { HublrEvent } from "@/types/event";
 import {
   EVENT_TYPES,
@@ -10,6 +11,18 @@ import {
   type EventType,
   type LocationType,
 } from "@/types/event";
+import DeadlineBadge from "@/app/components/DeadlineBadge";
+import CompanyLogo from "@/app/components/CompanyLogo";
+import { buildEventSlug } from "@/lib/slug";
+import { compareByDate } from "@/lib/sort-by-date";
+
+const SORT_OPTIONS = ["date", "company", "newest"] as const;
+type SortOption = (typeof SORT_OPTIONS)[number];
+const SORT_LABELS: Record<SortOption, string> = {
+  date: "Sort: Soonest event",
+  company: "Sort: Company A-Z",
+  newest: "Sort: Newest added",
+};
 
 function daysUntil(eventDate: string): number {
   const ms = new Date(eventDate).getTime() - Date.now();
@@ -50,10 +63,11 @@ export default function EventBrowser({
   const [search, setSearch] = useState("");
   const [eventType, setEventType] = useState<EventType | "all">("all");
   const [locationType, setLocationType] = useState<LocationType | "all">("all");
+  const [sortBy, setSortBy] = useState<SortOption>("date");
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return events.filter((e) => {
+    const result = events.filter((e) => {
       if (eventType !== "all" && e.event_type !== eventType) return false;
       if (locationType !== "all" && e.location_type !== locationType)
         return false;
@@ -61,7 +75,21 @@ export default function EventBrowser({
         return false;
       return true;
     });
-  }, [events, search, eventType, locationType]);
+
+    const sorted = [...result];
+    if (sortBy === "company") {
+      sorted.sort((a, b) =>
+        (a.company ?? a.title).localeCompare(b.company ?? b.title),
+      );
+    } else if (sortBy === "newest") {
+      sorted.sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      );
+    } else {
+      sorted.sort((a, b) => compareByDate(a.event_date, b.event_date));
+    }
+    return sorted;
+  }, [events, search, eventType, locationType, sortBy]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -102,6 +130,18 @@ export default function EventBrowser({
           ))}
         </select>
 
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value as SortOption)}
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+        >
+          {SORT_OPTIONS.map((s) => (
+            <option key={s} value={s}>
+              {SORT_LABELS[s]}
+            </option>
+          ))}
+        </select>
+
         <span className="sm:ml-auto text-sm text-neutral-500 dark:text-neutral-400">
           {filtered.length} of {events.length} events
         </span>
@@ -118,7 +158,22 @@ export default function EventBrowser({
               key={e.id}
               className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4 flex flex-col gap-2 bg-white dark:bg-neutral-900"
             >
-              <p className="font-semibold leading-tight">{e.title}</p>
+              <Link
+                href={`/event/${buildEventSlug(e)}`}
+                className="flex items-start gap-3 hover:underline"
+              >
+                {e.company && (
+                  <CompanyLogo company={e.company} logoUrl={e.logo_url} size={32} />
+                )}
+                <div className="min-w-0">
+                  {e.company && (
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-tight">
+                      {e.company}
+                    </p>
+                  )}
+                  <p className="font-semibold leading-tight">{e.title}</p>
+                </div>
+              </Link>
 
               <div className="flex flex-wrap gap-1.5 text-xs">
                 <span className="rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5">
@@ -131,6 +186,7 @@ export default function EventBrowser({
               </div>
 
               <EventDateBadge eventDate={e.event_date} />
+              {e.deadline && <DeadlineBadge deadline={e.deadline} />}
 
               {e.description && (
                 <p className="text-xs text-neutral-500 dark:text-neutral-400">

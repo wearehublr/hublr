@@ -36,6 +36,17 @@ export default function QuickAddForm() {
         required
         className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm sm:col-span-2"
       />
+      <input
+        name="company"
+        placeholder="Company (optional)"
+        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+      />
+      <input
+        name="logo_url"
+        type="url"
+        placeholder="Logo image URL (optional)"
+        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+      />
       <select
         name="event_type"
         required
@@ -79,6 +90,14 @@ export default function QuickAddForm() {
         placeholder="Location (e.g. Online, London)"
         className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
       />
+      <label className="flex flex-col gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+        Application deadline (optional)
+        <input
+          name="deadline"
+          type="date"
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-neutral-900 dark:text-neutral-100"
+        />
+      </label>
       <input
         name="registration_url"
         placeholder="Registration URL"
@@ -92,8 +111,14 @@ export default function QuickAddForm() {
 
       <textarea
         name="description"
-        placeholder="Description (optional)"
+        placeholder="Short description (optional, shown on cards)"
         rows={1}
+        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm col-span-full"
+      />
+      <textarea
+        name="full_description"
+        placeholder="Full event details (optional, shown on the event's own page)"
+        rows={4}
         className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm col-span-full"
       />
 

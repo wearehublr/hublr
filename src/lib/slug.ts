@@ -14,3 +14,13 @@ export function buildOpportunitySlug(
 export function opportunityIdFromSlug(slug: string): string {
   return slug.split("--").pop() ?? slug;
 }
+
+export function buildEventSlug(
+  event: { id: string; company: string | null; title: string },
+): string {
+  return `${slugify(`${event.company ?? ""} ${event.title}`)}--${event.id}`;
+}
+
+export function eventIdFromSlug(slug: string): string {
+  return slug.split("--").pop() ?? slug;
+}
