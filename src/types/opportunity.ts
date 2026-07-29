@@ -93,6 +93,7 @@ export interface Opportunity {
   source_url: string | null;
   discovered_via: "manual" | "auto";
   is_published: boolean;
+  link_checked_at: string | null;
   created_at: string;
   updated_at: string;
 }
