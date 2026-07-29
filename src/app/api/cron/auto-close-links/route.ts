@@ -3,6 +3,10 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { closeDeadOpportunityLinks } from "@/lib/check-dead-links";
 
 export const dynamic = "force-dynamic";
+// Real outbound HTTP checks (up to 25 opportunities, batches of 5, 8s
+// timeout each) can take longer than the platform default; 60s is the
+// Hobby-plan ceiling for a Vercel serverless function.
+export const maxDuration = 60;
 
 export async function GET(request: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
