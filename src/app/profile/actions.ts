@@ -7,7 +7,11 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import {
   MAX_INTERESTED_INDUSTRIES,
   STUDENT_STATUSES,
+  CITIZENSHIP_OPTIONS,
+  VISA_STATUSES,
   type StudentStatus,
+  type Citizenship,
+  type VisaStatus,
 } from "@/types/profile";
 
 export type FormState = { error: string | null };
@@ -33,6 +37,19 @@ export async function updateProfile(
     return { error: "Invalid student status." };
   }
 
+  const citizenship = str(formData, "citizenship") as Citizenship | null;
+  if (citizenship && !CITIZENSHIP_OPTIONS.includes(citizenship)) {
+    return { error: "Invalid citizenship." };
+  }
+
+  const visa_status =
+    citizenship === "other" ? (str(formData, "visa_status") as VisaStatus | null) : null;
+  if (visa_status && !VISA_STATUSES.includes(visa_status)) {
+    return { error: "Invalid visa status." };
+  }
+
+  const visa_expiry = citizenship === "other" ? str(formData, "visa_expiry") : null;
+
   const interested_industries = formData
     .getAll("interested_industries")
     .map(String)
@@ -47,6 +64,9 @@ export async function updateProfile(
     goal: str(formData, "goal"),
     summary: str(formData, "summary"),
     student_status,
+    citizenship,
+    visa_status,
+    visa_expiry,
     interested_industries,
     email_notifications_enabled: formData.get("email_notifications_enabled") === "on",
   });

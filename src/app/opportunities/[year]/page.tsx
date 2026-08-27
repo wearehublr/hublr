@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getPublishedOpportunitiesByYear } from "@/lib/opportunities";
+import { getProfile } from "@/lib/profiles";
 import OpportunityBrowser from "@/app/components/OpportunityBrowser";
 
 const SUPPORTED_YEARS = [2026, 2027];
@@ -26,6 +27,9 @@ export default async function OpportunitiesByYearPage({
     supabase.auth.getUser(),
     getPublishedOpportunitiesByYear(supabase, year),
   ]);
+  const profile = userData.user
+    ? await getProfile(supabase, userData.user.id)
+    : null;
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
@@ -43,6 +47,7 @@ export default async function OpportunitiesByYearPage({
       <OpportunityBrowser
         opportunities={opportunities}
         isLoggedIn={!!userData.user}
+        profile={profile}
       />
     </main>
   );

@@ -13,8 +13,11 @@ import {
   VISA_SPONSORSHIP_OPTIONS,
   VISA_SPONSORSHIP_LABELS,
 } from "@/types/opportunity";
+import type { Profile } from "@/types/profile";
+import { computeEligibility } from "@/lib/eligibility";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import CompanyLogo from "@/app/components/CompanyLogo";
+import EligibilityBadge from "@/app/components/EligibilityBadge";
 import { trackApplication } from "@/app/opportunities/actions";
 import { saveSearch } from "@/app/opportunities/saved-search-actions";
 import { buildOpportunitySlug } from "@/lib/slug";
@@ -39,9 +42,11 @@ const SORT_LABELS: Record<SortOption, string> = {
 export default function OpportunityBrowser({
   opportunities,
   isLoggedIn,
+  profile,
 }: {
   opportunities: Opportunity[];
   isLoggedIn: boolean;
+  profile: Profile | null;
 }) {
   const [search, setSearch] = useState("");
   const [region, setRegion] = useState<Region | "all">("all");
@@ -280,13 +285,24 @@ export default function OpportunityBrowser({
         </span>
       </div>
 
+      {isLoggedIn && !profile?.citizenship && (
+        <p className="text-xs text-neutral-500 dark:text-neutral-400">
+          <Link href="/profile" className="underline">
+            Add your citizenship and visa status
+          </Link>{" "}
+          to see a personalized eligibility check on each role.
+        </p>
+      )}
+
       {filtered.length === 0 ? (
         <p className="text-sm text-neutral-500 dark:text-neutral-400 py-12 text-center">
           No opportunities match your filters.
         </p>
       ) : (
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((o) => (
+          {filtered.map((o) => {
+            const eligibility = computeEligibility(profile, o);
+            return (
             <li
               key={o.id}
               className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4 flex flex-col gap-2 bg-white dark:bg-neutral-900"
@@ -333,6 +349,7 @@ export default function OpportunityBrowser({
                     Sponsors visas
                   </span>
                 )}
+                {eligibility && <EligibilityBadge result={eligibility} />}
               </div>
 
               <DeadlineBadge deadline={o.deadline} />
@@ -379,7 +396,8 @@ export default function OpportunityBrowser({
                 )}
               </div>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </div>

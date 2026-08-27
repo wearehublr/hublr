@@ -38,6 +38,38 @@ export type Industry = (typeof INDUSTRIES)[number];
 
 export const MAX_INTERESTED_INDUSTRIES = 3;
 
+export const CITIZENSHIP_OPTIONS = ["uk", "irish", "other"] as const;
+
+export type Citizenship = (typeof CITIZENSHIP_OPTIONS)[number];
+
+export const CITIZENSHIP_LABELS: Record<Citizenship, string> = {
+  uk: "UK citizen",
+  irish: "Irish citizen",
+  other: "Other",
+};
+
+export const VISA_STATUSES = [
+  "none",
+  "student_visa",
+  "graduate_visa",
+  "skilled_worker_visa",
+  "spouse_visa",
+  "ilr_settled",
+  "other",
+] as const;
+
+export type VisaStatus = (typeof VISA_STATUSES)[number];
+
+export const VISA_STATUS_LABELS: Record<VisaStatus, string> = {
+  none: "No visa yet",
+  student_visa: "Student visa",
+  graduate_visa: "Graduate visa",
+  skilled_worker_visa: "Skilled Worker visa",
+  spouse_visa: "Spouse/partner visa",
+  ilr_settled: "Indefinite Leave to Remain / Settled status",
+  other: "Other visa type",
+};
+
 export interface Profile {
   id: string;
   preferred_name: string | null;
@@ -49,6 +81,9 @@ export interface Profile {
   student_status: StudentStatus | null;
   interested_industries: string[];
   email_notifications_enabled: boolean;
+  citizenship: Citizenship | null;
+  visa_status: VisaStatus | null;
+  visa_expiry: string | null;
   created_at: string;
   updated_at: string;
 }

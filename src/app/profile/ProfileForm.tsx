@@ -2,13 +2,17 @@
 
 import { useActionState, useState } from "react";
 import { updateProfile } from "./actions";
-import type { Profile } from "@/types/profile";
+import type { Profile, Citizenship } from "@/types/profile";
 import {
   STUDY_YEARS,
   STUDENT_STATUSES,
   STUDENT_STATUS_LABELS,
   INDUSTRIES,
   MAX_INTERESTED_INDUSTRIES,
+  CITIZENSHIP_OPTIONS,
+  CITIZENSHIP_LABELS,
+  VISA_STATUSES,
+  VISA_STATUS_LABELS,
 } from "@/types/profile";
 
 const initialState = { error: null };
@@ -17,6 +21,9 @@ export default function ProfileForm({ profile }: { profile: Profile | null }) {
   const [state, formAction, pending] = useActionState(updateProfile, initialState);
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>(
     profile?.interested_industries ?? [],
+  );
+  const [citizenship, setCitizenship] = useState<Citizenship | "">(
+    profile?.citizenship ?? "",
   );
 
   function toggleIndustry(industry: string) {
@@ -86,6 +93,58 @@ export default function ProfileForm({ profile }: { profile: Profile | null }) {
           ))}
         </select>
       </div>
+
+      <div>
+        <label className="text-sm font-medium mb-1 block" htmlFor="citizenship">
+          Citizenship
+        </label>
+        <select
+          id="citizenship"
+          name="citizenship"
+          value={citizenship}
+          onChange={(e) => setCitizenship(e.target.value as Citizenship | "")}
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm w-full sm:w-auto"
+        >
+          <option value="">Select citizenship</option>
+          {CITIZENSHIP_OPTIONS.map((c) => (
+            <option key={c} value={c}>
+              {CITIZENSHIP_LABELS[c]}
+            </option>
+          ))}
+        </select>
+        <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+          Used to show you a personalized eligibility check on each opportunity.
+        </p>
+      </div>
+
+      {citizenship === "other" && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <select
+            name="visa_status"
+            defaultValue={profile?.visa_status ?? ""}
+            className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+          >
+            <option value="">Visa status</option>
+            {VISA_STATUSES.map((v) => (
+              <option key={v} value={v}>
+                {VISA_STATUS_LABELS[v]}
+              </option>
+            ))}
+          </select>
+          <div>
+            <input
+              type="date"
+              name="visa_expiry"
+              defaultValue={profile?.visa_expiry ?? ""}
+              aria-label="Visa expiry date"
+              className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm w-full"
+            />
+            <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+              Visa expiry date (optional)
+            </p>
+          </div>
+        </div>
+      )}
 
       <input
         name="goal"
