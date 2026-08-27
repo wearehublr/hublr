@@ -84,6 +84,7 @@ export interface Profile {
   citizenship: Citizenship | null;
   visa_status: VisaStatus | null;
   visa_expiry: string | null;
+  graduation_year: number | null;
   created_at: string;
   updated_at: string;
 }

@@ -50,6 +50,15 @@ export async function updateProfile(
 
   const visa_expiry = citizenship === "other" ? str(formData, "visa_expiry") : null;
 
+  const graduationYearRaw = str(formData, "graduation_year");
+  const graduation_year = graduationYearRaw ? Number(graduationYearRaw) : null;
+  if (
+    graduation_year !== null &&
+    (!Number.isInteger(graduation_year) || graduation_year < 2020 || graduation_year > 2035)
+  ) {
+    return { error: "Invalid graduation year." };
+  }
+
   const interested_industries = formData
     .getAll("interested_industries")
     .map(String)
@@ -67,6 +76,7 @@ export async function updateProfile(
     citizenship,
     visa_status,
     visa_expiry,
+    graduation_year,
     interested_industries,
     email_notifications_enabled: formData.get("email_notifications_enabled") === "on",
   });

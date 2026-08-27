@@ -110,6 +110,12 @@ export default async function OpportunityDetailPage({
         </p>
       )}
 
+      {eligibility && (
+        <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+          {eligibility.reason}
+        </p>
+      )}
+
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
         <DeadlineBadge deadline={opportunity.deadline} />
         {opportunity.posted_date && (

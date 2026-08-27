@@ -294,6 +294,24 @@ export default function OpportunityBrowser({
         </p>
       )}
 
+      {isLoggedIn && profile?.citizenship && (
+        <p className="text-xs text-neutral-500 dark:text-neutral-400">
+          Eligibility check, based on your profile:{" "}
+          <span className="rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-1.5 py-0.5">
+            You&rsquo;re eligible
+          </span>{" "}
+          you meet this role&rsquo;s visa/citizenship requirements ·{" "}
+          <span className="rounded-full bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 px-1.5 py-0.5">
+            Check eligibility
+          </span>{" "}
+          it depends on details we can&rsquo;t confirm (e.g. sponsorship isn&rsquo;t stated) ·{" "}
+          <span className="rounded-full bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 px-1.5 py-0.5">
+            Likely not eligible
+          </span>{" "}
+          this role&rsquo;s requirements likely rule you out. Hover a badge for the specific reason.
+        </p>
+      )}
+
       {filtered.length === 0 ? (
         <p className="text-sm text-neutral-500 dark:text-neutral-400 py-12 text-center">
           No opportunities match your filters.

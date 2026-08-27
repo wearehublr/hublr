@@ -80,6 +80,15 @@ export default function ProfileForm({ profile }: { profile: Profile | null }) {
             </option>
           ))}
         </select>
+        <input
+          type="number"
+          name="graduation_year"
+          defaultValue={profile?.graduation_year ?? ""}
+          placeholder="Graduation year (e.g. 2027)"
+          min={2020}
+          max={2035}
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+        />
         <select
           name="student_status"
           defaultValue={profile?.student_status ?? ""}
