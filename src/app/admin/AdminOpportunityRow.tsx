@@ -132,6 +132,21 @@ export default function AdminOpportunityRow({
             </option>
           ))}
         </select>
+        <select
+          name="company_sponsor_licence"
+          defaultValue={
+            opportunity.company_sponsor_licence === true
+              ? "true"
+              : opportunity.company_sponsor_licence === false
+                ? "false"
+                : ""
+          }
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+        >
+          <option value="">Sponsor register: not checked</option>
+          <option value="true">Sponsor register: confirmed holds licence</option>
+          <option value="false">Sponsor register: confirmed no licence</option>
+        </select>
         <label className="flex flex-col gap-1 text-xs text-neutral-500 dark:text-neutral-400">
           Posted date
           <input

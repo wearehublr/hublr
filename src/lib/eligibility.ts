@@ -24,7 +24,19 @@ export function computeEligibility(
   }
 
   const visaStatus = profile.visa_status;
-  const sponsorship = opportunity.visa_sponsorship;
+  // Role-level visa_sponsorship wins whenever the posting actually says
+  // something (most authoritative, most specific). Only when it's silent
+  // ("unknown") do we fall back to the company-level sponsor-register fact
+  // -- and only in the "no licence at all" direction, since holding a
+  // licence doesn't guarantee this specific role sponsors (several tracked
+  // companies hold a licence yet explicitly exclude particular roles).
+  const companyConfirmedNoLicence =
+    opportunity.visa_sponsorship === "unknown" &&
+    opportunity.company_sponsor_licence === false;
+  const companyConfirmedHasLicence =
+    opportunity.visa_sponsorship === "unknown" &&
+    opportunity.company_sponsor_licence === true;
+  const sponsorship = companyConfirmedNoLicence ? "no" : opportunity.visa_sponsorship;
 
   if (sponsorship === "yes") {
     return {
@@ -41,6 +53,9 @@ export function computeEligibility(
   }
 
   if (sponsorship === "no") {
+    const noSponsorPhrase = companyConfirmedNoLicence
+      ? "This employer doesn't hold a UK sponsor licence at all"
+      : "This employer doesn't sponsor";
     if (visaStatus === "graduate_visa") {
       return {
         verdict: "green",
@@ -50,50 +65,53 @@ export function computeEligibility(
     if (visaStatus === "skilled_worker_visa") {
       return {
         verdict: "amber",
-        reason: "This employer doesn't sponsor. Moving to them would need your Skilled Worker sponsorship transferred — check with them directly.",
+        reason: `${noSponsorPhrase}. Moving to them would need your Skilled Worker sponsorship transferred — check with them directly.`,
       };
     }
     if (visaStatus === "other") {
       return {
         verdict: "amber",
-        reason: "This employer doesn't sponsor. Whether your current visa covers this role depends on its specific terms — check before applying.",
+        reason: `${noSponsorPhrase}. Whether your current visa covers this role depends on its specific terms — check before applying.`,
       };
     }
     if (visaStatus === "student_visa") {
       return {
         verdict: "red",
-        reason: "This employer doesn't sponsor, and a Student visa doesn't carry full-time work rights.",
+        reason: `${noSponsorPhrase}, and a Student visa doesn't carry full-time work rights.`,
       };
     }
     // "none" or unset — no visa yet and no sponsorship offered.
     return {
       verdict: "red",
-      reason: "This employer doesn't sponsor, and you don't yet have a visa that grants UK work rights.",
+      reason: `${noSponsorPhrase}, and you don't yet have a visa that grants UK work rights.`,
     };
   }
 
   // sponsorship === "unknown"
+  const licenceNote = companyConfirmedHasLicence
+    ? " This employer does hold a UK sponsor licence, though not confirmed for this specific role."
+    : "";
   if (visaStatus === "graduate_visa") {
     return {
       verdict: "amber",
-      reason: "Sponsorship isn't confirmed. Your Graduate visa covers you for now, but check their long-term sponsorship stance.",
+      reason: `Sponsorship isn't confirmed. Your Graduate visa covers you for now, but check their long-term sponsorship stance.${licenceNote}`,
     };
   }
   if (visaStatus === "student_visa") {
     return {
       verdict: "amber",
-      reason: "Sponsorship isn't confirmed, and a Student visa doesn't carry full-time work rights on its own.",
+      reason: `Sponsorship isn't confirmed, and a Student visa doesn't carry full-time work rights on its own.${licenceNote}`,
     };
   }
   if (visaStatus === "skilled_worker_visa") {
     return {
       verdict: "amber",
-      reason: "Sponsorship isn't confirmed, and moving employers would need your sponsorship transferred.",
+      reason: `Sponsorship isn't confirmed, and moving employers would need your sponsorship transferred.${licenceNote}`,
     };
   }
   // "other" or "none"/unset
   return {
     verdict: "amber",
-    reason: "This employer's sponsorship stance isn't confirmed — check with them before applying.",
+    reason: `This employer's sponsorship stance isn't confirmed — check with them before applying.${licenceNote}`,
   };
 }

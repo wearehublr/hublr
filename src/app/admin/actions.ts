@@ -76,6 +76,9 @@ export async function updateOpportunity(id: string, formData: FormData) {
   const region = str(formData, "region") as Region | null;
   const status = str(formData, "status") as Status | null;
   const visa_sponsorship = str(formData, "visa_sponsorship") as VisaSponsorship | null;
+  const companySponsorLicenceRaw = str(formData, "company_sponsor_licence");
+  const company_sponsor_licence =
+    companySponsorLicenceRaw === "true" ? true : companySponsorLicenceRaw === "false" ? false : null;
 
   if (category && !CATEGORIES.includes(category)) throw new Error("Invalid category");
   if (region && !REGIONS.includes(region)) throw new Error("Invalid region");
@@ -96,6 +99,7 @@ export async function updateOpportunity(id: string, formData: FormData) {
       industry: str(formData, "industry"),
       status: status ?? undefined,
       visa_sponsorship: visa_sponsorship ?? undefined,
+      company_sponsor_licence,
       apply_url: str(formData, "apply_url"),
       notes: str(formData, "notes"),
       full_description: str(formData, "full_description"),
