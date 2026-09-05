@@ -13,6 +13,18 @@ import {
   type Citizenship,
   type VisaStatus,
 } from "@/types/profile";
+import { CATEGORIES, REGIONS, type Category, type Region } from "@/types/opportunity";
+
+const MAX_PREFERRED_CATEGORIES = 3;
+const MAX_PREFERRED_REGIONS = 2;
+
+function isCategory(value: string): value is Category {
+  return (CATEGORIES as readonly string[]).includes(value);
+}
+
+function isRegion(value: string): value is Region {
+  return (REGIONS as readonly string[]).includes(value);
+}
 
 export type FormState = { error: string | null };
 
@@ -64,6 +76,22 @@ export async function updateProfile(
     .map(String)
     .slice(0, MAX_INTERESTED_INDUSTRIES);
 
+  const preferred_categories = formData
+    .getAll("preferred_categories")
+    .map(String)
+    .filter(isCategory)
+    .slice(0, MAX_PREFERRED_CATEGORIES);
+
+  const preferred_regions = formData
+    .getAll("preferred_regions")
+    .map(String)
+    .filter(isRegion)
+    .slice(0, MAX_PREFERRED_REGIONS);
+
+  const sponsorshipRaw = str(formData, "requires_sponsorship");
+  const requires_sponsorship =
+    sponsorshipRaw === "yes" ? true : sponsorshipRaw === "no" ? false : null;
+
   const { error } = await supabase.from("profiles").upsert({
     id: user.id,
     preferred_name: str(formData, "preferred_name"),
@@ -78,6 +106,9 @@ export async function updateProfile(
     visa_expiry,
     graduation_year,
     interested_industries,
+    preferred_categories,
+    preferred_regions,
+    requires_sponsorship,
     email_notifications_enabled: formData.get("email_notifications_enabled") === "on",
   });
 

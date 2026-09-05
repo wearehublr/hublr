@@ -14,6 +14,10 @@ import {
   VISA_STATUSES,
   VISA_STATUS_LABELS,
 } from "@/types/profile";
+import { CATEGORIES, CATEGORY_LABELS, REGIONS, REGION_LABELS } from "@/types/opportunity";
+
+const MAX_PREFERRED_CATEGORIES = 3;
+const MAX_PREFERRED_REGIONS = 2;
 
 const initialState = { error: null };
 
@@ -25,6 +29,19 @@ export default function ProfileForm({ profile }: { profile: Profile | null }) {
   const [citizenship, setCitizenship] = useState<Citizenship | "">(
     profile?.citizenship ?? "",
   );
+  const [preferredCategories, setPreferredCategories] = useState<string[]>(
+    profile?.preferred_categories ?? [],
+  );
+  const [preferredRegions, setPreferredRegions] = useState<string[]>(
+    profile?.preferred_regions ?? [],
+  );
+  const [requiresSponsorship, setRequiresSponsorship] = useState<"yes" | "no" | "">(
+    profile?.requires_sponsorship === true
+      ? "yes"
+      : profile?.requires_sponsorship === false
+        ? "no"
+        : "",
+  );
 
   function toggleIndustry(industry: string) {
     setSelectedIndustries((prev) => {
@@ -32,6 +49,19 @@ export default function ProfileForm({ profile }: { profile: Profile | null }) {
       if (prev.length >= MAX_INTERESTED_INDUSTRIES) return prev;
       return [...prev, industry];
     });
+  }
+
+  function toggle(
+    list: string[],
+    setList: (v: string[]) => void,
+    value: string,
+    max: number,
+  ) {
+    if (list.includes(value)) {
+      setList(list.filter((v) => v !== value));
+    } else if (list.length < max) {
+      setList([...list, value]);
+    }
   }
 
   return (
@@ -201,6 +231,111 @@ export default function ProfileForm({ profile }: { profile: Profile | null }) {
               </label>
             );
           })}
+        </div>
+      </div>
+
+      <div>
+        <p className="text-sm font-medium mb-2">
+          Role types you&apos;re looking for (pick up to {MAX_PREFERRED_CATEGORIES})
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {CATEGORIES.filter((c) => c !== "other").map((category) => {
+            const checked = preferredCategories.includes(category);
+            const disabled =
+              !checked && preferredCategories.length >= MAX_PREFERRED_CATEGORIES;
+            return (
+              <label
+                key={category}
+                className={`text-sm rounded-full border px-3 py-1.5 cursor-pointer ${
+                  checked
+                    ? "bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 border-transparent"
+                    : "border-neutral-300 dark:border-neutral-700"
+                } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
+                <input
+                  type="checkbox"
+                  name="preferred_categories"
+                  value={category}
+                  checked={checked}
+                  disabled={disabled}
+                  onChange={() =>
+                    toggle(
+                      preferredCategories,
+                      setPreferredCategories,
+                      category,
+                      MAX_PREFERRED_CATEGORIES,
+                    )
+                  }
+                  className="sr-only"
+                />
+                {CATEGORY_LABELS[category]}
+              </label>
+            );
+          })}
+        </div>
+      </div>
+
+      <div>
+        <p className="text-sm font-medium mb-2">
+          Regions you&apos;re looking in (pick up to {MAX_PREFERRED_REGIONS})
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {REGIONS.map((region) => {
+            const checked = preferredRegions.includes(region);
+            const disabled =
+              !checked && preferredRegions.length >= MAX_PREFERRED_REGIONS;
+            return (
+              <label
+                key={region}
+                className={`text-sm rounded-full border px-3 py-1.5 cursor-pointer ${
+                  checked
+                    ? "bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 border-transparent"
+                    : "border-neutral-300 dark:border-neutral-700"
+                } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
+                <input
+                  type="checkbox"
+                  name="preferred_regions"
+                  value={region}
+                  checked={checked}
+                  disabled={disabled}
+                  onChange={() =>
+                    toggle(preferredRegions, setPreferredRegions, region, MAX_PREFERRED_REGIONS)
+                  }
+                  className="sr-only"
+                />
+                {REGION_LABELS[region]}
+              </label>
+            );
+          })}
+        </div>
+      </div>
+
+      <div>
+        <p className="text-sm font-medium mb-2">
+          Do you need an employer to sponsor your UK work visa?
+        </p>
+        <div className="flex gap-2">
+          {(["yes", "no"] as const).map((v) => (
+            <label
+              key={v}
+              className={`text-sm rounded-full border px-3 py-1.5 cursor-pointer ${
+                requiresSponsorship === v
+                  ? "bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 border-transparent"
+                  : "border-neutral-300 dark:border-neutral-700"
+              }`}
+            >
+              <input
+                type="checkbox"
+                name="requires_sponsorship"
+                value={v}
+                checked={requiresSponsorship === v}
+                onChange={() => setRequiresSponsorship(v)}
+                className="sr-only"
+              />
+              {v === "yes" ? "Yes" : "No"}
+            </label>
+          ))}
         </div>
       </div>
 
