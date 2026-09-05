@@ -2,7 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/require-admin";
-import { RESOURCE_TYPES, type ResourceType } from "@/types/interview-resource";
+import {
+  RESOURCE_TYPES,
+  type ResourceType,
+  INTERVIEW_TOPICS,
+  type InterviewTopic,
+} from "@/types/interview-resource";
 
 function str(formData: FormData, key: string): string | null {
   const v = formData.get(key);
@@ -21,6 +26,7 @@ export async function addResource(
   const title = str(formData, "title");
   const resource_type = str(formData, "resource_type") as ResourceType | null;
   const link_url = str(formData, "link_url");
+  const topic = (str(formData, "topic") as InterviewTopic | null) ?? "general";
 
   if (!title || !resource_type || !link_url) {
     return { error: "Title, type, and link URL are required." };
@@ -28,11 +34,15 @@ export async function addResource(
   if (!RESOURCE_TYPES.includes(resource_type)) {
     return { error: "Invalid resource type." };
   }
+  if (!INTERVIEW_TOPICS.includes(topic)) {
+    return { error: "Invalid topic." };
+  }
 
   const { error } = await supabase.from("interview_resources").insert({
     title,
     resource_type,
     link_url,
+    topic,
     description: str(formData, "description"),
     is_paid: formData.get("is_paid") === "on",
     price_label: str(formData, "price_label"),
@@ -52,6 +62,10 @@ export async function updateResource(id: string, formData: FormData) {
   if (resource_type && !RESOURCE_TYPES.includes(resource_type)) {
     throw new Error("Invalid resource type");
   }
+  const topic = str(formData, "topic") as InterviewTopic | null;
+  if (topic && !INTERVIEW_TOPICS.includes(topic)) {
+    throw new Error("Invalid topic");
+  }
 
   const { error } = await supabase
     .from("interview_resources")
@@ -59,6 +73,7 @@ export async function updateResource(id: string, formData: FormData) {
       title: str(formData, "title"),
       resource_type,
       link_url: str(formData, "link_url"),
+      topic,
       description: str(formData, "description"),
       is_paid: formData.get("is_paid") === "on",
       price_label: str(formData, "price_label"),

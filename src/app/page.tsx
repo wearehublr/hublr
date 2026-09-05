@@ -6,7 +6,11 @@ import {
   getPublishedOpportunities,
 } from "@/lib/opportunities";
 import { getRecommendedOpportunities, countClosingWithinDays } from "@/lib/recommendations";
-import { getUpcomingEvents, getUpcomingEventsCount } from "@/lib/events";
+import {
+  getUpcomingEvents,
+  getUpcomingEventsCount,
+  getUserSavedEvents,
+} from "@/lib/events";
 import { getPublishedInterviewResources } from "@/lib/interview-resources";
 import { getPublishedTestimonials } from "@/lib/testimonials";
 import { getPublishedNewsletterArticles } from "@/lib/newsletter-articles";
@@ -58,6 +62,7 @@ export default async function Home() {
     documents,
     savedSearches,
     newsletterArticles,
+    savedEvents,
   ] = await Promise.all([
     getUserApplications(supabase, user.id),
     getPublishedOpportunities(supabase),
@@ -66,6 +71,7 @@ export default async function Home() {
     getUserDocuments(supabase, user.id),
     getUserSavedSearches(supabase, user.id),
     getPublishedNewsletterArticles(supabase),
+    getUserSavedEvents(supabase, user.id),
   ]);
 
   const upcomingDeadlines = filterUpcomingDeadlines(
@@ -93,6 +99,7 @@ export default async function Home() {
       documents={documents}
       savedSearches={savedSearches}
       newsletterArticles={newsletterArticles.slice(0, 3)}
+      savedEvents={savedEvents}
     />
   );
 }

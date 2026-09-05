@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { HublrEvent } from "@/types/event";
+import type { SavedEventWithDetails } from "@/types/saved-event";
 import { compareByDate } from "@/lib/sort-by-date";
 
 export async function getPublishedEvents(
@@ -73,4 +74,18 @@ export async function getAllEvents(
 
   if (error) throw error;
   return data as HublrEvent[];
+}
+
+export async function getUserSavedEvents(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<SavedEventWithDetails[]> {
+  const { data, error } = await supabase
+    .from("saved_events")
+    .select("*, events(*)")
+    .eq("user_id", userId)
+    .order("event_date", { ascending: true, referencedTable: "events" });
+
+  if (error) throw error;
+  return data as unknown as SavedEventWithDetails[];
 }

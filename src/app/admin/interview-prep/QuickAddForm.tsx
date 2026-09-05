@@ -2,7 +2,12 @@
 
 import { useActionState, useRef } from "react";
 import { addResource } from "./actions";
-import { RESOURCE_TYPES, RESOURCE_TYPE_LABELS } from "@/types/interview-resource";
+import {
+  RESOURCE_TYPES,
+  RESOURCE_TYPE_LABELS,
+  INTERVIEW_TOPICS,
+  INTERVIEW_TOPIC_LABELS,
+} from "@/types/interview-resource";
 
 const initialState = { error: null };
 
@@ -54,6 +59,17 @@ export default function QuickAddForm() {
         required
         className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
       />
+      <select
+        name="topic"
+        defaultValue="general"
+        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+      >
+        {INTERVIEW_TOPICS.map((t) => (
+          <option key={t} value={t}>
+            {INTERVIEW_TOPIC_LABELS[t]}
+          </option>
+        ))}
+      </select>
 
       <label className="flex items-center gap-2 text-sm">
         <input type="checkbox" name="is_paid" className="h-4 w-4" />

@@ -2,7 +2,12 @@
 
 import { useState, useTransition } from "react";
 import type { InterviewResource } from "@/types/interview-resource";
-import { RESOURCE_TYPES, RESOURCE_TYPE_LABELS } from "@/types/interview-resource";
+import {
+  RESOURCE_TYPES,
+  RESOURCE_TYPE_LABELS,
+  INTERVIEW_TOPICS,
+  INTERVIEW_TOPIC_LABELS,
+} from "@/types/interview-resource";
 import {
   updateResource,
   deleteResource,
@@ -62,6 +67,17 @@ export default function AdminResourceRow({
           defaultValue={resource.link_url}
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
         />
+        <select
+          name="topic"
+          defaultValue={resource.topic ?? "general"}
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+        >
+          {INTERVIEW_TOPICS.map((t) => (
+            <option key={t} value={t}>
+              {INTERVIEW_TOPIC_LABELS[t]}
+            </option>
+          ))}
+        </select>
 
         <label className="flex items-center gap-2 text-sm">
           <input
@@ -113,6 +129,7 @@ export default function AdminResourceRow({
         <p className="font-medium truncate">{resource.title}</p>
         <p className="text-xs text-neutral-500 dark:text-neutral-400">
           {RESOURCE_TYPE_LABELS[resource.resource_type]} ·{" "}
+          {INTERVIEW_TOPIC_LABELS[resource.topic ?? "general"]} ·{" "}
           {resource.is_paid ? resource.price_label || "Paid" : "Free"}
           {!resource.is_published ? " · UNPUBLISHED" : ""}
         </p>

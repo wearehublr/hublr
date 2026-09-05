@@ -9,6 +9,8 @@ import {
 } from "@/types/event";
 import CompanyLogo from "@/app/components/CompanyLogo";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
+import RegisterButton from "@/app/components/RegisterButton";
+import SaveEventButton from "@/app/components/SaveEventButton";
 
 function formatDateTime(date: string): string {
   return new Date(date).toLocaleString("en-GB", {
@@ -97,24 +99,17 @@ export default async function EventDetailPage({
         </div>
       )}
 
-      {event.registration_url &&
-        (isLoggedIn ? (
-          <a
-            href={event.registration_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 inline-flex items-center justify-center rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-4 py-2 hover:opacity-90"
-          >
-            Register
-          </a>
-        ) : (
-          <Link
-            href="/login?next=/events"
-            className="mt-8 inline-flex items-center justify-center rounded-md border border-neutral-300 dark:border-neutral-700 text-sm font-medium px-4 py-2"
-          >
-            Log in to register
-          </Link>
-        ))}
+      {event.registration_url && (
+        <div className="mt-8 flex gap-2 max-w-sm">
+          <RegisterButton
+            eventId={event.id}
+            registrationUrl={event.registration_url}
+            isLoggedIn={isLoggedIn}
+            className="flex-1 inline-flex items-center justify-center rounded-md text-sm font-medium px-4 py-2"
+          />
+          <SaveEventButton eventId={event.id} isLoggedIn={isLoggedIn} />
+        </div>
+      )}
     </main>
   );
 }

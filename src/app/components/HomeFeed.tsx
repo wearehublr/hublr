@@ -7,6 +7,8 @@ import type { Document } from "@/types/document";
 import { DOC_TYPES, DOC_TYPE_LABELS } from "@/types/document";
 import type { SavedSearch } from "@/types/saved-search";
 import type { NewsletterArticle } from "@/types/newsletter-article";
+import type { SavedEventWithDetails } from "@/types/saved-event";
+import { SAVED_EVENT_STATUS_LABELS } from "@/types/saved-event";
 import type { RecommendedMatch } from "@/lib/recommendations";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import RecommendedFeed from "@/app/components/RecommendedFeed";
@@ -42,6 +44,7 @@ export default function HomeFeed({
   documents,
   savedSearches,
   newsletterArticles,
+  savedEvents,
 }: {
   name: string;
   upcomingDeadlines: Application[];
@@ -53,6 +56,7 @@ export default function HomeFeed({
   documents: Document[];
   savedSearches: SavedSearch[];
   newsletterArticles: NewsletterArticle[];
+  savedEvents: SavedEventWithDetails[];
 }) {
   return (
     <main className="flex-1">
@@ -207,6 +211,46 @@ export default function HomeFeed({
                     </li>
                   );
                 })}
+              </ul>
+            )}
+          </div>
+
+          <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
+            <div className="flex items-baseline justify-between mb-3">
+              <h2 className="text-sm font-semibold">My events</h2>
+              <Link href="/events" className="text-sm underline">
+                Browse
+              </Link>
+            </div>
+            {savedEvents.length === 0 ? (
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                Save an event from the{" "}
+                <Link href="/events" className="underline">
+                  events page
+                </Link>{" "}
+                to keep track of it here.
+              </p>
+            ) : (
+              <ul className="flex flex-col divide-y divide-neutral-200 dark:divide-neutral-800">
+                {savedEvents.map((s) => (
+                  <li key={s.id} className="py-2.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-medium text-sm truncate">
+                        {s.events.title}
+                      </p>
+                      <span className="shrink-0 text-xs rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5">
+                        {SAVED_EVENT_STATUS_LABELS[s.status]}
+                      </span>
+                    </div>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                      {new Date(s.events.event_date).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </li>
+                ))}
               </ul>
             )}
           </div>
