@@ -14,6 +14,8 @@ export function computeEligibility(
   profile: Profile | null,
   opportunity: Opportunity,
 ): EligibilityResult | null {
+  if (opportunity.region !== "uk") return null;
+
   if (!profile?.citizenship) return null;
 
   if (profile.citizenship === "uk" || profile.citizenship === "irish") {
