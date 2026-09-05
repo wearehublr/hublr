@@ -3,8 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { getUserApplications } from "@/lib/applications";
 import {
   getPublishedOpportunitiesCount,
-  getRecentPublishedOpportunities,
+  getPublishedOpportunities,
 } from "@/lib/opportunities";
+import { getRecommendedOpportunities, countClosingWithinDays } from "@/lib/recommendations";
 import { getUpcomingEvents, getUpcomingEventsCount } from "@/lib/events";
 import { getPublishedInterviewResources } from "@/lib/interview-resources";
 import { getPublishedTestimonials } from "@/lib/testimonials";
@@ -51,7 +52,7 @@ export default async function Home() {
 
   const [
     applications,
-    recentOpportunities,
+    opportunities,
     upcomingEvents,
     resources,
     documents,
@@ -59,8 +60,8 @@ export default async function Home() {
     newsletterArticles,
   ] = await Promise.all([
     getUserApplications(supabase, user.id),
-    getRecentPublishedOpportunities(supabase, 3),
-    getUpcomingEvents(supabase, 3),
+    getPublishedOpportunities(supabase),
+    getUpcomingEvents(supabase, 20),
     getPublishedInterviewResources(supabase),
     getUserDocuments(supabase, user.id),
     getUserSavedSearches(supabase, user.id),
@@ -76,12 +77,17 @@ export default async function Home() {
   ).length;
   const name = profile.preferred_name ?? user.email?.split("@")[0] ?? "there";
 
+  const recommended = getRecommendedOpportunities(opportunities, profile, 3);
+
+  const closingThisWeekCount = countClosingWithinDays(opportunities, 7);
+
   return (
     <HomeFeed
       name={name}
       upcomingDeadlines={upcomingDeadlines}
-      recentOpportunities={recentOpportunities}
-      upcomingEvents={upcomingEvents}
+      recommended={recommended}
+      closingThisWeekCount={closingThisWeekCount}
+      upcomingEvents={upcomingEvents.slice(0, 3)}
       recentResources={resources.slice(0, 3)}
       activeApplicationsCount={activeApplicationsCount}
       documents={documents}

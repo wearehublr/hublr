@@ -1,12 +1,13 @@
 import Link from "next/link";
 import type { Application } from "@/types/application";
-import type { Opportunity } from "@/types/opportunity";
+import { STAGE_LABELS } from "@/types/application";
 import type { HublrEvent } from "@/types/event";
 import type { InterviewResource } from "@/types/interview-resource";
 import type { Document } from "@/types/document";
 import { DOC_TYPES, DOC_TYPE_LABELS } from "@/types/document";
 import type { SavedSearch } from "@/types/saved-search";
 import type { NewsletterArticle } from "@/types/newsletter-article";
+import type { RecommendedMatch } from "@/lib/recommendations";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import RecommendedFeed from "@/app/components/RecommendedFeed";
 
@@ -33,7 +34,8 @@ function StatTile({
 export default function HomeFeed({
   name,
   upcomingDeadlines,
-  recentOpportunities,
+  recommended,
+  closingThisWeekCount,
   upcomingEvents,
   recentResources,
   activeApplicationsCount,
@@ -43,7 +45,8 @@ export default function HomeFeed({
 }: {
   name: string;
   upcomingDeadlines: Application[];
-  recentOpportunities: Opportunity[];
+  recommended: RecommendedMatch[];
+  closingThisWeekCount: number;
   upcomingEvents: HublrEvent[];
   recentResources: InterviewResource[];
   activeApplicationsCount: number;
@@ -67,6 +70,16 @@ export default function HomeFeed({
       <div className="mx-auto w-full max-w-6xl px-4 pt-8 sm:px-6">
         <div className="flex flex-wrap gap-4">
           <StatTile
+            href="/opportunities"
+            value={closingThisWeekCount}
+            label="🔥 Closing this week"
+          />
+          <StatTile
+            href="/opportunities"
+            value={recommended.filter((r) => r.reasons.length > 0).length}
+            label="🎯 Matched to you"
+          />
+          <StatTile
             href="/dashboard"
             value={activeApplicationsCount}
             label="Active applications"
@@ -87,7 +100,7 @@ export default function HomeFeed({
       <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 flex flex-col gap-8">
           <RecommendedFeed
-            opportunities={recentOpportunities}
+            opportunities={recommended}
             events={upcomingEvents}
             resources={recentResources}
           />
@@ -141,13 +154,26 @@ export default function HomeFeed({
               <ul className="flex flex-col divide-y divide-neutral-200 dark:divide-neutral-800">
                 {upcomingDeadlines.map((a) => (
                   <li key={a.id} className="py-2.5">
-                    <p className="font-medium text-sm truncate">{a.company}</p>
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-medium text-sm truncate">{a.company}</p>
+                      <span className="shrink-0 text-xs rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5">
+                        {STAGE_LABELS[a.stage]}
+                      </span>
+                    </div>
                     <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
                       {a.role_title}
                     </p>
                     <div className="mt-0.5">
                       <DeadlineBadge deadline={a.deadline} />
                     </div>
+                    {a.stage === "interview" && (
+                      <p className="mt-1 text-xs">
+                        Prepping for an interview?{" "}
+                        <Link href="/interview-prep" className="underline">
+                          Interview Prep
+                        </Link>
+                      </p>
+                    )}
                   </li>
                 ))}
               </ul>

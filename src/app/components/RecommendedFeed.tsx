@@ -2,8 +2,8 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import type { Opportunity } from "@/types/opportunity";
 import { CATEGORY_LABELS, REGION_LABELS } from "@/types/opportunity";
+import type { RecommendedMatch } from "@/lib/recommendations";
 import type { HublrEvent } from "@/types/event";
 import { EVENT_TYPE_LABELS } from "@/types/event";
 import type { InterviewResource } from "@/types/interview-resource";
@@ -45,7 +45,7 @@ export default function RecommendedFeed({
   events,
   resources,
 }: {
-  opportunities: Opportunity[];
+  opportunities: RecommendedMatch[];
   events: HublrEvent[];
   resources: InterviewResource[];
 }) {
@@ -87,7 +87,7 @@ export default function RecommendedFeed({
               Nothing published yet. Check back soon.
             </p>
           )}
-          {opportunities.map((o) => (
+          {opportunities.map(({ opportunity: o, reasons }) => (
             <div
               key={o.id}
               className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4 flex items-start justify-between gap-3"
@@ -113,6 +113,11 @@ export default function RecommendedFeed({
                 <div className="mt-1">
                   <DeadlineBadge deadline={o.deadline} />
                 </div>
+                {reasons.length > 0 && (
+                  <p className="mt-1 text-xs text-emerald-700 dark:text-emerald-400">
+                    {reasons.map((r) => `✓ ${r}`).join(" · ")}
+                  </p>
+                )}
                 </div>
               </Link>
               <button
