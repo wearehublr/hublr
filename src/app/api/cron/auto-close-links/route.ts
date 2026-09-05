@@ -3,9 +3,13 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { closeDeadOpportunityLinks } from "@/lib/check-dead-links";
 
 export const dynamic = "force-dynamic";
-// Real outbound HTTP checks (up to 25 opportunities, batches of 5, 8s
+// Real outbound HTTP checks (up to 50 opportunities, batches of 5, 8s
 // timeout each) can take longer than the platform default; 60s is the
-// Hobby-plan ceiling for a Vercel serverless function.
+// Hobby-plan ceiling for a Vercel serverless function. Worst case here is
+// 10 sequential batches of 5 timing out fully (10 x 8s = 80s), but that
+// requires every single request to hang for the full 8s - in practice
+// most resolve in well under a second, so this stays comfortably inside
+// the 60s ceiling. Re-check this math before raising batchSize further.
 export const maxDuration = 60;
 
 export async function GET(request: NextRequest) {

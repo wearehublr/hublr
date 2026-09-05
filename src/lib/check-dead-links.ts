@@ -129,9 +129,12 @@ async function runInBatches<T>(
 // matters most for 'rolling' listings with no deadline to expire against.
 // A bounded batch, oldest-checked-first, keeps each run fast and spreads
 // outbound requests across days rather than hitting every stored URL daily.
+// 50 (at CONCURRENCY=5, 8s timeout) keeps worst-case runtime under the
+// platform's serverless function timeout - see maxDuration in the cron
+// route for the exact ceiling this is sized against.
 export async function closeDeadOpportunityLinks(
   supabase: SupabaseClient,
-  batchSize = 25,
+  batchSize = 50,
 ): Promise<{ checked: number; closed: number }> {
   const { data: opportunities, error } = await supabase
     .from("opportunities")
