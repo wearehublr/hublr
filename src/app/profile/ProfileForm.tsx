@@ -122,7 +122,7 @@ export default function ProfileForm({ profile }: { profile: Profile | null }) {
           ))}
         </select>
         <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-          Used to show you a personalized eligibility check on each opportunity.
+          Helps us understand your visa situation. Not shown publicly or used to filter opportunities.
         </p>
       </div>
 

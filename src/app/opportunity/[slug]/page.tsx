@@ -2,15 +2,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getPublishedOpportunityById } from "@/lib/opportunities";
-import { getProfile } from "@/lib/profiles";
 import { opportunityIdFromSlug } from "@/lib/slug";
-import { CATEGORY_LABELS, REGION_LABELS, STATUS_LABELS, VISA_SPONSORSHIP_LABELS } from "@/types/opportunity";
-import { computeEligibility } from "@/lib/eligibility";
+import { CATEGORY_LABELS, REGION_LABELS, STATUS_LABELS } from "@/types/opportunity";
+import { getSponsorshipDisplay } from "@/lib/visa-sponsorship";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import TrackButton from "@/app/components/TrackButton";
 import ApplyButton from "@/app/components/ApplyButton";
 import CompanyLogo from "@/app/components/CompanyLogo";
-import EligibilityBadge from "@/app/components/EligibilityBadge";
+import VisaSponsorshipBadge from "@/app/components/VisaSponsorshipBadge";
 
 function formatDate(date: string): string {
   return new Date(date).toLocaleDateString("en-GB", {
@@ -38,10 +37,7 @@ export default async function OpportunityDetailPage({
     notFound();
   }
 
-  const profile = userData.user
-    ? await getProfile(supabase, userData.user.id)
-    : null;
-  const eligibility = computeEligibility(profile, opportunity);
+  const sponsorship = getSponsorshipDisplay(opportunity);
 
   const location = [opportunity.city, opportunity.country]
     .filter(Boolean)
@@ -87,34 +83,8 @@ export default async function OpportunityDetailPage({
         <span className="rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5">
           {STATUS_LABELS[opportunity.status]}
         </span>
-        {opportunity.visa_sponsorship !== "unknown" && (
-          <span
-            className={
-              opportunity.visa_sponsorship === "yes"
-                ? "rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2 py-0.5"
-                : "rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5"
-            }
-          >
-            {VISA_SPONSORSHIP_LABELS[opportunity.visa_sponsorship]}
-          </span>
-        )}
-        {eligibility && <EligibilityBadge result={eligibility} />}
+        {sponsorship && <VisaSponsorshipBadge sponsorship={sponsorship} />}
       </div>
-
-      {userData.user && !profile?.citizenship && (
-        <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
-          <Link href="/profile" className="underline">
-            Add your citizenship and visa status
-          </Link>{" "}
-          to see if you&rsquo;re eligible for this role.
-        </p>
-      )}
-
-      {eligibility && (
-        <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
-          {eligibility.reason}
-        </p>
-      )}
 
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
         <DeadlineBadge deadline={opportunity.deadline} />

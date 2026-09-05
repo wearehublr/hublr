@@ -13,11 +13,10 @@ import {
   VISA_SPONSORSHIP_OPTIONS,
   VISA_SPONSORSHIP_LABELS,
 } from "@/types/opportunity";
-import type { Profile } from "@/types/profile";
-import { computeEligibility } from "@/lib/eligibility";
+import { getSponsorshipDisplay } from "@/lib/visa-sponsorship";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import CompanyLogo from "@/app/components/CompanyLogo";
-import EligibilityBadge from "@/app/components/EligibilityBadge";
+import VisaSponsorshipBadge from "@/app/components/VisaSponsorshipBadge";
 import { trackApplication } from "@/app/opportunities/actions";
 import { saveSearch } from "@/app/opportunities/saved-search-actions";
 import { buildOpportunitySlug } from "@/lib/slug";
@@ -42,11 +41,9 @@ const SORT_LABELS: Record<SortOption, string> = {
 export default function OpportunityBrowser({
   opportunities,
   isLoggedIn,
-  profile,
 }: {
   opportunities: Opportunity[];
   isLoggedIn: boolean;
-  profile: Profile | null;
 }) {
   const [search, setSearch] = useState("");
   const [region, setRegion] = useState<Region | "all">("all");
@@ -285,33 +282,6 @@ export default function OpportunityBrowser({
         </span>
       </div>
 
-      {isLoggedIn && !profile?.citizenship && (
-        <p className="text-xs text-neutral-500 dark:text-neutral-400">
-          <Link href="/profile" className="underline">
-            Add your citizenship and visa status
-          </Link>{" "}
-          to see a personalized eligibility check on each role.
-        </p>
-      )}
-
-      {isLoggedIn && profile?.citizenship && (
-        <p className="text-xs text-neutral-500 dark:text-neutral-400">
-          Eligibility check, based on your profile:{" "}
-          <span className="rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-1.5 py-0.5">
-            You&rsquo;re eligible
-          </span>{" "}
-          you meet this role&rsquo;s visa/citizenship requirements ·{" "}
-          <span className="rounded-full bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 px-1.5 py-0.5">
-            Check eligibility
-          </span>{" "}
-          it depends on details we can&rsquo;t confirm (e.g. sponsorship isn&rsquo;t stated) ·{" "}
-          <span className="rounded-full bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 px-1.5 py-0.5">
-            Likely not eligible
-          </span>{" "}
-          this role&rsquo;s requirements likely rule you out. Hover a badge for the specific reason.
-        </p>
-      )}
-
       {filtered.length === 0 ? (
         <p className="text-sm text-neutral-500 dark:text-neutral-400 py-12 text-center">
           No opportunities match your filters.
@@ -319,7 +289,7 @@ export default function OpportunityBrowser({
       ) : (
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((o) => {
-            const eligibility = computeEligibility(profile, o);
+            const sponsorship = getSponsorshipDisplay(o);
             return (
             <li
               key={o.id}
@@ -362,12 +332,7 @@ export default function OpportunityBrowser({
                     {o.industry}
                   </span>
                 )}
-                {o.visa_sponsorship === "yes" && (
-                  <span className="rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 px-2 py-0.5">
-                    Sponsors visas
-                  </span>
-                )}
-                {eligibility && <EligibilityBadge result={eligibility} />}
+                {sponsorship && <VisaSponsorshipBadge sponsorship={sponsorship} />}
               </div>
 
               <DeadlineBadge deadline={o.deadline} />

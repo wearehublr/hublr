@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { getPublishedOpportunities } from "@/lib/opportunities";
-import { getProfile } from "@/lib/profiles";
 import OpportunityBrowser from "@/app/components/OpportunityBrowser";
 
 export const dynamic = "force-dynamic";
@@ -11,9 +10,6 @@ export default async function OpportunitiesPage() {
     supabase.auth.getUser(),
     getPublishedOpportunities(supabase),
   ]);
-  const profile = userData.user
-    ? await getProfile(supabase, userData.user.id)
-    : null;
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
@@ -30,7 +26,6 @@ export default async function OpportunitiesPage() {
       <OpportunityBrowser
         opportunities={opportunities}
         isLoggedIn={!!userData.user}
-        profile={profile}
       />
     </main>
   );
