@@ -14,6 +14,7 @@ import {
   VISA_SPONSORSHIP_LABELS,
 } from "@/types/opportunity";
 import { getSponsorshipDisplay } from "@/lib/visa-sponsorship";
+import { isClosingWithinDays } from "@/lib/recommendations";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import CompanyLogo from "@/app/components/CompanyLogo";
 import VisaSponsorshipBadge from "@/app/components/VisaSponsorshipBadge";
@@ -97,6 +98,65 @@ export default function OpportunityBrowser({
   const [autoFiltered, setAutoFiltered] = useState(
     !!(initialIndustryMatch || initialCategoryMatch || initialRegionMatch || initialVisaMatch),
   );
+  const [closingSoonOnly, setClosingSoonOnly] = useState(false);
+
+  const closingSoonCount = useMemo(
+    () => opportunities.filter((o) => isClosingWithinDays(o, 7)).length,
+    [opportunities],
+  );
+  const sponsorsVisaCount = useMemo(
+    () => opportunities.filter((o) => o.visa_sponsorship === "yes").length,
+    [opportunities],
+  );
+  const hasRecommendation = !!(
+    initialIndustryMatch ||
+    initialCategoryMatch ||
+    initialRegionMatch ||
+    initialVisaMatch
+  );
+  const recommendedCount = useMemo(() => {
+    if (!hasRecommendation) return 0;
+    return opportunities.filter((o) => {
+      if (o.status === "closed") return false;
+      if (initialIndustryMatch && o.industry === initialIndustryMatch) return true;
+      if (initialCategoryMatch && o.category === initialCategoryMatch) return true;
+      if (initialRegionMatch && o.region === initialRegionMatch) return true;
+      if (initialVisaMatch && o.visa_sponsorship === "yes") return true;
+      return false;
+    }).length;
+  }, [
+    opportunities,
+    hasRecommendation,
+    initialIndustryMatch,
+    initialCategoryMatch,
+    initialRegionMatch,
+    initialVisaMatch,
+  ]);
+
+  function toggleClosingSoon() {
+    setClosingSoonOnly((prev) => !prev);
+  }
+
+  function toggleSponsorsVisa() {
+    setVisaSponsorship((prev) => (prev === "yes" ? "all" : "yes"));
+    setAutoFiltered(false);
+  }
+
+  function toggleRecommended() {
+    if (autoFiltered) {
+      setIndustry("all");
+      setCategory("all");
+      setRegion("all");
+      setVisaSponsorship("all");
+      setAutoFiltered(false);
+    } else {
+      setIndustry(initialIndustryMatch ?? "all");
+      setCategory(initialCategoryMatch ?? "all");
+      setRegion(initialRegionMatch ?? "all");
+      setVisaSponsorship(initialVisaMatch ?? "all");
+      setAutoFiltered(true);
+    }
+  }
 
   function handleTrack(id: string) {
     startTransition(async () => {
@@ -161,6 +221,7 @@ export default function OpportunityBrowser({
       if (industry !== "all" && o.industry !== industry) return false;
       if (visaSponsorship !== "all" && o.visa_sponsorship !== visaSponsorship)
         return false;
+      if (closingSoonOnly && !isClosingWithinDays(o, 7)) return false;
       if (
         q &&
         !`${o.company} ${o.role_title}`.toLowerCase().includes(q)
@@ -189,11 +250,67 @@ export default function OpportunityBrowser({
     status,
     industry,
     visaSponsorship,
+    closingSoonOnly,
     sortBy,
   ]);
 
   return (
     <div className="flex flex-col gap-6">
+      <div className="flex flex-wrap gap-3">
+        <button
+          type="button"
+          onClick={toggleClosingSoon}
+          className={`flex-1 min-w-[150px] rounded-lg border p-3 text-left transition-colors ${
+            closingSoonOnly
+              ? "border-red-400 dark:border-red-800 bg-red-50 dark:bg-red-950/30"
+              : "border-neutral-200 dark:border-neutral-800 hover:border-red-300 dark:hover:border-red-800"
+          }`}
+        >
+          <p className="text-2xl font-bold tracking-tight text-red-600 dark:text-red-400">
+            {closingSoonCount}
+          </p>
+          <p className="text-sm text-neutral-600 dark:text-neutral-300">
+            🔥 Closing within 7 days
+          </p>
+        </button>
+
+        {hasRecommendation && (
+          <button
+            type="button"
+            onClick={toggleRecommended}
+            className={`flex-1 min-w-[150px] rounded-lg border p-3 text-left transition-colors ${
+              autoFiltered
+                ? "border-brand dark:border-brand-light bg-brand/5 dark:bg-brand-light/10"
+                : "border-neutral-200 dark:border-neutral-800 hover:border-brand/50 dark:hover:border-brand-light/50"
+            }`}
+          >
+            <p className="text-2xl font-bold tracking-tight text-brand dark:text-brand-light">
+              {recommendedCount}
+            </p>
+            <p className="text-sm text-neutral-600 dark:text-neutral-300">
+              🎯 Recommended for you
+            </p>
+          </button>
+        )}
+
+        <button
+          type="button"
+          onClick={toggleSponsorsVisa}
+          className={`flex-1 min-w-[150px] rounded-lg border p-3 text-left transition-colors ${
+            visaSponsorship === "yes"
+              ? "border-emerald-400 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/30"
+              : "border-neutral-200 dark:border-neutral-800 hover:border-emerald-300 dark:hover:border-emerald-800"
+          }`}
+        >
+          <p className="text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
+            {sponsorsVisaCount}
+          </p>
+          <p className="text-sm text-neutral-600 dark:text-neutral-300">
+            🌍 Sponsors visas
+          </p>
+        </button>
+      </div>
+
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <input
           type="search"

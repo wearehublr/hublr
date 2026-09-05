@@ -74,17 +74,17 @@ export function getRecommendedOpportunities(
   return [...top, ...fillers];
 }
 
+export function isClosingWithinDays(opportunity: Opportunity, days: number): boolean {
+  if (opportunity.status === "closed" || opportunity.deadline === null) return false;
+  const now = Date.now();
+  const windowEnd = now + days * 24 * 60 * 60 * 1000;
+  const deadlineMs = new Date(opportunity.deadline).getTime();
+  return deadlineMs >= now && deadlineMs <= windowEnd;
+}
+
 export function countClosingWithinDays(
   opportunities: Opportunity[],
   days: number,
 ): number {
-  const now = Date.now();
-  const windowEnd = now + days * 24 * 60 * 60 * 1000;
-  return opportunities.filter(
-    (o) =>
-      o.status !== "closed" &&
-      o.deadline !== null &&
-      new Date(o.deadline).getTime() >= now &&
-      new Date(o.deadline).getTime() <= windowEnd,
-  ).length;
+  return opportunities.filter((o) => isClosingWithinDays(o, days)).length;
 }
