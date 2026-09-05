@@ -3,8 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 import { getVisaSponsorshipOpportunities } from "@/lib/opportunities";
 import { getPublishedInternationalResources } from "@/lib/international-resources";
 import { INTL_RESOURCE_TYPE_LABELS } from "@/types/international-resource";
+import { CATEGORY_LABELS, REGION_LABELS } from "@/types/opportunity";
 import { buildOpportunitySlug } from "@/lib/slug";
 import CompanyLogo from "@/app/components/CompanyLogo";
+import DeadlineBadge from "@/app/components/DeadlineBadge";
+import VisaSponsorshipBadge from "@/app/components/VisaSponsorshipBadge";
 
 export const dynamic = "force-dynamic";
 
@@ -54,13 +57,28 @@ export default async function InternationalPage() {
                   className="hover:underline flex items-start gap-3"
                 >
                   <CompanyLogo company={o.company} logoUrl={o.logo_url} size={32} />
-                  <div>
+                  <div className="min-w-0">
                     <p className="font-semibold leading-tight">{o.company}</p>
                     <p className="text-sm text-neutral-600 dark:text-neutral-300 leading-tight">
                       {o.role_title}
                     </p>
                   </div>
                 </Link>
+
+                <div className="mt-2 flex flex-wrap gap-1.5 text-xs">
+                  <VisaSponsorshipBadge sponsorship="yes" />
+                  <span className="rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5">
+                    {o.cycle_year} &middot; {CATEGORY_LABELS[o.category]}
+                  </span>
+                  <span className="rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5">
+                    {REGION_LABELS[o.region]}
+                    {o.city ? ` · ${o.city}` : ""}
+                  </span>
+                </div>
+
+                <div className="mt-1.5">
+                  <DeadlineBadge deadline={o.deadline} />
+                </div>
               </li>
             ))}
           </ul>

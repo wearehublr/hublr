@@ -4,6 +4,8 @@ import { getUserApplications } from "@/lib/applications";
 import {
   getPublishedOpportunitiesCount,
   getPublishedOpportunities,
+  getVisaSponsorshipOpportunitiesCount,
+  getOpportunitiesClosingWithinDaysCount,
 } from "@/lib/opportunities";
 import { getRecommendedOpportunities, countClosingWithinDays } from "@/lib/recommendations";
 import {
@@ -32,19 +34,29 @@ export default async function Home() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const [opportunitiesCount, eventsCount, testimonials, articles] =
-      await Promise.all([
-        getPublishedOpportunitiesCount(supabase),
-        getUpcomingEventsCount(supabase),
-        getPublishedTestimonials(supabase),
-        getPublishedNewsletterArticles(supabase),
-      ]);
+    const [
+      opportunitiesCount,
+      eventsCount,
+      testimonials,
+      articles,
+      sponsorshipCount,
+      closingThisWeekCount,
+    ] = await Promise.all([
+      getPublishedOpportunitiesCount(supabase),
+      getUpcomingEventsCount(supabase),
+      getPublishedTestimonials(supabase),
+      getPublishedNewsletterArticles(supabase),
+      getVisaSponsorshipOpportunitiesCount(supabase),
+      getOpportunitiesClosingWithinDaysCount(supabase, 7),
+    ]);
     return (
       <MarketingHome
         opportunitiesCount={opportunitiesCount}
         eventsCount={eventsCount}
         testimonials={testimonials}
         articles={articles.slice(0, 3)}
+        sponsorshipCount={sponsorshipCount}
+        closingThisWeekCount={closingThisWeekCount}
       />
     );
   }

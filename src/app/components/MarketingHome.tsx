@@ -66,11 +66,15 @@ export default function MarketingHome({
   eventsCount,
   testimonials,
   articles,
+  sponsorshipCount,
+  closingThisWeekCount,
 }: {
   opportunitiesCount: number;
   eventsCount: number;
   testimonials: Testimonial[];
   articles: NewsletterArticle[];
+  sponsorshipCount: number;
+  closingThisWeekCount: number;
 }) {
   return (
     <main className="flex-1">
@@ -122,7 +126,7 @@ export default function MarketingHome({
 
       <section className="border-b border-neutral-200 dark:border-neutral-800">
         <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 flex flex-col sm:flex-row items-center gap-8 sm:gap-16">
-          <div className="flex gap-10">
+          <div className="flex flex-wrap gap-6 sm:gap-10">
             <div>
               <p className="text-3xl font-bold tracking-tight">
                 {opportunitiesCount}
@@ -137,6 +141,22 @@ export default function MarketingHome({
               </p>
               <p className="text-sm text-neutral-500 dark:text-neutral-400">
                 upcoming events
+              </p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold tracking-tight text-red-600 dark:text-red-400">
+                {closingThisWeekCount}
+              </p>
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                closing this week
+              </p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
+                {sponsorshipCount}
+              </p>
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                sponsor visas
               </p>
             </div>
           </div>

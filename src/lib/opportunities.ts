@@ -77,6 +77,38 @@ export async function getVisaSponsorshipOpportunities(
   return data as Opportunity[];
 }
 
+export async function getVisaSponsorshipOpportunitiesCount(
+  supabase: SupabaseClient,
+): Promise<number> {
+  const { count, error } = await supabase
+    .from("opportunities")
+    .select("*", { count: "exact", head: true })
+    .eq("is_published", true)
+    .eq("visa_sponsorship", "yes");
+
+  if (error) throw error;
+  return count ?? 0;
+}
+
+export async function getOpportunitiesClosingWithinDaysCount(
+  supabase: SupabaseClient,
+  days: number,
+): Promise<number> {
+  const now = new Date();
+  const windowEnd = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+
+  const { count, error } = await supabase
+    .from("opportunities")
+    .select("*", { count: "exact", head: true })
+    .eq("is_published", true)
+    .neq("status", "closed")
+    .gte("deadline", now.toISOString())
+    .lte("deadline", windowEnd.toISOString());
+
+  if (error) throw error;
+  return count ?? 0;
+}
+
 export async function getPublishedOpportunityById(
   supabase: SupabaseClient,
   id: string,
