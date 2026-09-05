@@ -110,6 +110,13 @@ export default function MarketingHome({
               Browse opportunities
             </Link>
           </div>
+
+          <p className="mt-4 text-xs text-neutral-500 dark:text-neutral-400">
+            A free account gets you: track applications &middot; deadline
+            reminders &middot; saved events &middot; visa sponsoring roles
+            &middot; personalised recommendations &middot; your CVs in one
+            place
+          </p>
         </section>
       </div>
 
