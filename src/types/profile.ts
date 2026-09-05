@@ -85,6 +85,10 @@ export interface Profile {
   visa_status: VisaStatus | null;
   visa_expiry: string | null;
   graduation_year: number | null;
+  preferred_categories: string[];
+  preferred_regions: string[];
+  requires_sponsorship: boolean | null;
+  onboarding_completed_at: string | null;
   created_at: string;
   updated_at: string;
 }

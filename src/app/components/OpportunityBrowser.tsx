@@ -41,22 +41,62 @@ const SORT_LABELS: Record<SortOption, string> = {
 export default function OpportunityBrowser({
   opportunities,
   isLoggedIn,
+  initialIndustry = null,
+  initialCategory = null,
+  initialRegion = null,
+  initialRequiresSponsorship = null,
 }: {
   opportunities: Opportunity[];
   isLoggedIn: boolean;
+  initialIndustry?: string | null;
+  initialCategory?: string | null;
+  initialRegion?: string | null;
+  initialRequiresSponsorship?: boolean | null;
 }) {
+  const initialIndustries = useMemo(() => {
+    const set = new Set<string>();
+    for (const o of opportunities) {
+      if (o.industry) set.add(o.industry);
+    }
+    return set;
+  }, [opportunities]);
+  const initialIndustryMatch =
+    initialIndustry && initialIndustries.has(initialIndustry) ? initialIndustry : null;
+  const initialCategoryMatch =
+    initialCategory && (CATEGORIES as readonly string[]).includes(initialCategory)
+      ? (initialCategory as Category)
+      : null;
+  const initialRegionMatch =
+    initialRegion && (REGIONS as readonly string[]).includes(initialRegion)
+      ? (initialRegion as Region)
+      : null;
+  const initialVisaMatch = initialRequiresSponsorship === true ? "yes" : null;
+  const autoFilterLabel = [
+    initialIndustryMatch,
+    initialCategoryMatch ? CATEGORY_LABELS[initialCategoryMatch] : null,
+    initialRegionMatch ? REGION_LABELS[initialRegionMatch] : null,
+    initialVisaMatch ? "sponsors visas" : null,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
   const [search, setSearch] = useState("");
-  const [region, setRegion] = useState<Region | "all">("all");
-  const [category, setCategory] = useState<Category | "all">("all");
+  const [region, setRegion] = useState<Region | "all">(initialRegionMatch ?? "all");
+  const [category, setCategory] = useState<Category | "all">(initialCategoryMatch ?? "all");
   const [status, setStatus] = useState<Status | "all">("all");
-  const [industry, setIndustry] = useState<string>("all");
-  const [visaSponsorship, setVisaSponsorship] = useState<VisaSponsorship | "all">("all");
+  const [industry, setIndustry] = useState<string>(initialIndustryMatch ?? "all");
+  const [visaSponsorship, setVisaSponsorship] = useState<VisaSponsorship | "all">(
+    initialVisaMatch ?? "all",
+  );
   const [year, setYear] = useState<number | "all">("all");
   const [sortBy, setSortBy] = useState<SortOption>("deadline");
   const [tracked, setTracked] = useState<Set<string>>(new Set());
   const [isPending, startTransition] = useTransition();
   const [alertSaved, setAlertSaved] = useState(false);
   const [alertSaving, setAlertSaving] = useState(false);
+  const [autoFiltered, setAutoFiltered] = useState(
+    !!(initialIndustryMatch || initialCategoryMatch || initialRegionMatch || initialVisaMatch),
+  );
 
   function handleTrack(id: string) {
     startTransition(async () => {
@@ -100,13 +140,10 @@ export default function OpportunityBrowser({
     });
   }
 
-  const industries = useMemo(() => {
-    const set = new Set<string>();
-    for (const o of opportunities) {
-      if (o.industry) set.add(o.industry);
-    }
-    return Array.from(set).sort();
-  }, [opportunities]);
+  const industries = useMemo(
+    () => Array.from(initialIndustries).sort(),
+    [initialIndustries],
+  );
 
   const years = useMemo(() => {
     const set = new Set<number>();
@@ -162,7 +199,10 @@ export default function OpportunityBrowser({
           type="search"
           placeholder="Search company or role..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setAutoFiltered(false);
+          }}
           className="w-full sm:w-64 rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-neutral-400"
         />
 
@@ -185,7 +225,10 @@ export default function OpportunityBrowser({
 
         <select
           value={region}
-          onChange={(e) => setRegion(e.target.value as Region | "all")}
+          onChange={(e) => {
+            setRegion(e.target.value as Region | "all");
+            setAutoFiltered(false);
+          }}
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
         >
           <option value="all">All regions</option>
@@ -198,7 +241,10 @@ export default function OpportunityBrowser({
 
         <select
           value={category}
-          onChange={(e) => setCategory(e.target.value as Category | "all")}
+          onChange={(e) => {
+            setCategory(e.target.value as Category | "all");
+            setAutoFiltered(false);
+          }}
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
         >
           <option value="all">All categories</option>
@@ -211,7 +257,10 @@ export default function OpportunityBrowser({
 
         <select
           value={status}
-          onChange={(e) => setStatus(e.target.value as Status | "all")}
+          onChange={(e) => {
+            setStatus(e.target.value as Status | "all");
+            setAutoFiltered(false);
+          }}
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
         >
           <option value="all">All statuses</option>
@@ -225,7 +274,10 @@ export default function OpportunityBrowser({
         {industries.length > 0 && (
           <select
             value={industry}
-            onChange={(e) => setIndustry(e.target.value)}
+            onChange={(e) => {
+              setIndustry(e.target.value);
+              setAutoFiltered(false);
+            }}
             className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
           >
             <option value="all">All industries</option>
@@ -239,7 +291,10 @@ export default function OpportunityBrowser({
 
         <select
           value={visaSponsorship}
-          onChange={(e) => setVisaSponsorship(e.target.value as VisaSponsorship | "all")}
+          onChange={(e) => {
+            setVisaSponsorship(e.target.value as VisaSponsorship | "all");
+            setAutoFiltered(false);
+          }}
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
         >
           <option value="all">Visa sponsorship: all</option>
@@ -277,6 +332,17 @@ export default function OpportunityBrowser({
           </button>
         )}
 
+      </div>
+
+      {autoFiltered && (
+        <p className="text-xs text-neutral-500 dark:text-neutral-400">
+          Filtered to <strong>{autoFilterLabel}</strong> based on your profile. Click{" "}
+          <strong>Get alerted for this search</strong> to get emailed when new
+          matches appear, or change the filters above to see everything.
+        </p>
+      )}
+
+      <div className="flex items-center">
         <span className="sm:ml-auto text-sm text-neutral-500 dark:text-neutral-400">
           {filtered.length} of {opportunities.length} opportunities
         </span>

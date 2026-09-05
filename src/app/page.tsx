@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getUserApplications } from "@/lib/applications";
 import {
@@ -10,7 +11,7 @@ import { getPublishedTestimonials } from "@/lib/testimonials";
 import { getPublishedNewsletterArticles } from "@/lib/newsletter-articles";
 import { getUserDocuments } from "@/lib/documents";
 import { getUserSavedSearches } from "@/lib/saved-searches";
-import { getPreferredName } from "@/lib/profiles";
+import { getProfile } from "@/lib/profiles";
 import { filterUpcomingDeadlines, ACTIVE_STAGES } from "@/lib/deadlines";
 import MarketingHome from "@/app/components/MarketingHome";
 import HomeFeed from "@/app/components/HomeFeed";
@@ -43,6 +44,11 @@ export default async function Home() {
     );
   }
 
+  const profile = await getProfile(supabase, user.id);
+  if (!profile?.onboarding_completed_at) {
+    redirect("/onboarding?next=%2F");
+  }
+
   const [
     applications,
     recentOpportunities,
@@ -51,7 +57,6 @@ export default async function Home() {
     documents,
     savedSearches,
     newsletterArticles,
-    preferredName,
   ] = await Promise.all([
     getUserApplications(supabase, user.id),
     getRecentPublishedOpportunities(supabase, 3),
@@ -60,7 +65,6 @@ export default async function Home() {
     getUserDocuments(supabase, user.id),
     getUserSavedSearches(supabase, user.id),
     getPublishedNewsletterArticles(supabase),
-    getPreferredName(supabase, user.id),
   ]);
 
   const upcomingDeadlines = filterUpcomingDeadlines(
@@ -70,7 +74,7 @@ export default async function Home() {
   const activeApplicationsCount = applications.filter((a) =>
     ACTIVE_STAGES.has(a.stage),
   ).length;
-  const name = preferredName ?? user.email?.split("@")[0] ?? "there";
+  const name = profile.preferred_name ?? user.email?.split("@")[0] ?? "there";
 
   return (
     <HomeFeed

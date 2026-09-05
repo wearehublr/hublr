@@ -23,7 +23,7 @@ export async function signUp(
   }
 
   const rawNext = String(formData.get("next") ?? "");
-  const next = rawNext.startsWith("/") ? rawNext : "/profile";
+  const next = rawNext.startsWith("/") ? rawNext : "/onboarding";
 
   const origin = await getOrigin();
   const supabase = await createClient();

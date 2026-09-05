@@ -1,5 +1,7 @@
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getPublishedOpportunities } from "@/lib/opportunities";
+import { getProfile } from "@/lib/profiles";
 import OpportunityBrowser from "@/app/components/OpportunityBrowser";
 
 export const dynamic = "force-dynamic";
@@ -10,6 +12,13 @@ export default async function OpportunitiesPage() {
     supabase.auth.getUser(),
     getPublishedOpportunities(supabase),
   ]);
+  const profile = userData.user
+    ? await getProfile(supabase, userData.user.id)
+    : null;
+
+  if (userData.user && !profile?.onboarding_completed_at) {
+    redirect("/onboarding?next=%2Fopportunities");
+  }
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
@@ -26,6 +35,10 @@ export default async function OpportunitiesPage() {
       <OpportunityBrowser
         opportunities={opportunities}
         isLoggedIn={!!userData.user}
+        initialIndustry={profile?.interested_industries?.[0] ?? null}
+        initialCategory={profile?.preferred_categories?.[0] ?? null}
+        initialRegion={profile?.preferred_regions?.[0] ?? null}
+        initialRequiresSponsorship={profile?.requires_sponsorship ?? null}
       />
     </main>
   );

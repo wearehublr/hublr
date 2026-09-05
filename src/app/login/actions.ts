@@ -27,20 +27,20 @@ export async function signIn(
     return { error: "Invalid email or password." };
   }
 
-  const next = String(formData.get("next") ?? "");
-  if (next.startsWith("/")) {
-    redirect(next);
-  }
+  const rawNext = String(formData.get("next") ?? "");
+  const next = rawNext.startsWith("/") ? rawNext : "/opportunities";
 
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("id")
+      .select("id, onboarding_completed_at")
       .eq("id", user.id)
       .maybeSingle();
 
-    if (!profile) redirect("/profile");
+    if (!profile || !profile.onboarding_completed_at) {
+      redirect(`/onboarding?next=${encodeURIComponent(next)}`);
+    }
   }
 
-  redirect("/opportunities");
+  redirect(next);
 }
