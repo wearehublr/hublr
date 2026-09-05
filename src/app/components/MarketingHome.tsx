@@ -87,12 +87,13 @@ export default function MarketingHome({
             Hublr
           </h1>
           <p className="mt-4 text-lg sm:text-xl font-medium text-neutral-700 dark:text-neutral-200 max-w-xl mx-auto">
-            Helping students and early career professionals secure
-            internships, grad roles, and more.
+            Your entire job search, in one place.
           </p>
           <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400 max-w-xl mx-auto">
-            Browse curated opportunities across the UK, EU, and US, then
-            track your applications, deadlines, and documents in one place.
+            Find roles, apply, track every application, and prepare for
+            interviews, all in one place. If you&apos;re on a visa, we tell
+            you exactly which companies and roles actually offer
+            sponsorship.
           </p>
 
           <div className="mt-8 flex justify-center gap-3">
