@@ -18,7 +18,7 @@ export default function LoginForm({ next }: { next?: string }) {
       <div>
         <h1 className="text-lg font-semibold">Log in</h1>
         <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          Hublr: helping you secure internships, grad roles, and more.
+          Your entire job search, in one place.
         </p>
       </div>
 
