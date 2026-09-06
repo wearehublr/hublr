@@ -2,6 +2,7 @@
 
 import { useActionState, useRef } from "react";
 import { addArticle } from "./actions";
+import { NEWSLETTER_TOPICS, NEWSLETTER_TOPIC_LABELS } from "@/types/newsletter-article";
 
 const initialState = { error: null };
 
@@ -44,6 +45,17 @@ export default function QuickAddForm() {
         title="Published date (optional)"
         className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
       />
+      <select
+        name="topic"
+        defaultValue="general"
+        className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+      >
+        {NEWSLETTER_TOPICS.map((t) => (
+          <option key={t} value={t}>
+            {NEWSLETTER_TOPIC_LABELS[t]}
+          </option>
+        ))}
+      </select>
       <textarea
         name="description"
         placeholder="Short description (optional)"

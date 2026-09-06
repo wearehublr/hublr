@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/require-admin";
+import { NEWSLETTER_TOPICS, type NewsletterTopic } from "@/types/newsletter-article";
 
 function str(formData: FormData, key: string): string | null {
   const v = formData.get(key);
@@ -19,13 +20,18 @@ export async function addArticle(
 
   const title = str(formData, "title");
   const link_url = str(formData, "link_url");
+  const topic = (str(formData, "topic") as NewsletterTopic | null) ?? "general";
   if (!title || !link_url) {
     return { error: "Title and link URL are required." };
+  }
+  if (!NEWSLETTER_TOPICS.includes(topic)) {
+    return { error: "Invalid topic." };
   }
 
   const { error } = await supabase.from("newsletter_articles").insert({
     title,
     link_url,
+    topic,
     description: str(formData, "description"),
     published_date: str(formData, "published_date"),
   });
@@ -40,11 +46,17 @@ export async function addArticle(
 export async function updateArticle(id: string, formData: FormData) {
   const supabase = await requireAdmin();
 
+  const topic = str(formData, "topic") as NewsletterTopic | null;
+  if (topic && !NEWSLETTER_TOPICS.includes(topic)) {
+    throw new Error("Invalid topic");
+  }
+
   const { error } = await supabase
     .from("newsletter_articles")
     .update({
       title: str(formData, "title"),
       link_url: str(formData, "link_url"),
+      topic,
       description: str(formData, "description"),
       published_date: str(formData, "published_date"),
     })

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import type { NewsletterArticle } from "@/types/newsletter-article";
+import { NEWSLETTER_TOPICS, NEWSLETTER_TOPIC_LABELS } from "@/types/newsletter-article";
 import { updateArticle, deleteArticle, toggleArticlePublish } from "./actions";
 
 export default function AdminArticleRow({
@@ -52,6 +53,17 @@ export default function AdminArticleRow({
           defaultValue={article.published_date ?? ""}
           className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
         />
+        <select
+          name="topic"
+          defaultValue={article.topic ?? "general"}
+          className="rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm"
+        >
+          {NEWSLETTER_TOPICS.map((t) => (
+            <option key={t} value={t}>
+              {NEWSLETTER_TOPIC_LABELS[t]}
+            </option>
+          ))}
+        </select>
         <textarea
           name="description"
           defaultValue={article.description ?? ""}
@@ -87,6 +99,7 @@ export default function AdminArticleRow({
           {!article.is_published ? " · UNPUBLISHED" : ""}
         </p>
         <p className="text-xs text-neutral-500 dark:text-neutral-400">
+          {NEWSLETTER_TOPIC_LABELS[article.topic ?? "general"]} ·{" "}
           {article.published_date ?? "No date"} · {article.link_url}
         </p>
       </div>

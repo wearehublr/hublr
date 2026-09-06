@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getPublishedNewsletterArticles } from "@/lib/newsletter-articles";
+import NewsletterBrowser from "@/app/components/NewsletterBrowser";
 
 export const dynamic = "force-dynamic";
 
@@ -24,36 +25,7 @@ export default async function NewsletterPage() {
           No articles published yet.
         </p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articles.map((a) => (
-            <a
-              key={a.id}
-              href={a.link_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group rounded-lg border border-neutral-200 dark:border-neutral-800 p-4"
-            >
-              <span className="block h-1 w-10 bg-brand-light dark:bg-brand mb-3" />
-              <h2 className="font-semibold group-hover:underline">
-                {a.title}
-              </h2>
-              {a.description && (
-                <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-                  {a.description}
-                </p>
-              )}
-              {a.published_date && (
-                <p className="mt-2 text-xs text-neutral-400 dark:text-neutral-500">
-                  {new Date(a.published_date).toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </p>
-              )}
-            </a>
-          ))}
-        </div>
+        <NewsletterBrowser articles={articles} />
       )}
     </main>
   );
