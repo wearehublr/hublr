@@ -16,10 +16,11 @@ export default function TrackButton({
   if (!isLoggedIn) {
     return (
       <a
-        href="/login"
+        href="/signup"
+        title="Create a free account to track this application"
         className="flex-1 inline-flex items-center justify-center rounded-md border border-neutral-300 dark:border-neutral-700 text-sm font-medium px-3 py-1.5"
       >
-        Log in to track
+        + Track
       </a>
     );
   }

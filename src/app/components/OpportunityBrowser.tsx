@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import type { Opportunity, Category, Region, Status, VisaSponsorship } from "@/types/opportunity";
 import {
@@ -72,6 +73,8 @@ export default function OpportunityBrowser({
       ? (initialRegion as Region)
       : null;
   const initialVisaMatch = initialRequiresSponsorship === true ? "yes" : null;
+  const searchParams = useSearchParams();
+  const urlFilter = searchParams.get("filter");
   const autoFilterLabel = [
     initialIndustryMatch,
     initialCategoryMatch ? CATEGORY_LABELS[initialCategoryMatch] : null,
@@ -87,7 +90,7 @@ export default function OpportunityBrowser({
   const [status, setStatus] = useState<Status | "all">("all");
   const [industry, setIndustry] = useState<string>(initialIndustryMatch ?? "all");
   const [visaSponsorship, setVisaSponsorship] = useState<VisaSponsorship | "all">(
-    initialVisaMatch ?? "all",
+    urlFilter === "sponsors_visas" ? "yes" : (initialVisaMatch ?? "all"),
   );
   const [year, setYear] = useState<number | "all">("all");
   const [sortBy, setSortBy] = useState<SortOption>("deadline");
@@ -98,7 +101,7 @@ export default function OpportunityBrowser({
   const [autoFiltered, setAutoFiltered] = useState(
     !!(initialIndustryMatch || initialCategoryMatch || initialRegionMatch || initialVisaMatch),
   );
-  const [closingSoonOnly, setClosingSoonOnly] = useState(false);
+  const [closingSoonOnly, setClosingSoonOnly] = useState(urlFilter === "closing_soon");
 
   const closingSoonCount = useMemo(
     () => opportunities.filter((o) => isClosingWithinDays(o, 7)).length,
@@ -274,23 +277,49 @@ export default function OpportunityBrowser({
           </p>
         </button>
 
-        {hasRecommendation && (
-          <button
-            type="button"
-            onClick={toggleRecommended}
-            className={`flex-1 min-w-[150px] rounded-lg border p-3 text-left transition-colors ${
-              autoFiltered
-                ? "border-brand dark:border-brand-light bg-brand/5 dark:bg-brand-light/10"
-                : "border-neutral-200 dark:border-neutral-800 hover:border-brand/50 dark:hover:border-brand-light/50"
-            }`}
+        {isLoggedIn ? (
+          hasRecommendation ? (
+            <button
+              type="button"
+              onClick={toggleRecommended}
+              className={`flex-1 min-w-[150px] rounded-lg border p-3 text-left transition-colors ${
+                autoFiltered
+                  ? "border-brand dark:border-brand-light bg-brand/5 dark:bg-brand-light/10"
+                  : "border-neutral-200 dark:border-neutral-800 hover:border-brand/50 dark:hover:border-brand-light/50"
+              }`}
+            >
+              <p className="text-2xl font-bold tracking-tight text-brand dark:text-brand-light">
+                {recommendedCount}
+              </p>
+              <p className="text-sm text-neutral-600 dark:text-neutral-300">
+                🎯 Recommended for you
+              </p>
+            </button>
+          ) : (
+            <Link
+              href="/profile"
+              className="flex-1 min-w-[150px] rounded-lg border border-neutral-200 dark:border-neutral-800 p-3 text-left hover:border-brand/50 dark:hover:border-brand-light/50"
+            >
+              <p className="text-sm font-medium text-brand dark:text-brand-light">
+                🎯 Recommended for you
+              </p>
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                Set your preferences to see matches
+              </p>
+            </Link>
+          )
+        ) : (
+          <Link
+            href="/login?next=/opportunities"
+            className="flex-1 min-w-[150px] rounded-lg border border-neutral-200 dark:border-neutral-800 p-3 text-left hover:border-brand/50 dark:hover:border-brand-light/50"
           >
-            <p className="text-2xl font-bold tracking-tight text-brand dark:text-brand-light">
-              {recommendedCount}
-            </p>
-            <p className="text-sm text-neutral-600 dark:text-neutral-300">
+            <p className="text-sm font-medium text-brand dark:text-brand-light">
               🎯 Recommended for you
             </p>
-          </button>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">
+              Sign in to see your matches
+            </p>
+          </Link>
         )}
 
         <button
@@ -554,10 +583,11 @@ export default function OpportunityBrowser({
                   </button>
                 ) : (
                   <a
-                    href="/login?next=/opportunities"
+                    href="/signup?next=/opportunities"
+                    title="Create a free account to track this application"
                     className="flex-1 inline-flex items-center justify-center rounded-md border border-neutral-300 dark:border-neutral-700 text-sm font-medium px-3 py-1.5"
                   >
-                    Log in to track
+                    + Track
                   </a>
                 )}
               </div>

@@ -13,7 +13,7 @@ const STEPS = [
       "See live opportunities and events, and track the ones you apply to.",
   },
   {
-    title: "Prepare & land the role",
+    title: "Prepare & apply with confidence",
     description:
       "Use interview prep resources and keep your CV/cover letters ready to go.",
   },
@@ -127,38 +127,38 @@ export default function MarketingHome({
       <section className="border-b border-neutral-200 dark:border-neutral-800">
         <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 flex flex-col sm:flex-row items-center gap-8 sm:gap-16">
           <div className="flex flex-wrap gap-6 sm:gap-10">
-            <div>
+            <Link href="/opportunities" className="hover:opacity-80">
               <p className="text-3xl font-bold tracking-tight">
                 {opportunitiesCount}
               </p>
-              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400 underline">
                 live opportunities
               </p>
-            </div>
-            <div>
+            </Link>
+            <Link href="/events" className="hover:opacity-80">
               <p className="text-3xl font-bold tracking-tight">
                 {eventsCount}
               </p>
-              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400 underline">
                 upcoming events
               </p>
-            </div>
-            <div>
+            </Link>
+            <Link href="/opportunities?filter=closing_soon" className="hover:opacity-80">
               <p className="text-3xl font-bold tracking-tight text-red-600 dark:text-red-400">
                 {closingThisWeekCount}
               </p>
-              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400 underline">
                 closing this week
               </p>
-            </div>
-            <div>
+            </Link>
+            <Link href="/opportunities?filter=sponsors_visas" className="hover:opacity-80">
               <p className="text-3xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
                 {sponsorshipCount}
               </p>
-              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400 underline">
                 sponsor visas
               </p>
-            </div>
+            </Link>
           </div>
           <p className="text-sm text-neutral-600 dark:text-neutral-300 max-w-sm">
             All the best internships, grad schemes, and early career events
