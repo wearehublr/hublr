@@ -9,6 +9,7 @@ const LINKS = [
   { href: "/admin/testimonials", label: "In Their Shoes" },
   { href: "/admin/newsletter", label: "Newsletter" },
   { href: "/admin/contact-submissions", label: "Work With Us Submissions" },
+  { href: "/admin/waitlist", label: "Launch Waitlist" },
   { href: "/admin/metrics", label: "Metrics" },
 ];
 
