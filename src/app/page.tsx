@@ -8,6 +8,7 @@ import {
   getOpportunitiesClosingWithinDaysCount,
 } from "@/lib/opportunities";
 import { getRecommendedOpportunities, countClosingWithinDays } from "@/lib/recommendations";
+import { getCompanyEventMatches } from "@/lib/company-event-matches";
 import {
   getUpcomingEvents,
   getUpcomingEventsCount,
@@ -73,7 +74,7 @@ export default async function Home() {
   ] = await Promise.all([
     getUserApplications(supabase, user.id),
     getPublishedOpportunities(supabase),
-    getUpcomingEvents(supabase, 20),
+    getUpcomingEvents(supabase, 100),
     getPublishedInterviewResources(supabase),
     getUserDocuments(supabase, user.id),
     getUserSavedSearches(supabase, user.id),
@@ -93,6 +94,8 @@ export default async function Home() {
 
   const closingThisWeekCount = countClosingWithinDays(opportunities, 7);
 
+  const companyEventMatches = getCompanyEventMatches(applications, upcomingEvents);
+
   return (
     <HomeFeed
       name={name}
@@ -105,6 +108,7 @@ export default async function Home() {
       documents={documents}
       savedSearches={savedSearches}
       savedEvents={savedEvents}
+      companyEventMatches={companyEventMatches}
     />
   );
 }

@@ -9,6 +9,9 @@ import type { SavedSearch } from "@/types/saved-search";
 import type { SavedEventWithDetails } from "@/types/saved-event";
 import { SAVED_EVENT_STATUS_LABELS } from "@/types/saved-event";
 import type { RecommendedMatch } from "@/lib/recommendations";
+import type { CompanyEventMatch } from "@/lib/company-event-matches";
+import { EVENT_TYPE_LABELS } from "@/types/event";
+import { buildEventSlug } from "@/lib/slug";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import RecommendedFeed from "@/app/components/RecommendedFeed";
 
@@ -43,6 +46,7 @@ export default function HomeFeed({
   documents,
   savedSearches,
   savedEvents,
+  companyEventMatches,
 }: {
   name: string;
   upcomingDeadlines: Application[];
@@ -54,6 +58,7 @@ export default function HomeFeed({
   documents: Document[];
   savedSearches: SavedSearch[];
   savedEvents: SavedEventWithDetails[];
+  companyEventMatches: CompanyEventMatch[];
 }) {
   return (
     <main className="flex-1">
@@ -148,6 +153,38 @@ export default function HomeFeed({
               </ul>
             )}
           </div>
+
+          {companyEventMatches.length > 0 && (
+            <div className="rounded-lg border border-brand/30 dark:border-brand-light/30 bg-brand/5 dark:bg-brand-light/5 p-4">
+              <h2 className="text-sm font-semibold mb-3">
+                🔗 Events from companies you&apos;re tracking
+              </h2>
+              <ul className="flex flex-col divide-y divide-neutral-200 dark:divide-neutral-800">
+                {companyEventMatches.map(({ company, event }) => (
+                  <li key={event.id} className="py-2.5">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                      You&apos;re tracking <strong>{company}</strong>
+                    </p>
+                    <p className="text-sm font-medium truncate">{event.title}</p>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                      {EVENT_TYPE_LABELS[event.event_type]} &middot;{" "}
+                      {new Date(event.event_date).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
+                    <Link
+                      href={`/event/${buildEventSlug(event)}`}
+                      className="text-xs underline"
+                    >
+                      View event
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
             <div className="flex items-baseline justify-between mb-3">
