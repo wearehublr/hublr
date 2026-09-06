@@ -84,13 +84,18 @@ export default function OpportunityBrowser({
     .filter(Boolean)
     .join(", ");
 
+  // Note: onboarding preferences (initialIndustryMatch etc.) are deliberately
+  // NOT used to seed these filters anymore - auto-narrowing the list on every
+  // visit was reported as feeling broken ("I only see 3 of 511 roles every
+  // time I log in"). They're only ever applied when the user explicitly
+  // clicks the "Recommended for you" tile below, via toggleRecommended().
   const [search, setSearch] = useState("");
-  const [region, setRegion] = useState<Region | "all">(initialRegionMatch ?? "all");
-  const [category, setCategory] = useState<Category | "all">(initialCategoryMatch ?? "all");
+  const [region, setRegion] = useState<Region | "all">("all");
+  const [category, setCategory] = useState<Category | "all">("all");
   const [status, setStatus] = useState<Status | "all">("all");
-  const [industry, setIndustry] = useState<string>(initialIndustryMatch ?? "all");
+  const [industry, setIndustry] = useState<string>("all");
   const [visaSponsorship, setVisaSponsorship] = useState<VisaSponsorship | "all">(
-    urlFilter === "sponsors_visas" ? "yes" : (initialVisaMatch ?? "all"),
+    urlFilter === "sponsors_visas" ? "yes" : "all",
   );
   const [year, setYear] = useState<number | "all">("all");
   const [sortBy, setSortBy] = useState<SortOption>("deadline");
@@ -98,9 +103,7 @@ export default function OpportunityBrowser({
   const [isPending, startTransition] = useTransition();
   const [alertSaved, setAlertSaved] = useState(false);
   const [alertSaving, setAlertSaving] = useState(false);
-  const [autoFiltered, setAutoFiltered] = useState(
-    !!(initialIndustryMatch || initialCategoryMatch || initialRegionMatch || initialVisaMatch),
-  );
+  const [autoFiltered, setAutoFiltered] = useState(false);
   const [closingSoonOnly, setClosingSoonOnly] = useState(urlFilter === "closing_soon");
 
   const closingSoonCount = useMemo(
