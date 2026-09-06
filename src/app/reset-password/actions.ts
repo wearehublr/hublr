@@ -3,6 +3,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/lib/email";
 import { getOrigin } from "@/lib/get-origin";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 export type ResetState = { error: string | null; success: boolean };
 
@@ -15,6 +16,14 @@ export async function requestPasswordReset(
 ): Promise<ResetState> {
   const email = String(formData.get("email") ?? "");
   if (!email) return { error: "Email is required.", success: false };
+
+  const turnstileToken = formData.get("cf-turnstile-response");
+  const isHuman = await verifyTurnstileToken(
+    typeof turnstileToken === "string" ? turnstileToken : null,
+  );
+  if (!isHuman) {
+    return { error: "Verification failed. Please try again.", success: false };
+  }
 
   const origin = await getOrigin();
   const adminSupabase = createAdminClient();

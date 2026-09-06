@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { signUp } from "./actions";
+import Turnstile from "@/app/components/Turnstile";
 
 export default function SignupForm({ next }: { next?: string }) {
   const [state, formAction, pending] = useActionState(signUp, {
@@ -63,6 +64,8 @@ export default function SignupForm({ next }: { next?: string }) {
         />
         <span className="text-xs text-neutral-400">At least 8 characters.</span>
       </label>
+
+      <Turnstile />
 
       {state?.error && (
         <p className="text-sm text-red-600 dark:text-red-400" aria-live="polite">

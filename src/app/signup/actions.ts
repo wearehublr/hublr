@@ -3,6 +3,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail } from "@/lib/email";
 import { getOrigin } from "@/lib/get-origin";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 export type SignupState = { error: string | null; success: boolean };
 
@@ -26,18 +27,28 @@ export async function signUp(
     };
   }
 
+  const turnstileToken = formData.get("cf-turnstile-response");
+  const isHuman = await verifyTurnstileToken(
+    typeof turnstileToken === "string" ? turnstileToken : null,
+  );
+  if (!isHuman) {
+    return {
+      error: "Verification failed. Please try again.",
+      success: false,
+    };
+  }
+
   const rawNext = String(formData.get("next") ?? "");
   const next = rawNext.startsWith("/") ? rawNext : "/onboarding";
 
   const origin = await getOrigin();
+  const redirectTo = `${origin}/auth/callback?next=${encodeURIComponent(next)}`;
   const adminSupabase = createAdminClient();
   const { data, error } = await adminSupabase.auth.admin.generateLink({
     type: "signup",
     email,
     password,
-    options: {
-      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
-    },
+    options: { redirectTo },
   });
 
   if (error) {
@@ -47,6 +58,38 @@ export async function signUp(
       code: error.code,
       name: error.name,
     });
+
+    if (error.code === "email_exists" || error.code === "user_already_exists") {
+      // The account already exists - but if it was never confirmed (e.g.
+      // signed up during the period the confirmation email was broken),
+      // a flat "already exists" message would leave them stuck unable to
+      // log in either. A magiclink probe works for existing users
+      // regardless of confirmation status and reports it via
+      // data.user.email_confirmed_at, so we can tell the two cases apart
+      // and resend a working confirmation link for the unconfirmed case.
+      const probe = await adminSupabase.auth.admin.generateLink({
+        type: "magiclink",
+        email,
+        options: { redirectTo },
+      });
+
+      if (!probe.error && !probe.data.user.email_confirmed_at) {
+        await sendEmail({
+          to: email,
+          subject: "Confirm your Hublr account",
+          text: [
+            "Welcome back to Hublr!",
+            "",
+            "Looks like you started creating an account but haven't confirmed it yet. Click below to confirm your email and finish setting up your account:",
+            probe.data.properties.action_link,
+            "",
+            "If you didn't request this, you can ignore this email.",
+          ].join("\n"),
+        });
+        return { error: null, success: true };
+      }
+    }
+
     const message =
       error.code === "email_exists" || error.code === "user_already_exists"
         ? "An account with that email already exists. Try logging in instead."
