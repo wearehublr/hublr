@@ -11,7 +11,7 @@ export default function PrivacyPolicyPage() {
         Privacy Policy
       </h1>
       <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
-        Last updated: 13 July 2026
+        Last updated: 6 September 2026
       </p>
 
       <p className="mt-6 text-neutral-700 dark:text-neutral-200">
@@ -212,7 +212,20 @@ export default function PrivacyPolicyPage() {
       <ul className="mt-3 list-disc pl-5 space-y-2 text-neutral-700 dark:text-neutral-200">
         <li><strong>Supabase</strong>: hosts our database, authentication, and file storage (your uploaded documents);</li>
         <li><strong>Vercel</strong>: hosts the Website, and provides cookieless usage analytics;</li>
-        <li><strong>Resend</strong>: delivers the transactional emails we send; and</li>
+        <li><strong>Resend</strong>: delivers the transactional emails we send;</li>
+        <li>
+          <strong>Sentry</strong>: helps us detect and fix technical errors.
+          If something breaks while you&apos;re using Hublr, Sentry may
+          receive technical details about that moment (your browser type,
+          the page you were on, and your IP address), but never your
+          account data (name, email, documents, tracked applications,
+          etc.);
+        </li>
+        <li>
+          <strong>Cloudflare</strong>: runs a bot-detection check
+          (&quot;Turnstile&quot;) on our sign-up and password-reset forms,
+          to stop automated abuse; and
+        </li>
         <li><strong>Google Analytics</strong>: provides usage analytics using cookies (see below).</li>
       </ul>
       <p className="mt-3 text-neutral-700 dark:text-neutral-200">
@@ -227,9 +240,10 @@ export default function PrivacyPolicyPage() {
         Where we store your personal data
       </h2>
       <p className="mt-2 text-neutral-700 dark:text-neutral-200">
-        Our service providers (Supabase, Vercel, Resend, Google) may store
-        and process data in the UK, the EEA, or other countries in which
-        they operate, including the US. Where data is transferred outside
+        Our service providers (Supabase, Vercel, Resend, Sentry,
+        Cloudflare, Google) may store and process data in the UK, the EEA,
+        or other countries in which they operate, including the US. Where
+        data is transferred outside
         the UK/EEA, reputable providers of this kind maintain appropriate
         legal safeguards (such as the UK International Data Transfer
         Addendum or equivalent standard contractual clauses) to protect it
@@ -254,7 +268,11 @@ export default function PrivacyPolicyPage() {
           Analytics opt-out browser add-on
         </a>
         . Vercel Analytics, which we also use, is cookieless and
-        doesn&apos;t track you individually across visits.
+        doesn&apos;t track you individually across visits. Cloudflare
+        Turnstile, which checks that sign-up and password-reset submissions
+        are from a real person rather than a bot, runs automatically on
+        those two forms and doesn&apos;t require your consent, since it
+        exists to keep account creation secure rather than to track you.
       </p>
 
       <h2 className="mt-10 text-lg font-semibold">Security</h2>
