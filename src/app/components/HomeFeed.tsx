@@ -8,7 +8,7 @@ import { DOC_TYPES, DOC_TYPE_LABELS } from "@/types/document";
 import type { SavedSearch } from "@/types/saved-search";
 import type { SavedEventWithDetails } from "@/types/saved-event";
 import { SAVED_EVENT_STATUS_LABELS } from "@/types/saved-event";
-import type { RecommendedMatch } from "@/lib/recommendations";
+import type { RecommendedMatch, RecommendationSummary } from "@/lib/recommendations";
 import type { CompanyEventMatch } from "@/lib/company-event-matches";
 import type { CompanyOpportunityMatch } from "@/lib/company-opportunity-matches";
 import { EVENT_TYPE_LABELS } from "@/types/event";
@@ -40,6 +40,8 @@ export default function HomeFeed({
   name,
   upcomingDeadlines,
   recommended,
+  recommendationSummary,
+  requiresSponsorship,
   closingThisWeekCount,
   upcomingEvents,
   recentResources,
@@ -53,6 +55,8 @@ export default function HomeFeed({
   name: string;
   upcomingDeadlines: Application[];
   recommended: RecommendedMatch[];
+  recommendationSummary: RecommendationSummary;
+  requiresSponsorship: boolean;
   closingThisWeekCount: number;
   upcomingEvents: HublrEvent[];
   recentResources: InterviewResource[];
@@ -73,6 +77,39 @@ export default function HomeFeed({
           <h1 className="mt-1 text-2xl sm:text-3xl font-bold tracking-tight">
             Hello, {name} 👋
           </h1>
+
+          {recommendationSummary.totalMatches > 0 ? (
+            <div className="mt-4">
+              <p className="text-sm text-neutral-600 dark:text-neutral-300">
+                Based on your profile:
+              </p>
+              <p className="mt-1 text-lg font-semibold text-brand dark:text-brand-light">
+                {recommendationSummary.totalMatches} opportunit
+                {recommendationSummary.totalMatches === 1 ? "y matches" : "ies match"} you
+              </p>
+              <ul className="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm text-neutral-600 dark:text-neutral-300">
+                {recommendationSummary.closingThisWeek > 0 && (
+                  <li>🔥 {recommendationSummary.closingThisWeek} close this week</li>
+                )}
+                {requiresSponsorship && recommendationSummary.sponsorshipMatches > 0 && (
+                  <li>🌍 {recommendationSummary.sponsorshipMatches} offer visa sponsorship</li>
+                )}
+                {recommendationSummary.stronglyRelevant > 0 && (
+                  <li>
+                    ⭐ {recommendationSummary.stronglyRelevant} particularly relevant to your
+                    interests
+                  </li>
+                )}
+              </ul>
+            </div>
+          ) : (
+            <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-300">
+              <Link href="/profile" className="underline">
+                Set your preferences
+              </Link>{" "}
+              to see opportunities matched to you.
+            </p>
+          )}
         </div>
       </div>
 
@@ -82,11 +119,6 @@ export default function HomeFeed({
             href="/opportunities"
             value={closingThisWeekCount}
             label="🔥 Closing this week"
-          />
-          <StatTile
-            href="/opportunities"
-            value={recommended.filter((r) => r.reasons.length > 0).length}
-            label="🎯 Matched to you"
           />
           <StatTile
             href="/dashboard"

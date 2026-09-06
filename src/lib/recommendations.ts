@@ -2,13 +2,21 @@ import type { Opportunity } from "@/types/opportunity";
 import { CATEGORY_LABELS, REGION_LABELS } from "@/types/opportunity";
 import type { Profile } from "@/types/profile";
 import { compareByDate } from "@/lib/sort-by-date";
+import { getSponsorshipDisplay } from "@/lib/visa-sponsorship";
 
 export interface RecommendedMatch {
   opportunity: Opportunity;
   reasons: string[];
 }
 
-function scoreOpportunity(
+export interface RecommendationSummary {
+  totalMatches: number;
+  closingThisWeek: number;
+  sponsorshipMatches: number;
+  stronglyRelevant: number;
+}
+
+export function scoreOpportunity(
   opportunity: Opportunity,
   profile: Profile,
 ): string[] {
@@ -72,6 +80,28 @@ export function getRecommendedOpportunities(
     .slice(0, limit - top.length);
 
   return [...top, ...fillers];
+}
+
+export function summarizeRecommendations(
+  opportunities: Opportunity[],
+  profile: Profile,
+): RecommendationSummary {
+  const matched = opportunities
+    .filter((o) => o.status !== "closed")
+    .map((opportunity) => ({
+      opportunity,
+      reasons: scoreOpportunity(opportunity, profile),
+    }))
+    .filter((m) => m.reasons.length > 0);
+
+  return {
+    totalMatches: matched.length,
+    closingThisWeek: matched.filter((m) => isClosingWithinDays(m.opportunity, 7)).length,
+    sponsorshipMatches: matched.filter(
+      (m) => getSponsorshipDisplay(m.opportunity) === "yes",
+    ).length,
+    stronglyRelevant: matched.filter((m) => m.reasons.length >= 2).length,
+  };
 }
 
 export function isClosingWithinDays(opportunity: Opportunity, days: number): boolean {

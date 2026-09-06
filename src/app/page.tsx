@@ -7,7 +7,11 @@ import {
   getVisaSponsorshipOpportunitiesCount,
   getOpportunitiesClosingWithinDaysCount,
 } from "@/lib/opportunities";
-import { getRecommendedOpportunities, countClosingWithinDays } from "@/lib/recommendations";
+import {
+  getRecommendedOpportunities,
+  countClosingWithinDays,
+  summarizeRecommendations,
+} from "@/lib/recommendations";
 import { getCompanyEventMatches } from "@/lib/company-event-matches";
 import { getCompanyOpportunityMatches } from "@/lib/company-opportunity-matches";
 import {
@@ -92,6 +96,7 @@ export default async function Home() {
   const name = profile.preferred_name ?? user.email?.split("@")[0] ?? "there";
 
   const recommended = getRecommendedOpportunities(opportunities, profile, 3);
+  const recommendationSummary = summarizeRecommendations(opportunities, profile);
 
   const closingThisWeekCount = countClosingWithinDays(opportunities, 7);
 
@@ -103,6 +108,8 @@ export default async function Home() {
       name={name}
       upcomingDeadlines={upcomingDeadlines}
       recommended={recommended}
+      recommendationSummary={recommendationSummary}
+      requiresSponsorship={profile.requires_sponsorship === true}
       closingThisWeekCount={closingThisWeekCount}
       upcomingEvents={upcomingEvents.slice(0, 3)}
       recentResources={resources.slice(0, 3)}
