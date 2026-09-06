@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, getAdminNotificationEmail } from "@/lib/email";
 import {
   SUBMISSION_TYPES,
   SUBMISSION_TYPE_LABELS,
@@ -16,7 +16,7 @@ async function notifyAdmin(fields: {
   email: string;
   message: string;
 }) {
-  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminEmail = getAdminNotificationEmail();
   if (!adminEmail) return;
 
   await sendEmail({

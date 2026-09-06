@@ -1,9 +1,20 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, getAdminNotificationEmail } from "@/lib/email";
 import { getOrigin } from "@/lib/get-origin";
 import { verifyTurnstileToken } from "@/lib/turnstile";
+
+async function notifyAdminOfSignup(email: string) {
+  const adminEmail = getAdminNotificationEmail();
+  if (!adminEmail) return;
+
+  await sendEmail({
+    to: adminEmail,
+    subject: `New Hublr account: ${email}`,
+    text: `${email} just created a Hublr account.`,
+  });
+}
 
 export type SignupState = { error: string | null; success: boolean };
 
@@ -109,6 +120,10 @@ export async function signUp(
       "If you didn't create this account, you can ignore this email.",
     ].join("\n"),
   });
+
+  // Fires for a genuinely new account only, not the resend-confirmation
+  // branch above for an existing-but-unconfirmed signup.
+  await notifyAdminOfSignup(email);
 
   return { error: null, success: true };
 }

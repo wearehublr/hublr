@@ -44,6 +44,14 @@ export async function sendEmail(options: {
   return send(options);
 }
 
+// Where admin-facing notifications (new waitlist signup, Work With Us
+// submission, etc.) get sent. Deliberately separate from ADMIN_EMAIL, which
+// controls who can log into /admin - repointing notifications should never
+// risk locking the founder out of the admin panel.
+export function getAdminNotificationEmail(): string | null {
+  return process.env.ADMIN_NOTIFICATION_EMAIL || process.env.ADMIN_EMAIL || null;
+}
+
 // For student-facing tracker emails: skips sending if the student has
 // opted out, and appends a one-click unsubscribe link.
 export async function sendUserEmail(

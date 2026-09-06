@@ -2,14 +2,14 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { verifyTurnstileToken } from "@/lib/turnstile";
-import { sendEmail } from "@/lib/email";
+import { sendEmail, getAdminNotificationEmail } from "@/lib/email";
 
 export type WaitlistState = { error: string | null; success: boolean };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 async function notifyAdmin(email: string, name: string) {
-  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminEmail = getAdminNotificationEmail();
   if (!adminEmail) return;
 
   await sendEmail({
