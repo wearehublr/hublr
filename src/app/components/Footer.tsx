@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Logo from "./Logo";
 
 const SOCIAL_LINKS = [
   {
@@ -39,6 +40,19 @@ export default function Footer() {
   return (
     <footer className="border-t border-neutral-200 dark:border-neutral-800 mt-auto">
       <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 flex flex-col items-center gap-6">
+        <Link
+          href="/"
+          className="flex items-center gap-2 font-semibold whitespace-nowrap"
+        >
+          <span className="text-brand dark:text-brand-light">
+            <Logo size={24} />
+          </span>
+          <span>
+            <span className="text-brand dark:text-brand-light">Hub</span>
+            <span className="text-brand-light dark:text-brand">lr</span>
+          </span>
+        </Link>
+
         <div className="flex gap-4">
           {SOCIAL_LINKS.map((social) => (
             <a
