@@ -15,6 +15,9 @@ export const INTERVIEW_TOPICS = [
   "competency",
   "technical",
   "general",
+  "motivational",
+  "strength_based",
+  "basic",
 ] as const;
 
 export type InterviewTopic = (typeof INTERVIEW_TOPICS)[number];
@@ -26,6 +29,9 @@ export const INTERVIEW_TOPIC_LABELS: Record<InterviewTopic, string> = {
   competency: "Competency Interview",
   technical: "Technical Interview",
   general: "General",
+  motivational: "Motivational",
+  strength_based: "Strength-Based",
+  basic: "Basic",
 };
 
 export interface InterviewResource {
