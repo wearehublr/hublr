@@ -10,8 +10,9 @@ import type { SavedEventWithDetails } from "@/types/saved-event";
 import { SAVED_EVENT_STATUS_LABELS } from "@/types/saved-event";
 import type { RecommendedMatch } from "@/lib/recommendations";
 import type { CompanyEventMatch } from "@/lib/company-event-matches";
+import type { CompanyOpportunityMatch } from "@/lib/company-opportunity-matches";
 import { EVENT_TYPE_LABELS } from "@/types/event";
-import { buildEventSlug } from "@/lib/slug";
+import { buildEventSlug, buildOpportunitySlug } from "@/lib/slug";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import RecommendedFeed from "@/app/components/RecommendedFeed";
 
@@ -47,6 +48,7 @@ export default function HomeFeed({
   savedSearches,
   savedEvents,
   companyEventMatches,
+  companyOpportunityMatches,
 }: {
   name: string;
   upcomingDeadlines: Application[];
@@ -59,6 +61,7 @@ export default function HomeFeed({
   savedSearches: SavedSearch[];
   savedEvents: SavedEventWithDetails[];
   companyEventMatches: CompanyEventMatch[];
+  companyOpportunityMatches: CompanyOpportunityMatch[];
 }) {
   return (
     <main className="flex-1">
@@ -179,6 +182,35 @@ export default function HomeFeed({
                       className="text-xs underline"
                     >
                       View event
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {companyOpportunityMatches.length > 0 && (
+            <div className="rounded-lg border border-brand/30 dark:border-brand-light/30 bg-brand/5 dark:bg-brand-light/5 p-4">
+              <h2 className="text-sm font-semibold mb-3">
+                🆕 New roles from companies you&apos;re tracking
+              </h2>
+              <ul className="flex flex-col divide-y divide-neutral-200 dark:divide-neutral-800">
+                {companyOpportunityMatches.map(({ company, opportunity }) => (
+                  <li key={opportunity.id} className="py-2.5">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                      You&apos;re tracking <strong>{company}</strong>
+                    </p>
+                    <p className="text-sm font-medium truncate">
+                      {opportunity.role_title}
+                    </p>
+                    <div className="mt-0.5">
+                      <DeadlineBadge deadline={opportunity.deadline} />
+                    </div>
+                    <Link
+                      href={`/opportunity/${buildOpportunitySlug(opportunity)}`}
+                      className="text-xs underline"
+                    >
+                      View opportunity
                     </Link>
                   </li>
                 ))}

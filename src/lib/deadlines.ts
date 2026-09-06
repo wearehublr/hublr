@@ -8,6 +8,18 @@ export const ACTIVE_STAGES = new Set([
   "offer",
 ]);
 
+export function countSavedAndInProgress(
+  applications: Application[],
+): { saved: number; inProgress: number } {
+  let saved = 0;
+  let inProgress = 0;
+  for (const a of applications) {
+    if (a.stage === "saved") saved += 1;
+    else if (ACTIVE_STAGES.has(a.stage)) inProgress += 1;
+  }
+  return { saved, inProgress };
+}
+
 export function filterUpcomingDeadlines(
   applications: Application[],
   windowDays: number,

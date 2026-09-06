@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getPublishedOpportunities } from "@/lib/opportunities";
 import { getProfile } from "@/lib/profiles";
+import { getUserApplications } from "@/lib/applications";
+import { countSavedAndInProgress } from "@/lib/deadlines";
 import OpportunityBrowser from "@/app/components/OpportunityBrowser";
 
 export const dynamic = "force-dynamic";
@@ -19,6 +21,10 @@ export default async function OpportunitiesPage() {
   if (userData.user && !profile?.onboarding_completed_at) {
     redirect("/onboarding?next=%2Fopportunities");
   }
+
+  const { saved: savedCount, inProgress: inProgressCount } = userData.user
+    ? countSavedAndInProgress(await getUserApplications(supabase, userData.user.id))
+    : { saved: 0, inProgress: 0 };
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
@@ -39,6 +45,8 @@ export default async function OpportunitiesPage() {
         initialCategory={profile?.preferred_categories?.[0] ?? null}
         initialRegion={profile?.preferred_regions?.[0] ?? null}
         initialRequiresSponsorship={profile?.requires_sponsorship ?? null}
+        savedCount={savedCount}
+        inProgressCount={inProgressCount}
       />
     </main>
   );

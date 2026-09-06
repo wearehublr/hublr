@@ -47,6 +47,8 @@ export default function OpportunityBrowser({
   initialCategory = null,
   initialRegion = null,
   initialRequiresSponsorship = null,
+  savedCount = 0,
+  inProgressCount = 0,
 }: {
   opportunities: Opportunity[];
   isLoggedIn: boolean;
@@ -54,6 +56,8 @@ export default function OpportunityBrowser({
   initialCategory?: string | null;
   initialRegion?: string | null;
   initialRequiresSponsorship?: boolean | null;
+  savedCount?: number;
+  inProgressCount?: number;
 }) {
   const initialIndustries = useMemo(() => {
     const set = new Set<string>();
@@ -341,6 +345,29 @@ export default function OpportunityBrowser({
             🌍 Sponsors visas
           </p>
         </button>
+
+        {isLoggedIn && (
+          <>
+            <Link
+              href="/dashboard"
+              className="flex-1 min-w-[150px] rounded-lg border border-neutral-200 dark:border-neutral-800 p-3 text-left hover:border-brand/50 dark:hover:border-brand-light/50"
+            >
+              <p className="text-2xl font-bold tracking-tight">{savedCount}</p>
+              <p className="text-sm text-neutral-600 dark:text-neutral-300">
+                ❤️ Saved
+              </p>
+            </Link>
+            <Link
+              href="/dashboard"
+              className="flex-1 min-w-[150px] rounded-lg border border-neutral-200 dark:border-neutral-800 p-3 text-left hover:border-brand/50 dark:hover:border-brand-light/50"
+            >
+              <p className="text-2xl font-bold tracking-tight">{inProgressCount}</p>
+              <p className="text-sm text-neutral-600 dark:text-neutral-300">
+                📋 Applications in progress
+              </p>
+            </Link>
+          </>
+        )}
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">

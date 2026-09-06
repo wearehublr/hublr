@@ -9,6 +9,7 @@ import {
 } from "@/lib/opportunities";
 import { getRecommendedOpportunities, countClosingWithinDays } from "@/lib/recommendations";
 import { getCompanyEventMatches } from "@/lib/company-event-matches";
+import { getCompanyOpportunityMatches } from "@/lib/company-opportunity-matches";
 import {
   getUpcomingEvents,
   getUpcomingEventsCount,
@@ -95,6 +96,7 @@ export default async function Home() {
   const closingThisWeekCount = countClosingWithinDays(opportunities, 7);
 
   const companyEventMatches = getCompanyEventMatches(applications, upcomingEvents);
+  const companyOpportunityMatches = getCompanyOpportunityMatches(applications, opportunities);
 
   return (
     <HomeFeed
@@ -109,6 +111,7 @@ export default async function Home() {
       savedSearches={savedSearches}
       savedEvents={savedEvents}
       companyEventMatches={companyEventMatches}
+      companyOpportunityMatches={companyOpportunityMatches}
     />
   );
 }
