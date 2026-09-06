@@ -147,6 +147,16 @@ export default function AdminOpportunityRow({
           <option value="true">Sponsor register: confirmed holds licence</option>
           <option value="false">Sponsor register: confirmed no licence</option>
         </select>
+        <label className="flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400 sm:col-span-2">
+          <input type="checkbox" name="reverify_sponsorship" className="shrink-0" />
+          Mark sponsorship as re-verified today
+          {opportunity.sponsorship_verified_at && (
+            <span>
+              (last verified{" "}
+              {new Date(opportunity.sponsorship_verified_at).toLocaleDateString("en-GB")})
+            </span>
+          )}
+        </label>
         <label className="flex flex-col gap-1 text-xs text-neutral-500 dark:text-neutral-400">
           Posted date
           <input
@@ -244,6 +254,9 @@ export default function AdminOpportunityRow({
           {opportunity.deadline ? ` · Deadline ${opportunity.deadline}` : ""}
           {opportunity.visa_sponsorship !== "unknown"
             ? ` · ${VISA_SPONSORSHIP_LABELS[opportunity.visa_sponsorship]}`
+            : ""}
+          {opportunity.sponsorship_verified_at
+            ? ` (verified ${new Date(opportunity.sponsorship_verified_at).toLocaleDateString("en-GB")})`
             : ""}
           {!opportunity.is_published ? " · UNPUBLISHED" : ""}
         </p>

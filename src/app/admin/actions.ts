@@ -41,6 +41,9 @@ export async function addOpportunity(
   if (!CATEGORIES.includes(category)) return { error: "Invalid category." };
   if (!REGIONS.includes(region)) return { error: "Invalid region." };
 
+  const visa_sponsorship =
+    (str(formData, "visa_sponsorship") as VisaSponsorship | null) ?? "unknown";
+
   const { error } = await supabase.from("opportunities").insert({
     company,
     role_title,
@@ -53,7 +56,10 @@ export async function addOpportunity(
     industry: str(formData, "industry"),
     notes: str(formData, "notes"),
     full_description: str(formData, "full_description"),
-    visa_sponsorship: (str(formData, "visa_sponsorship") as VisaSponsorship | null) ?? "unknown",
+    visa_sponsorship,
+    // A determination made at creation time counts as verified now - there's
+    // nothing to date for "unknown", since nothing was actually checked.
+    sponsorship_verified_at: visa_sponsorship !== "unknown" ? new Date().toISOString() : null,
     source_url: str(formData, "source_url"),
     deadline: str(formData, "deadline"),
     open_date: str(formData, "open_date"),
@@ -79,12 +85,30 @@ export async function updateOpportunity(id: string, formData: FormData) {
   const companySponsorLicenceRaw = str(formData, "company_sponsor_licence");
   const company_sponsor_licence =
     companySponsorLicenceRaw === "true" ? true : companySponsorLicenceRaw === "false" ? false : null;
+  const reverify = formData.get("reverify_sponsorship") === "on";
 
   if (category && !CATEGORIES.includes(category)) throw new Error("Invalid category");
   if (region && !REGIONS.includes(region)) throw new Error("Invalid region");
   if (status && !STATUSES.includes(status)) throw new Error("Invalid status");
   if (visa_sponsorship && !VISA_SPONSORSHIP_OPTIONS.includes(visa_sponsorship))
     throw new Error("Invalid visa sponsorship value");
+
+  // "Last verified" should only move when a sponsorship determination
+  // actually changed, or the admin explicitly re-confirmed it - not on
+  // every unrelated edit (e.g. fixing a typo in the role title), or the
+  // date would stop meaning anything.
+  const { data: current } = await supabase
+    .from("opportunities")
+    .select("visa_sponsorship, company_sponsor_licence")
+    .eq("id", id)
+    .single();
+
+  const sponsorshipChanged =
+    !!current &&
+    (current.visa_sponsorship !== visa_sponsorship ||
+      current.company_sponsor_licence !== company_sponsor_licence);
+
+  const hasDetermination = visa_sponsorship !== "unknown" || company_sponsor_licence !== null;
 
   const { error } = await supabase
     .from("opportunities")
@@ -100,6 +124,9 @@ export async function updateOpportunity(id: string, formData: FormData) {
       status: status ?? undefined,
       visa_sponsorship: visa_sponsorship ?? undefined,
       company_sponsor_licence,
+      ...((sponsorshipChanged || reverify) && hasDetermination
+        ? { sponsorship_verified_at: new Date().toISOString() }
+        : {}),
       apply_url: str(formData, "apply_url"),
       notes: str(formData, "notes"),
       full_description: str(formData, "full_description"),
@@ -173,6 +200,10 @@ export async function bulkAddOpportunities(
       cycle_year: row.cycle_year ?? 2027,
       status: row.status ?? "open",
       visa_sponsorship: row.visa_sponsorship ?? "unknown",
+      sponsorship_verified_at:
+        row.visa_sponsorship && row.visa_sponsorship !== "unknown"
+          ? new Date().toISOString()
+          : null,
       deadline: row.deadline || null,
       open_date: row.open_date || null,
       posted_date: row.posted_date || null,

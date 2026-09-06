@@ -31,6 +31,7 @@ export function makeOpportunity(overrides: Partial<Opportunity> = {}): Opportuni
     full_description: null,
     visa_sponsorship: "unknown",
     company_sponsor_licence: null,
+    sponsorship_verified_at: null,
     source_url: null,
     discovered_via: "manual",
     is_published: true,

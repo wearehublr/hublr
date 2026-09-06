@@ -91,6 +91,7 @@ export interface Opportunity {
   full_description: string | null;
   visa_sponsorship: VisaSponsorship;
   company_sponsor_licence: boolean | null;
+  sponsorship_verified_at: string | null;
   source_url: string | null;
   discovered_via: "manual" | "auto";
   is_published: boolean;

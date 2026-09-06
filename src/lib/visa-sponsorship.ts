@@ -2,6 +2,13 @@ import type { Opportunity } from "@/types/opportunity";
 
 export type SponsorshipDisplay = "yes" | "no" | "unconfirmed";
 
+export const SPONSORSHIP_METHODOLOGY: Record<SponsorshipDisplay, string> = {
+  yes: "Confirmed from the employer's current job posting or careers page.",
+  unconfirmed:
+    "Hublr has not found sufficiently reliable evidence that sponsorship is available for this specific role.",
+  no: "The employer explicitly states that sponsorship is unavailable for this role.",
+};
+
 /**
  * Role-level visa_sponsorship wins whenever the posting actually says
  * something. Only when it's silent ("unknown") do we fall back to the

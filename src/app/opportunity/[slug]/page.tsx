@@ -83,7 +83,6 @@ export default async function OpportunityDetailPage({
         <span className="rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5">
           {STATUS_LABELS[opportunity.status]}
         </span>
-        <VisaSponsorshipBadge sponsorship={sponsorship} />
       </div>
 
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
@@ -98,6 +97,15 @@ export default async function OpportunityDetailPage({
             Start date: {formatDate(opportunity.start_date)}
           </span>
         )}
+      </div>
+
+      <div className="mt-4 rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
+        <h2 className="text-sm font-semibold mb-2">Sponsorship status</h2>
+        <VisaSponsorshipBadge
+          sponsorship={sponsorship}
+          verifiedAt={opportunity.sponsorship_verified_at}
+          showDetails
+        />
       </div>
 
       {opportunity.notes && (

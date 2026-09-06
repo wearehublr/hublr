@@ -5,6 +5,7 @@ import { getPublishedInternationalResources } from "@/lib/international-resource
 import { INTL_RESOURCE_TYPE_LABELS } from "@/types/international-resource";
 import { CATEGORY_LABELS, REGION_LABELS } from "@/types/opportunity";
 import { buildOpportunitySlug } from "@/lib/slug";
+import { SPONSORSHIP_METHODOLOGY } from "@/lib/visa-sponsorship";
 import CompanyLogo from "@/app/components/CompanyLogo";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import VisaSponsorshipBadge from "@/app/components/VisaSponsorshipBadge";
@@ -35,6 +36,34 @@ export default async function InternationalPage() {
           Read the full guide: visas, sponsorship &amp; applying →
         </Link>
       </header>
+
+      <section className="mb-10 rounded-lg border border-neutral-200 dark:border-neutral-800 p-4 sm:p-5">
+        <h2 className="text-sm font-semibold mb-3">How we verify sponsorship status</h2>
+        <p className="text-sm text-neutral-600 dark:text-neutral-300 mb-3">
+          Every opportunity is labelled with one of three sponsorship statuses,
+          shown on its own page along with when it was last checked:
+        </p>
+        <dl className="flex flex-col gap-2.5 text-sm">
+          <div>
+            <dt className="font-medium">🟢 Sponsorship available</dt>
+            <dd className="text-neutral-600 dark:text-neutral-300">
+              {SPONSORSHIP_METHODOLOGY.yes}
+            </dd>
+          </div>
+          <div>
+            <dt className="font-medium">🟡 Not confirmed</dt>
+            <dd className="text-neutral-600 dark:text-neutral-300">
+              {SPONSORSHIP_METHODOLOGY.unconfirmed}
+            </dd>
+          </div>
+          <div>
+            <dt className="font-medium">🔴 No sponsorship</dt>
+            <dd className="text-neutral-600 dark:text-neutral-300">
+              {SPONSORSHIP_METHODOLOGY.no}
+            </dd>
+          </div>
+        </dl>
+      </section>
 
       <section className="mb-12">
         <h2 className="text-sm font-semibold mb-3">
