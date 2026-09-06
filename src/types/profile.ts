@@ -89,6 +89,7 @@ export interface Profile {
   preferred_regions: string[];
   requires_sponsorship: boolean | null;
   onboarding_completed_at: string | null;
+  last_match_digest_sent_at: string | null;
   created_at: string;
   updated_at: string;
 }
