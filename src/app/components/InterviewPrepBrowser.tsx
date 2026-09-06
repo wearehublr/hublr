@@ -1,9 +1,78 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { InterviewResource } from "@/types/interview-resource";
+import type { InterviewResource, InterviewTopic } from "@/types/interview-resource";
 import { RESOURCE_TYPE_LABELS, INTERVIEW_TOPICS, INTERVIEW_TOPIC_LABELS } from "@/types/interview-resource";
 import type { InterviewQuestion } from "@/types/interview-question";
+import { PREPARATION_PLANS } from "@/lib/preparation-plans";
+
+function checklistStorageKey(topic: InterviewTopic) {
+  return `hublr:prep-checklist:${topic}`;
+}
+
+function PreparationPlan({ topic }: { topic: InterviewTopic }) {
+  const steps = PREPARATION_PLANS[topic];
+  const [checked, setChecked] = useState<boolean[]>(() => {
+    if (typeof window === "undefined") return steps.map(() => false);
+    try {
+      const raw = window.localStorage.getItem(checklistStorageKey(topic));
+      const saved: boolean[] = raw ? JSON.parse(raw) : [];
+      return steps.map((_, i) => saved[i] ?? false);
+    } catch {
+      return steps.map(() => false);
+    }
+  });
+
+  function toggleStep(index: number) {
+    setChecked((prev) => {
+      const next = prev.map((v, i) => (i === index ? !v : v));
+      try {
+        window.localStorage.setItem(checklistStorageKey(topic), JSON.stringify(next));
+      } catch {
+        // localStorage unavailable - checklist state just won't persist
+      }
+      return next;
+    });
+  }
+
+  const doneCount = checked.filter(Boolean).length;
+
+  return (
+    <div className="rounded-lg border border-brand/30 dark:border-brand-light/30 bg-brand/5 dark:bg-brand-light/5 p-4">
+      <div className="flex items-baseline justify-between mb-3">
+        <h2 className="text-sm font-semibold">
+          Your preparation plan &mdash; {INTERVIEW_TOPIC_LABELS[topic]}
+        </h2>
+        <span className="text-xs text-neutral-500 dark:text-neutral-400">
+          {doneCount}/{steps.length} done
+        </span>
+      </div>
+      <ul className="flex flex-col gap-2">
+        {steps.map((step, i) => (
+          <li key={i}>
+            <label className="flex items-start gap-2 text-sm cursor-pointer">
+              <input
+                type="checkbox"
+                checked={checked[i] ?? false}
+                onChange={() => toggleStep(i)}
+                className="mt-0.5 shrink-0"
+              />
+              <span
+                className={
+                  checked[i]
+                    ? "line-through text-neutral-400 dark:text-neutral-500"
+                    : "text-neutral-700 dark:text-neutral-300"
+                }
+              >
+                {step}
+              </span>
+            </label>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export default function InterviewPrepBrowser({
   resources,
@@ -56,6 +125,8 @@ export default function InterviewPrepBrowser({
           ))}
         </div>
       </div>
+
+      {topic !== "all" && <PreparationPlan key={topic} topic={topic} />}
 
       {filteredResources.length === 0 && filteredQuestions.length === 0 ? (
         <p className="text-sm text-neutral-500 dark:text-neutral-400 py-12 text-center">
