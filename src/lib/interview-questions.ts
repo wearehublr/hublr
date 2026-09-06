@@ -13,3 +13,15 @@ export async function getPublishedInterviewQuestions(
   if (error) throw error;
   return data as InterviewQuestion[];
 }
+
+export async function getAllInterviewQuestions(
+  supabase: SupabaseClient,
+): Promise<InterviewQuestion[]> {
+  const { data, error } = await supabase
+    .from("interview_questions")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data as InterviewQuestion[];
+}

@@ -4,6 +4,7 @@ const LINKS = [
   { href: "/admin", label: "Opportunities" },
   { href: "/admin/events", label: "Events" },
   { href: "/admin/interview-prep", label: "Interview Prep" },
+  { href: "/admin/interview-questions", label: "Interview Questions" },
   { href: "/admin/international", label: "International" },
   { href: "/admin/testimonials", label: "In Their Shoes" },
   { href: "/admin/newsletter", label: "Newsletter" },
