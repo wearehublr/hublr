@@ -2,10 +2,24 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { verifyTurnstileToken } from "@/lib/turnstile";
+import { sendEmail } from "@/lib/email";
 
 export type WaitlistState = { error: string | null; success: boolean };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+async function notifyAdmin(email: string, name: string) {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) return;
+
+  await sendEmail({
+    to: adminEmail,
+    subject: `New waitlist signup: ${name || email}`,
+    text: [`Email: ${email}`, name ? `Name: ${name}` : null]
+      .filter(Boolean)
+      .join("\n"),
+  });
+}
 
 export async function joinWaitlist(
   _prevState: WaitlistState,
@@ -37,6 +51,12 @@ export async function joinWaitlist(
   if (error && error.code !== "23505") {
     console.error("[waitlist] insert error:", error.message);
     return { error: "Something went wrong. Please try again.", success: false };
+  }
+
+  // Only notify on a genuinely new signup, not a repeat submission of an
+  // email already on the list.
+  if (!error) {
+    await notifyAdmin(email, name);
   }
 
   return { error: null, success: true };
