@@ -15,7 +15,6 @@ import {
 } from "@/lib/events";
 import { getPublishedInterviewResources } from "@/lib/interview-resources";
 import { getPublishedTestimonials } from "@/lib/testimonials";
-import { getPublishedNewsletterArticles } from "@/lib/newsletter-articles";
 import { getUserDocuments } from "@/lib/documents";
 import { getUserSavedSearches } from "@/lib/saved-searches";
 import { getProfile } from "@/lib/profiles";
@@ -38,14 +37,12 @@ export default async function Home() {
       opportunitiesCount,
       eventsCount,
       testimonials,
-      articles,
       sponsorshipCount,
       closingThisWeekCount,
     ] = await Promise.all([
       getPublishedOpportunitiesCount(supabase),
       getUpcomingEventsCount(supabase),
       getPublishedTestimonials(supabase),
-      getPublishedNewsletterArticles(supabase),
       getVisaSponsorshipOpportunitiesCount(supabase),
       getOpportunitiesClosingWithinDaysCount(supabase, 7),
     ]);
@@ -54,7 +51,6 @@ export default async function Home() {
         opportunitiesCount={opportunitiesCount}
         eventsCount={eventsCount}
         testimonials={testimonials}
-        articles={articles.slice(0, 3)}
         sponsorshipCount={sponsorshipCount}
         closingThisWeekCount={closingThisWeekCount}
       />
@@ -73,7 +69,6 @@ export default async function Home() {
     resources,
     documents,
     savedSearches,
-    newsletterArticles,
     savedEvents,
   ] = await Promise.all([
     getUserApplications(supabase, user.id),
@@ -82,7 +77,6 @@ export default async function Home() {
     getPublishedInterviewResources(supabase),
     getUserDocuments(supabase, user.id),
     getUserSavedSearches(supabase, user.id),
-    getPublishedNewsletterArticles(supabase),
     getUserSavedEvents(supabase, user.id),
   ]);
 
@@ -110,7 +104,6 @@ export default async function Home() {
       activeApplicationsCount={activeApplicationsCount}
       documents={documents}
       savedSearches={savedSearches}
-      newsletterArticles={newsletterArticles.slice(0, 3)}
       savedEvents={savedEvents}
     />
   );

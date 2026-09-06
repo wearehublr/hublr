@@ -6,7 +6,6 @@ import type { InterviewResource } from "@/types/interview-resource";
 import type { Document } from "@/types/document";
 import { DOC_TYPES, DOC_TYPE_LABELS } from "@/types/document";
 import type { SavedSearch } from "@/types/saved-search";
-import type { NewsletterArticle } from "@/types/newsletter-article";
 import type { SavedEventWithDetails } from "@/types/saved-event";
 import { SAVED_EVENT_STATUS_LABELS } from "@/types/saved-event";
 import type { RecommendedMatch } from "@/lib/recommendations";
@@ -43,7 +42,6 @@ export default function HomeFeed({
   activeApplicationsCount,
   documents,
   savedSearches,
-  newsletterArticles,
   savedEvents,
 }: {
   name: string;
@@ -55,7 +53,6 @@ export default function HomeFeed({
   activeApplicationsCount: number;
   documents: Document[];
   savedSearches: SavedSearch[];
-  newsletterArticles: NewsletterArticle[];
   savedEvents: SavedEventWithDetails[];
 }) {
   return (
@@ -108,38 +105,6 @@ export default function HomeFeed({
             events={upcomingEvents}
             resources={recentResources}
           />
-
-          {newsletterArticles.length > 0 && (
-            <div>
-              <div className="flex items-baseline justify-between mb-3">
-                <h2 className="text-sm font-semibold">Latest from the newsletter</h2>
-                <Link href="/newsletter" className="text-sm underline">
-                  See all
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {newsletterArticles.map((a) => (
-                  <a
-                    key={a.id}
-                    href={a.link_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group rounded-lg border border-neutral-200 dark:border-neutral-800 p-4"
-                  >
-                    <span className="block h-1 w-10 bg-brand-light dark:bg-brand mb-3" />
-                    <h3 className="text-sm font-semibold group-hover:underline">
-                      {a.title}
-                    </h3>
-                    {a.description && (
-                      <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-                        {a.description}
-                      </p>
-                    )}
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="flex flex-col gap-6">

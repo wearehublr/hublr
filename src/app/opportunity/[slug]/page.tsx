@@ -83,7 +83,7 @@ export default async function OpportunityDetailPage({
         <span className="rounded-full bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5">
           {STATUS_LABELS[opportunity.status]}
         </span>
-        {sponsorship && <VisaSponsorshipBadge sponsorship={sponsorship} />}
+        <VisaSponsorshipBadge sponsorship={sponsorship} />
       </div>
 
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">

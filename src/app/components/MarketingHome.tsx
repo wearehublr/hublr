@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { Testimonial } from "@/types/testimonial";
-import type { NewsletterArticle } from "@/types/newsletter-article";
 
 const STEPS = [
   {
@@ -65,14 +64,12 @@ export default function MarketingHome({
   opportunitiesCount,
   eventsCount,
   testimonials,
-  articles,
   sponsorshipCount,
   closingThisWeekCount,
 }: {
   opportunitiesCount: number;
   eventsCount: number;
   testimonials: Testimonial[];
-  articles: NewsletterArticle[];
   sponsorshipCount: number;
   closingThisWeekCount: number;
 }) {
@@ -115,12 +112,15 @@ export default function MarketingHome({
             </Link>
           </div>
 
-          <p className="mt-4 text-xs text-neutral-500 dark:text-neutral-400">
-            A free account gets you: track applications &middot; deadline
-            reminders &middot; saved events &middot; visa sponsoring roles
-            &middot; personalised recommendations &middot; your CVs in one
-            place
-          </p>
+          <div className="mt-8 mx-auto max-w-md rounded-lg border border-brand/20 dark:border-brand-light/20 bg-white/60 dark:bg-neutral-900/40 px-5 py-4 text-left">
+            <p className="text-sm font-semibold">
+              Create your free Hublr account
+            </p>
+            <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-300">
+              Save opportunities. Track applications. Get deadline reminders.
+              Find sponsorship-friendly roles. Keep your CVs in one place.
+            </p>
+          </div>
         </section>
       </div>
 
@@ -250,51 +250,6 @@ export default function MarketingHome({
                     {t.story}
                   </p>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {articles.length > 0 && (
-        <section className="border-b border-neutral-200 dark:border-neutral-800">
-          <div className="mx-auto w-full max-w-4xl px-4 py-14 sm:px-6">
-            <div className="flex items-baseline justify-between mb-8">
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
-                Get the latest
-              </h2>
-              <Link href="/newsletter" className="text-sm underline">
-                See all articles
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {articles.map((a) => (
-                <a
-                  key={a.id}
-                  href={a.link_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group"
-                >
-                  <span className="block h-1 w-10 bg-brand-light dark:bg-brand mb-3" />
-                  <h3 className="font-semibold group-hover:underline">
-                    {a.title}
-                  </h3>
-                  {a.description && (
-                    <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-                      {a.description}
-                    </p>
-                  )}
-                  {a.published_date && (
-                    <p className="mt-2 text-xs text-neutral-400 dark:text-neutral-500">
-                      {new Date(a.published_date).toLocaleDateString("en-GB", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </p>
-                  )}
-                </a>
               ))}
             </div>
           </div>

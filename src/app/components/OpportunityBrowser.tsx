@@ -310,14 +310,14 @@ export default function OpportunityBrowser({
           )
         ) : (
           <Link
-            href="/login?next=/opportunities"
+            href="/signup?next=/opportunities"
             className="flex-1 min-w-[150px] rounded-lg border border-neutral-200 dark:border-neutral-800 p-3 text-left hover:border-brand/50 dark:hover:border-brand-light/50"
           >
             <p className="text-sm font-medium text-brand dark:text-brand-light">
               🎯 Recommended for you
             </p>
             <p className="text-xs text-neutral-500 dark:text-neutral-400">
-              Sign in to see your matches
+              Sign up to see personalised recommendations
             </p>
           </Link>
         )}
@@ -544,7 +544,7 @@ export default function OpportunityBrowser({
                     {o.industry}
                   </span>
                 )}
-                {sponsorship && <VisaSponsorshipBadge sponsorship={sponsorship} />}
+                <VisaSponsorshipBadge sponsorship={sponsorship} />
               </div>
 
               <DeadlineBadge deadline={o.deadline} />
