@@ -13,11 +13,11 @@
 }
 
 @theme {
-  /* Brand palette: warm cream + brown, echoing the original logo. */
-  --color-brand: #6b5a45;
-  --color-brand-light: #cdb89a;
-  --color-cream: #f1e8da;
-  --color-cream-dark: #2b241c;
+  /* Brand palette: warm cream + forest/sage green, matching the launch graphic. */
+  --color-brand: #1f3d2a;
+  --color-brand-light: #8fbf98;
+  --color-cream: #f6f4ed;
+  --color-cream-dark: #16231a;
 }
 
 @media (prefers-color-scheme: dark) {
