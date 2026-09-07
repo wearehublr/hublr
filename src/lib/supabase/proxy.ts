@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { isPreLaunch } from "@/lib/launch-status";
 
 const LOGIN_PATH = "/login";
 const DASHBOARD_PATH = "/opportunities";
@@ -27,22 +28,6 @@ function isWaitlistAllowed(pathname: string): boolean {
     WAITLIST_ALLOWED_EXACT.has(pathname) ||
     WAITLIST_ALLOWED_PREFIXES.some((p) => pathname.startsWith(p))
   );
-}
-
-// LAUNCH_AT (an ISO datetime) takes priority when set and parseable: the
-// site gates until that moment, then opens itself automatically on the
-// next request after it passes - no manual flip needed. Falls back to the
-// plain WAITLIST_MODE on/off switch otherwise, so the existing manual
-// workflow keeps working if no launch time is configured.
-function isPreLaunch(): boolean {
-  const launchAt = process.env.LAUNCH_AT;
-  if (launchAt) {
-    const launchTime = new Date(launchAt).getTime();
-    if (!Number.isNaN(launchTime)) {
-      return Date.now() < launchTime;
-    }
-  }
-  return process.env.WAITLIST_MODE === "true";
 }
 
 function redirectTo(request: NextRequest, pathname: string) {

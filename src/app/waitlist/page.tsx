@@ -1,11 +1,22 @@
+import { redirect } from "next/navigation";
 import WaitlistForm from "./WaitlistForm";
 import Logo from "@/app/components/Logo";
+import { isPreLaunch } from "@/lib/launch-status";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Join the waitlist | Hublr",
 };
 
 export default function WaitlistPage() {
+  // Once launched, this link may still be shared/bookmarked from before -
+  // send people to the real signup instead of asking them to join a
+  // waitlist for a site that's already live.
+  if (!isPreLaunch()) {
+    redirect("/signup");
+  }
+
   return (
     <main className="flex-1">
       <div className="relative overflow-hidden bg-cream dark:bg-cream-dark border-b border-brand-light/40 dark:border-brand/40">
