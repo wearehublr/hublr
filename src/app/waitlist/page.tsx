@@ -1,4 +1,5 @@
 import WaitlistForm from "./WaitlistForm";
+import Logo from "@/app/components/Logo";
 
 export const metadata = {
   title: "Join the waitlist | Hublr",
@@ -8,12 +9,9 @@ export default function WaitlistPage() {
   return (
     <main className="flex-1">
       <div className="relative overflow-hidden bg-cream dark:bg-cream-dark border-b border-brand-light/40 dark:border-brand/40">
-        <span
-          aria-hidden
-          className="pointer-events-none select-none absolute right-[-0.05em] top-1/2 -translate-y-1/2 text-[26rem] sm:text-[32rem] font-black leading-none text-brand/10 dark:text-brand-light/10"
-        >
-          H
-        </span>
+        <Logo
+          className="pointer-events-none select-none absolute right-[-2rem] top-1/2 -translate-y-1/2 w-[22rem] sm:w-[28rem] h-auto text-brand/10 dark:text-brand-light/10"
+        />
 
         <section className="relative mx-auto w-full max-w-lg px-4 py-16 sm:px-6 sm:py-24 text-center">
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight">
