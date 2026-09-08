@@ -154,7 +154,7 @@ export default function MarketingHome({
                 {sponsorshipCount}
               </p>
               <p className="text-sm text-neutral-500 dark:text-neutral-400 underline">
-                sponsor visas
+                sponsor visas (UK)
               </p>
             </Link>
           </div>

@@ -63,6 +63,10 @@ export async function getPublishedOpportunitiesCount(
   return count ?? 0;
 }
 
+// Visa sponsorship is only tracked for UK-based roles (the UK Skilled
+// Worker sponsor licence) - it doesn't mean anything for US/EU roles, so
+// this is scoped to region='uk' even though visa_sponsorship is a column
+// on every opportunity. See src/lib/visa-sponsorship.ts.
 export async function getVisaSponsorshipOpportunities(
   supabase: SupabaseClient,
 ): Promise<Opportunity[]> {
@@ -70,6 +74,7 @@ export async function getVisaSponsorshipOpportunities(
     .from("opportunities")
     .select("*")
     .eq("is_published", true)
+    .eq("region", "uk")
     .eq("visa_sponsorship", "yes")
     .order("company", { ascending: true });
 
@@ -84,6 +89,7 @@ export async function getVisaSponsorshipOpportunitiesCount(
     .from("opportunities")
     .select("*", { count: "exact", head: true })
     .eq("is_published", true)
+    .eq("region", "uk")
     .eq("visa_sponsorship", "yes");
 
   if (error) throw error;
