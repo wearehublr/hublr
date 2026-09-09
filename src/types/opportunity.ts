@@ -10,7 +10,6 @@ export const CATEGORIES = [
   "insight_program_general",
   "grad_scheme",
   "training_contract",
-  "full_time_analyst",
   "apprenticeship",
   "degree_apprenticeship",
   "entry_level",
@@ -20,7 +19,7 @@ export const CATEGORIES = [
 export type Category = (typeof CATEGORIES)[number];
 
 export const CATEGORY_LABELS: Record<Category, string> = {
-  internship: "Internship",
+  internship: "Internship (Non-Summer)",
   summer_internship: "Summer Internship",
   off_cycle: "Off-Cycle",
   spring_internship: "Spring Internship",
@@ -28,10 +27,9 @@ export const CATEGORY_LABELS: Record<Category, string> = {
   placement_year: "Placement Year",
   vacation_scheme: "Vacation Scheme",
   insight_program: "Insight Programme (Year 12/13)",
-  insight_program_general: "Insight Programme",
-  grad_scheme: "Grad Scheme",
+  insight_program_general: "Insight Programme (Uni Students)",
+  grad_scheme: "Full-Time Analyst / Grad Scheme",
   training_contract: "Training Contract",
-  full_time_analyst: "Full-Time / Analyst",
   apprenticeship: "Apprenticeship",
   degree_apprenticeship: "Degree Apprenticeship",
   entry_level: "Entry Level",

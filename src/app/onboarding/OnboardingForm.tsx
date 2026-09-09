@@ -175,7 +175,8 @@ export default function OnboardingForm({
 
       <div>
         <p className="text-sm font-medium mb-2">
-          Do you need an employer to sponsor your UK work visa?
+          Will you now, or in the future, require an employer to sponsor
+          your UK work visa?
         </p>
         <div className="flex gap-2">
           <PillOption
