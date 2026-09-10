@@ -99,7 +99,7 @@ export default function AboutPage() {
           </a>
           <span aria-hidden>·</span>
           <a
-            href="https://www.linkedin.com/company/thejobseekerhub/"
+            href="https://www.linkedin.com/company/wearehublr/"
             target="_blank"
             rel="noopener noreferrer"
             className="underline"

@@ -4,7 +4,7 @@ import Logo from "./Logo";
 const SOCIAL_LINKS = [
   {
     name: "LinkedIn",
-    href: "https://www.linkedin.com/company/thejobseekerhub/",
+    href: "https://www.linkedin.com/company/wearehublr/",
     icon: (
       <path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.11 1 2.48 1 4.98 2.12 4.98 3.5ZM.24 8.24h4.48V23H.24V8.24ZM8.24 8.24h4.29v2.01h.06c.6-1.13 2.06-2.32 4.24-2.32 4.53 0 5.37 2.98 5.37 6.86V23h-4.47v-6.36c0-1.52-.03-3.47-2.11-3.47-2.12 0-2.44 1.65-2.44 3.36V23H8.24V8.24Z" />
     ),
