@@ -24,6 +24,11 @@ export async function signIn(
   });
 
   if (error) {
+    if (error.code === "email_not_confirmed") {
+      return {
+        error: "Please confirm your email before logging in — check your inbox for the confirmation link.",
+      };
+    }
     return { error: "Invalid email or password." };
   }
 
