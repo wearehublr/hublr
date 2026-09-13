@@ -18,6 +18,14 @@ export default async function NewsletterPage() {
           Interview prep guides, student stories, and career advice from the
           Hublr newsletter.
         </p>
+        <a
+          href="https://wearehublr.beehiiv.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-flex items-center rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-3 py-1.5 hover:opacity-90"
+        >
+          Subscribe to the newsletter →
+        </a>
       </header>
 
       {articles.length === 0 ? (

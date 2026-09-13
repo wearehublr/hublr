@@ -76,6 +76,14 @@ export default function Footer() {
               {link.label}
             </Link>
           ))}
+          <a
+            href="https://wearehublr.beehiiv.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline"
+          >
+            Subscribe to our newsletter
+          </a>
         </nav>
 
         <p className="text-xs text-neutral-400 dark:text-neutral-500">
