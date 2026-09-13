@@ -29,12 +29,20 @@ export default async function InternationalPage() {
           Opportunities known to sponsor visas, plus guidance for
           international applicants.
         </p>
-        <Link
-          href="/international/guide"
-          className="mt-4 inline-flex items-center rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-3 py-1.5 hover:opacity-90"
-        >
-          Read the full guide: visas, sponsorship &amp; applying →
-        </Link>
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <Link
+            href="/international/guide"
+            className="inline-flex items-center rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-3 py-1.5 hover:opacity-90"
+          >
+            Read the full guide: visas, sponsorship &amp; applying →
+          </Link>
+          <a
+            href="#resources"
+            className="text-sm font-medium underline text-brand dark:text-brand-light"
+          >
+            Jump to resources &amp; guidance ↓
+          </a>
+        </div>
       </header>
 
       <section className="mb-10 rounded-lg border border-neutral-200 dark:border-neutral-800 p-4 sm:p-5">
@@ -65,7 +73,54 @@ export default async function InternationalPage() {
         </dl>
       </section>
 
-      <section className="mb-12">
+      <section id="resources" className="mb-12 scroll-mt-6">
+        <h2 className="text-sm font-semibold mb-3">Resources &amp; guidance</h2>
+        {resources.length === 0 ? (
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            Nothing published yet. Check back soon.
+          </p>
+        ) : (
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {resources.map((r) => (
+              <li
+                key={r.id}
+                className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4 flex flex-col gap-2 bg-white dark:bg-neutral-900"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <p className="font-semibold leading-tight">{r.title}</p>
+                  <span
+                    className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
+                      r.is_paid
+                        ? "bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300"
+                        : "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300"
+                    }`}
+                  >
+                    {r.is_paid ? r.price_label || "Paid" : "Free"}
+                  </span>
+                </div>
+
+                <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                  {INTL_RESOURCE_TYPE_LABELS[r.resource_type]}
+                </span>
+
+                {r.description && (
+                  <p className="text-sm text-neutral-600 dark:text-neutral-300">
+                    {r.description}
+                  </p>
+                )}
+
+                {r.source_name && (
+                  <p className="mt-auto text-xs text-neutral-500 dark:text-neutral-400">
+                    Source: {r.source_name}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section>
         <h2 className="text-sm font-semibold mb-3">
           Companies known to sponsor visas
         </h2>
@@ -108,53 +163,6 @@ export default async function InternationalPage() {
                 <div className="mt-1.5">
                   <DeadlineBadge deadline={o.deadline} />
                 </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <section>
-        <h2 className="text-sm font-semibold mb-3">Resources &amp; guidance</h2>
-        {resources.length === 0 ? (
-          <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            Nothing published yet. Check back soon.
-          </p>
-        ) : (
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {resources.map((r) => (
-              <li
-                key={r.id}
-                className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4 flex flex-col gap-2 bg-white dark:bg-neutral-900"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <p className="font-semibold leading-tight">{r.title}</p>
-                  <span
-                    className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
-                      r.is_paid
-                        ? "bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300"
-                        : "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300"
-                    }`}
-                  >
-                    {r.is_paid ? r.price_label || "Paid" : "Free"}
-                  </span>
-                </div>
-
-                <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                  {INTL_RESOURCE_TYPE_LABELS[r.resource_type]}
-                </span>
-
-                {r.description && (
-                  <p className="text-sm text-neutral-600 dark:text-neutral-300">
-                    {r.description}
-                  </p>
-                )}
-
-                {r.source_name && (
-                  <p className="mt-auto text-xs text-neutral-500 dark:text-neutral-400">
-                    Source: {r.source_name}
-                  </p>
-                )}
               </li>
             ))}
           </ul>
