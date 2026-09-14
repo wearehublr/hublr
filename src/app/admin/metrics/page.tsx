@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getMetricsSummary, getStudentStats, getExcludedUserIds } from "@/lib/metrics";
+import { getGA4Metrics, formatDuration } from "@/lib/ga4-metrics";
 import AdminSubNav from "../AdminSubNav";
 
 export const dynamic = "force-dynamic";
@@ -9,9 +10,10 @@ export default async function AdminMetricsPage() {
   const supabase = await createClient();
   const adminSupabase = createAdminClient();
   const excludedUserIds = await getExcludedUserIds(adminSupabase);
-  const [metrics, studentStats] = await Promise.all([
+  const [metrics, studentStats, ga4] = await Promise.all([
     getMetricsSummary(supabase, adminSupabase, excludedUserIds),
     getStudentStats(adminSupabase, excludedUserIds),
+    getGA4Metrics(),
   ]);
 
   const statusKnownCount = studentStats.homeCount + studentStats.internationalCount;
@@ -35,6 +37,103 @@ export default async function AdminMetricsPage() {
         Excludes the admin account{excludedUserIds.size === 0 && " (ADMIN_EMAIL not set — no exclusion applied)"}.
         Other manual test accounts aren&apos;t flagged and are still counted.
       </p>
+
+      {ga4 && (
+        <>
+          <h2 className="text-sm font-semibold mb-3">
+            Site traffic (last 28 days, via Google Analytics)
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
+            <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
+              <p className="text-2xl font-bold">{ga4.overview.activeUsers}</p>
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">Visitors</p>
+            </div>
+            <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
+              <p className="text-2xl font-bold">{ga4.overview.sessions}</p>
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">Sessions</p>
+            </div>
+            <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
+              <p className="text-2xl font-bold">{ga4.overview.pageViews}</p>
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">Page views</p>
+            </div>
+            <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
+              <p className="text-2xl font-bold">
+                {formatDuration(ga4.overview.avgSessionDurationSeconds)}
+              </p>
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">Avg. time on site</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
+            <div>
+              <h3 className="text-xs font-semibold mb-2 text-neutral-500 dark:text-neutral-400">
+                Where visitors come from
+              </h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border-collapse">
+                  <thead>
+                    <tr className="text-left border-b border-neutral-200 dark:border-neutral-800">
+                      <th className="py-2 pr-4">Source</th>
+                      <th className="py-2 pr-4">Sessions</th>
+                      <th className="py-2 pr-4">Visitors</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ga4.trafficSources.length === 0 ? (
+                      <tr>
+                        <td colSpan={3} className="py-2 pr-4 text-neutral-500 dark:text-neutral-400">
+                          No traffic recorded yet.
+                        </td>
+                      </tr>
+                    ) : (
+                      ga4.trafficSources.map((s) => (
+                        <tr key={s.channel} className="border-b border-neutral-100 dark:border-neutral-900 last:border-0">
+                          <td className="py-2 pr-4">{s.channel}</td>
+                          <td className="py-2 pr-4">{s.sessions}</td>
+                          <td className="py-2 pr-4">{s.activeUsers}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xs font-semibold mb-2 text-neutral-500 dark:text-neutral-400">
+                Most-viewed pages
+              </h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border-collapse">
+                  <thead>
+                    <tr className="text-left border-b border-neutral-200 dark:border-neutral-800">
+                      <th className="py-2 pr-4">Page</th>
+                      <th className="py-2 pr-4">Views</th>
+                      <th className="py-2 pr-4">Avg. time</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ga4.topPages.length === 0 ? (
+                      <tr>
+                        <td colSpan={3} className="py-2 pr-4 text-neutral-500 dark:text-neutral-400">
+                          No page views recorded yet.
+                        </td>
+                      </tr>
+                    ) : (
+                      ga4.topPages.map((p) => (
+                        <tr key={p.path} className="border-b border-neutral-100 dark:border-neutral-900 last:border-0">
+                          <td className="py-2 pr-4 font-mono text-xs">{p.path}</td>
+                          <td className="py-2 pr-4">{p.views}</td>
+                          <td className="py-2 pr-4">{formatDuration(p.avgSessionDurationSeconds)}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
