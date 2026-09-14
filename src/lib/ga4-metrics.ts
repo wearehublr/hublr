@@ -26,15 +26,31 @@ export type GA4Metrics = {
   trafficSources: GA4TrafficSource[];
 };
 
+// Env vars holding a PEM key are notoriously easy to paste wrong: extra
+// surrounding quotes, Windows CRLF line endings, or literal "\n" escape
+// sequences instead of real newlines all produce a PEM string OpenSSL's
+// DECODER rejects outright. Normalize all of these rather than assume one
+// exact paste format.
+function normalizePrivateKey(raw: string): string {
+  let key = raw.trim();
+  if (
+    (key.startsWith('"') && key.endsWith('"')) ||
+    (key.startsWith("'") && key.endsWith("'"))
+  ) {
+    key = key.slice(1, -1);
+  }
+  return key.replace(/\\n/g, "\n").replace(/\r\n/g, "\n").trim() + "\n";
+}
+
 function getClient(): BetaAnalyticsDataClient | null {
   const clientEmail = process.env.GA4_CLIENT_EMAIL;
-  const privateKey = process.env.GA4_PRIVATE_KEY;
-  if (!clientEmail || !privateKey) return null;
+  const rawPrivateKey = process.env.GA4_PRIVATE_KEY;
+  if (!clientEmail || !rawPrivateKey) return null;
 
   return new BetaAnalyticsDataClient({
     credentials: {
       client_email: clientEmail,
-      private_key: privateKey.replace(/\\n/g, "\n"),
+      private_key: normalizePrivateKey(rawPrivateKey),
     },
   });
 }
