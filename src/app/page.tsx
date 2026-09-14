@@ -27,6 +27,14 @@ import { getProfile } from "@/lib/profiles";
 import { filterUpcomingDeadlines, ACTIVE_STAGES } from "@/lib/deadlines";
 import MarketingHome from "@/app/components/MarketingHome";
 import HomeFeed from "@/app/components/HomeFeed";
+import * as Sentry from "@sentry/nextjs";
+
+function withFallback<T>(promise: Promise<T>, fallback: T): Promise<T> {
+  return promise.catch((error) => {
+    Sentry.captureException(error);
+    return fallback;
+  });
+}
 
 export const dynamic = "force-dynamic";
 
@@ -46,11 +54,11 @@ export default async function Home() {
       sponsorshipCount,
       closingThisWeekCount,
     ] = await Promise.all([
-      getPublishedOpportunitiesCount(supabase),
-      getUpcomingEventsCount(supabase),
-      getPublishedTestimonials(supabase),
-      getVisaSponsorshipOpportunitiesCount(supabase),
-      getOpportunitiesClosingWithinDaysCount(supabase, 7),
+      withFallback(getPublishedOpportunitiesCount(supabase), 0),
+      withFallback(getUpcomingEventsCount(supabase), 0),
+      withFallback(getPublishedTestimonials(supabase), []),
+      withFallback(getVisaSponsorshipOpportunitiesCount(supabase), 0),
+      withFallback(getOpportunitiesClosingWithinDaysCount(supabase, 7), 0),
     ]);
     return (
       <MarketingHome
