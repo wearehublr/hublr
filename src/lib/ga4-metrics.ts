@@ -1,4 +1,5 @@
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
+import * as Sentry from "@sentry/nextjs";
 
 export type GA4Overview = {
   activeUsers: number;
@@ -45,7 +46,13 @@ function getClient(): BetaAnalyticsDataClient | null {
 export async function getGA4Metrics(): Promise<GA4Metrics | null> {
   const propertyId = process.env.GA4_PROPERTY_ID;
   const client = getClient();
-  if (!propertyId || !client) return null;
+  if (!propertyId || !client) {
+    Sentry.captureMessage("GA4 metrics skipped: missing GA4_PROPERTY_ID/GA4_CLIENT_EMAIL/GA4_PRIVATE_KEY", {
+      level: "warning",
+      tags: { source: "ga4-metrics" },
+    });
+    return null;
+  }
 
   const property = `properties/${propertyId}`;
   const dateRanges = [{ startDate: "28daysAgo", endDate: "today" }];
@@ -100,7 +107,8 @@ export async function getGA4Metrics(): Promise<GA4Metrics | null> {
     }));
 
     return { overview, topPages, trafficSources };
-  } catch {
+  } catch (error) {
+    Sentry.captureException(error, { tags: { source: "ga4-metrics" } });
     return null;
   }
 }
