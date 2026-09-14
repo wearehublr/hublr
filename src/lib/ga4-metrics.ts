@@ -26,31 +26,21 @@ export type GA4Metrics = {
   trafficSources: GA4TrafficSource[];
 };
 
-// Env vars holding a PEM key are notoriously easy to paste wrong: extra
-// surrounding quotes, Windows CRLF line endings, or literal "\n" escape
-// sequences instead of real newlines all produce a PEM string OpenSSL's
-// DECODER rejects outright. Normalize all of these rather than assume one
-// exact paste format.
-function normalizePrivateKey(raw: string): string {
-  let key = raw.trim();
-  if (
-    (key.startsWith('"') && key.endsWith('"')) ||
-    (key.startsWith("'") && key.endsWith("'"))
-  ) {
-    key = key.slice(1, -1);
-  }
-  return key.replace(/\\n/g, "\n").replace(/\r\n/g, "\n").trim() + "\n";
-}
-
+// A raw PEM key pasted into an env var is easy to corrupt in transit
+// (surrounding quotes, CRLF line endings, literal "\n" vs real newlines,
+// or extra escaping added by whatever UI the value passes through) - every
+// variant produces a PEM string OpenSSL's DECODER rejects outright. Storing
+// it as base64 instead removes the ambiguity: base64 has no newlines,
+// quotes, or backslashes for anything to mangle.
 function getClient(): BetaAnalyticsDataClient | null {
   const clientEmail = process.env.GA4_CLIENT_EMAIL;
-  const rawPrivateKey = process.env.GA4_PRIVATE_KEY;
-  if (!clientEmail || !rawPrivateKey) return null;
+  const privateKeyB64 = process.env.GA4_PRIVATE_KEY_B64;
+  if (!clientEmail || !privateKeyB64) return null;
 
   return new BetaAnalyticsDataClient({
     credentials: {
       client_email: clientEmail,
-      private_key: normalizePrivateKey(rawPrivateKey),
+      private_key: Buffer.from(privateKeyB64, "base64").toString("utf8"),
     },
   });
 }
@@ -63,7 +53,7 @@ export async function getGA4Metrics(): Promise<GA4Metrics | null> {
   const propertyId = process.env.GA4_PROPERTY_ID;
   const client = getClient();
   if (!propertyId || !client) {
-    Sentry.captureMessage("GA4 metrics skipped: missing GA4_PROPERTY_ID/GA4_CLIENT_EMAIL/GA4_PRIVATE_KEY", {
+    Sentry.captureMessage("GA4 metrics skipped: missing GA4_PROPERTY_ID/GA4_CLIENT_EMAIL/GA4_PRIVATE_KEY_B64", {
       level: "warning",
       tags: { source: "ga4-metrics" },
     });
