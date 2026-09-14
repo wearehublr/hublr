@@ -86,17 +86,36 @@ describe("createResilientFetch", () => {
     expect(mockFetch).toHaveBeenCalledTimes(2);
   });
 
-  it("retries once on 502/503 too, and only once even if it keeps failing", async () => {
+  it("retries a second time (3 attempts total) if the first retry also fails", async () => {
+    const mockFetch = vi
+      .fn()
+      .mockResolvedValueOnce(jsonResponse(503, { message: "Service Unavailable" }))
+      .mockResolvedValueOnce(jsonResponse(503, { message: "Service Unavailable" }))
+      .mockResolvedValueOnce(jsonResponse(200, { ok: true }));
+    vi.stubGlobal("fetch", mockFetch);
+
+    const resilientFetch = createResilientFetch();
+    const responsePromise = resilientFetch("https://example.com");
+    await vi.advanceTimersByTimeAsync(1200);
+    await vi.advanceTimersByTimeAsync(2500);
+    const response = await responsePromise;
+
+    expect(response.status).toBe(200);
+    expect(mockFetch).toHaveBeenCalledTimes(3);
+  });
+
+  it("gives up after 3 attempts total if the gateway keeps failing", async () => {
     const mockFetch = vi.fn().mockResolvedValue(jsonResponse(503, { message: "Service Unavailable" }));
     vi.stubGlobal("fetch", mockFetch);
 
     const resilientFetch = createResilientFetch();
     const responsePromise = resilientFetch("https://example.com");
     await vi.advanceTimersByTimeAsync(1200);
+    await vi.advanceTimersByTimeAsync(2500);
     const response = await responsePromise;
 
     expect(response.status).toBe(503);
-    expect(mockFetch).toHaveBeenCalledTimes(2);
+    expect(mockFetch).toHaveBeenCalledTimes(3);
   });
 
   it("does not retry a 504 for a non-GET request", async () => {
