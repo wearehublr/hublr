@@ -45,6 +45,21 @@ function getClient(): BetaAnalyticsDataClient | null {
   });
 }
 
+// Shape-only diagnostics for when the key still fails to parse - lengths and
+// header/footer checks, never the key content itself, so this is safe to
+// attach to an error report.
+function describeKeyShape(): Record<string, unknown> {
+  const rawB64 = process.env.GA4_PRIVATE_KEY_B64 ?? "";
+  const decoded = Buffer.from(rawB64, "base64").toString("utf8");
+  return {
+    rawB64Length: rawB64.length,
+    decodedLength: decoded.length,
+    decodedLineCount: decoded.split("\n").length,
+    startsWithPemHeader: decoded.startsWith("-----BEGIN PRIVATE KEY-----"),
+    endsWithPemFooter: decoded.trim().endsWith("-----END PRIVATE KEY-----"),
+  };
+}
+
 // Returns null if GA4 isn't configured (missing env vars) or the API call
 // fails for any reason - this is a supplementary panel on the admin
 // dashboard, not core functionality, so it should degrade silently rather
@@ -114,7 +129,10 @@ export async function getGA4Metrics(): Promise<GA4Metrics | null> {
 
     return { overview, topPages, trafficSources };
   } catch (error) {
-    Sentry.captureException(error, { tags: { source: "ga4-metrics" } });
+    Sentry.captureException(error, {
+      tags: { source: "ga4-metrics" },
+      extra: describeKeyShape(),
+    });
     return null;
   }
 }
