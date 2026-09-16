@@ -25,6 +25,10 @@ import { buildOpportunitySlug } from "@/lib/slug";
 import { notifyApplyClick } from "@/lib/apply-tracking";
 import { compareByDate } from "@/lib/sort-by-date";
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 const STATUS_DOT: Record<Status, string> = {
   open: "bg-emerald-500",
   upcoming: "bg-blue-500",
@@ -223,6 +227,7 @@ export default function OpportunityBrowser({
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
+    const searchRegex = q ? new RegExp(`\\b${escapeRegExp(q)}`, "i") : null;
     const result = opportunities.filter((o) => {
       if (year !== "all" && o.cycle_year !== year) return false;
       if (region !== "all" && o.region !== region) return false;
@@ -232,10 +237,7 @@ export default function OpportunityBrowser({
       if (visaSponsorship !== "all" && o.visa_sponsorship !== visaSponsorship)
         return false;
       if (closingSoonOnly && !isClosingWithinDays(o, 7)) return false;
-      if (
-        q &&
-        !`${o.company} ${o.role_title}`.toLowerCase().includes(q)
-      )
+      if (searchRegex && !searchRegex.test(`${o.company} ${o.role_title}`))
         return false;
       return true;
     });

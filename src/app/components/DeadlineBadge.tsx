@@ -30,8 +30,8 @@ export default function DeadlineBadge({ deadline }: { deadline: string | null })
 
   if (days !== null && days < 0) {
     return (
-      <span className="text-xs text-neutral-400 line-through">
-        Deadline passed &middot; {formatted}
+      <span className="text-xs text-neutral-500 dark:text-neutral-400">
+        No longer taking applications &middot; deadline was {formatted}
       </span>
     );
   }
