@@ -1,5 +1,6 @@
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
 import * as Sentry from "@sentry/nextjs";
+import { resolvePrivateKey, privateKeyParses } from "@/lib/ga4-key";
 
 export type GA4Overview = {
   activeUsers: number;
@@ -26,37 +27,42 @@ export type GA4Metrics = {
   trafficSources: GA4TrafficSource[];
 };
 
-// A raw PEM key pasted into an env var is easy to corrupt in transit
-// (surrounding quotes, CRLF line endings, literal "\n" vs real newlines,
-// or extra escaping added by whatever UI the value passes through) - every
-// variant produces a PEM string OpenSSL's DECODER rejects outright. Storing
-// it as base64 instead removes the ambiguity: base64 has no newlines,
-// quotes, or backslashes for anything to mangle.
+// Env-var UIs mangle multi-line keys in many ways (quotes, CRLFs, literal
+// "\n", spaces for newlines), so the key is normalised to a clean PEM
+// whatever shape it was pasted in.
+function rawKeyFromEnv(): string {
+  return process.env.GA4_PRIVATE_KEY_B64 ?? process.env.GA4_PRIVATE_KEY ?? "";
+}
+
 function getClient(): BetaAnalyticsDataClient | null {
-  const clientEmail = process.env.GA4_CLIENT_EMAIL;
-  const privateKeyB64 = process.env.GA4_PRIVATE_KEY_B64;
-  if (!clientEmail || !privateKeyB64) return null;
+  const clientEmail = process.env.GA4_CLIENT_EMAIL?.trim();
+  const rawKey = rawKeyFromEnv();
+  if (!clientEmail || !rawKey) return null;
 
   return new BetaAnalyticsDataClient({
     credentials: {
       client_email: clientEmail,
-      private_key: Buffer.from(privateKeyB64, "base64").toString("utf8"),
+      private_key: resolvePrivateKey(rawKey),
     },
   });
 }
 
 // Shape-only diagnostics for when the key still fails to parse - lengths and
-// header/footer checks, never the key content itself, so this is safe to
-// attach to an error report.
+// booleans, never the key content itself, so this is safe to attach to an
+// error report.
 function describeKeyShape(): Record<string, unknown> {
-  const rawB64 = process.env.GA4_PRIVATE_KEY_B64 ?? "";
-  const decoded = Buffer.from(rawB64, "base64").toString("utf8");
+  const rawKey = rawKeyFromEnv();
+  const pem = resolvePrivateKey(rawKey);
   return {
-    rawB64Length: rawB64.length,
-    decodedLength: decoded.length,
-    decodedLineCount: decoded.split("\n").length,
-    startsWithPemHeader: decoded.startsWith("-----BEGIN PRIVATE KEY-----"),
-    endsWithPemFooter: decoded.trim().endsWith("-----END PRIVATE KEY-----"),
+    envVarUsed: process.env.GA4_PRIVATE_KEY_B64 ? "GA4_PRIVATE_KEY_B64" : process.env.GA4_PRIVATE_KEY ? "GA4_PRIVATE_KEY" : "none",
+    rawLength: rawKey.length,
+    pemLength: pem.length,
+    pemLineCount: pem.split("\n").length,
+    startsWithPemHeader: pem.startsWith("-----BEGIN PRIVATE KEY-----"),
+    endsWithPemFooter: pem.trim().endsWith("-----END PRIVATE KEY-----"),
+    keyParses: privateKeyParses(pem),
+    clientEmailSet: Boolean(process.env.GA4_CLIENT_EMAIL),
+    propertyIdSet: Boolean(process.env.GA4_PROPERTY_ID),
   };
 }
 
