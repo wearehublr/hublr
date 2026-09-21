@@ -92,11 +92,10 @@ export async function getMetricsSummary(
   adminSupabase: SupabaseClient,
   excludedUserIds: Set<string>,
 ): Promise<MetricsSummary> {
-  const [{ data: clicksRaw }, { data: applicationsRaw }, { data: opportunities }, { data: profilesRaw }] =
+  const [{ data: clicksRaw }, { data: applicationsRaw }, { data: profilesRaw }] =
     await Promise.all([
       supabase.from("link_clicks").select("opportunity_id, user_id"),
       adminSupabase.from("applications").select("opportunity_id, stage, user_id"),
-      adminSupabase.from("opportunities").select("id, company, role_title"),
       adminSupabase.from("profiles").select("id, student_status, requires_sponsorship"),
     ]);
 
@@ -115,10 +114,6 @@ export async function getMetricsSummary(
         requires_sponsorship: p.requires_sponsorship ?? null,
       },
     ]),
-  );
-
-  const nameByOpportunity = new Map(
-    (opportunities ?? []).map((o) => [o.id, { company: o.company, role_title: o.role_title }]),
   );
 
   const clicksByOpportunity = new Map<string, number>();
@@ -165,7 +160,22 @@ export async function getMetricsSummary(
     ...appliedByOpportunity.keys(),
   ]);
 
-  const byOpportunity: OpportunityMetric[] = Array.from(opportunityIds)
+  // Look up only the opportunities that have activity, in chunks: fetching the
+  // whole table silently stops at the API row limit, which made real
+  // opportunities show up as "(deleted opportunity)".
+  const nameByOpportunity = new Map<string, { company: string; role_title: string }>();
+  const idList = Array.from(opportunityIds);
+  for (let i = 0; i < idList.length; i += 100) {
+    const { data } = await adminSupabase
+      .from("opportunities")
+      .select("id, company, role_title")
+      .in("id", idList.slice(i, i + 100));
+    for (const o of data ?? []) {
+      nameByOpportunity.set(o.id, { company: o.company, role_title: o.role_title });
+    }
+  }
+
+  const byOpportunity: OpportunityMetric[] = idList
     .map((id) => ({
       opportunity_id: id,
       company: nameByOpportunity.get(id)?.company ?? "(deleted opportunity)",
