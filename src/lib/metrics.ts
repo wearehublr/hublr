@@ -95,8 +95,8 @@ export async function getMetricsSummary(
   const [{ data: clicksRaw }, { data: applicationsRaw }, { data: opportunities }, { data: profilesRaw }] =
     await Promise.all([
       supabase.from("link_clicks").select("opportunity_id, user_id"),
-      supabase.from("applications").select("opportunity_id, stage, user_id"),
-      supabase.from("opportunities").select("id, company, role_title"),
+      adminSupabase.from("applications").select("opportunity_id, stage, user_id"),
+      adminSupabase.from("opportunities").select("id, company, role_title"),
       adminSupabase.from("profiles").select("id, student_status, requires_sponsorship"),
     ]);
 
