@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getMetricsSummary, getStudentStats, getExcludedUserIds } from "@/lib/metrics";
-import { getGA4Metrics, formatDuration } from "@/lib/ga4-metrics";
+import { getGA4Result, formatDuration } from "@/lib/ga4-metrics";
 import AdminSubNav from "../AdminSubNav";
 
 export const dynamic = "force-dynamic";
@@ -10,11 +10,12 @@ export default async function AdminMetricsPage() {
   const supabase = await createClient();
   const adminSupabase = createAdminClient();
   const excludedUserIds = await getExcludedUserIds(adminSupabase);
-  const [metrics, studentStats, ga4] = await Promise.all([
+  const [metrics, studentStats, ga4Result] = await Promise.all([
     getMetricsSummary(supabase, adminSupabase, excludedUserIds),
     getStudentStats(adminSupabase, excludedUserIds),
-    getGA4Metrics(),
+    getGA4Result(),
   ]);
+  const ga4 = ga4Result.metrics;
 
   const statusKnownCount = studentStats.homeCount + studentStats.internationalCount;
   const homePercent = statusKnownCount
@@ -37,6 +38,13 @@ export default async function AdminMetricsPage() {
         Excludes the admin account{excludedUserIds.size === 0 && " (ADMIN_EMAIL not set — no exclusion applied)"}.
         Other manual test accounts aren&apos;t flagged and are still counted.
       </p>
+
+      {!ga4 && ga4Result.problem && (
+        <div className="mb-8 rounded-md border border-amber-300 bg-amber-50 dark:bg-amber-950 dark:border-amber-800 p-3 text-xs text-amber-900 dark:text-amber-200">
+          <p className="font-semibold mb-1">Site traffic (Google Analytics) is unavailable</p>
+          <p className="break-words">{ga4Result.problem}</p>
+        </div>
+      )}
 
       {ga4 && (
         <>

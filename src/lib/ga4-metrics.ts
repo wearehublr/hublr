@@ -66,19 +66,30 @@ function describeKeyShape(): Record<string, unknown> {
   };
 }
 
-// Returns null if GA4 isn't configured (missing env vars) or the API call
-// fails for any reason - this is a supplementary panel on the admin
-// dashboard, not core functionality, so it should degrade silently rather
-// than break the page.
+export type GA4Result = { metrics: GA4Metrics | null; problem: string | null };
+
 export async function getGA4Metrics(): Promise<GA4Metrics | null> {
+  return (await getGA4Result()).metrics;
+}
+
+// metrics is null if GA4 isn't configured or the API call fails - this is a
+// supplementary panel on the admin dashboard, so it degrades instead of
+// breaking the page. "problem" says why, so the admin page can show the reason
+// (admin-only, never includes key material).
+export async function getGA4Result(): Promise<GA4Result> {
   const propertyId = process.env.GA4_PROPERTY_ID;
   const client = getClient();
   if (!propertyId || !client) {
-    Sentry.captureMessage("GA4 metrics skipped: missing GA4_PROPERTY_ID/GA4_CLIENT_EMAIL/GA4_PRIVATE_KEY_B64", {
+    const missing = [
+      !propertyId && "GA4_PROPERTY_ID",
+      !process.env.GA4_CLIENT_EMAIL?.trim() && "GA4_CLIENT_EMAIL",
+      !rawKeyFromEnv() && "GA4_PRIVATE_KEY_B64",
+    ].filter(Boolean).join(", ");
+    Sentry.captureMessage(`GA4 metrics skipped: missing ${missing}`, {
       level: "warning",
       tags: { source: "ga4-metrics" },
     });
-    return null;
+    return { metrics: null, problem: `Missing environment variable(s): ${missing}` };
   }
 
   const property = `properties/${propertyId}`;
@@ -133,13 +144,18 @@ export async function getGA4Metrics(): Promise<GA4Metrics | null> {
       activeUsers: Number(row.metricValues?.[1]?.value ?? 0),
     }));
 
-    return { overview, topPages, trafficSources };
+    return { metrics: { overview, topPages, trafficSources }, problem: null };
   } catch (error) {
+    const shape = describeKeyShape();
     Sentry.captureException(error, {
       tags: { source: "ga4-metrics" },
-      extra: describeKeyShape(),
+      extra: shape,
     });
-    return null;
+    const message = error instanceof Error ? error.message : String(error);
+    return {
+      metrics: null,
+      problem: `${message.slice(0, 300)} | key check: ${JSON.stringify(shape)}`,
+    };
   }
 }
 

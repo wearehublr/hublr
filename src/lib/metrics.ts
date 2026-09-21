@@ -169,7 +169,7 @@ export async function getMetricsSummary(
     .map((id) => ({
       opportunity_id: id,
       company: nameByOpportunity.get(id)?.company ?? "(deleted opportunity)",
-      role_title: nameByOpportunity.get(id)?.role_title ?? "",
+      role_title: nameByOpportunity.get(id)?.role_title ?? `(id ${id})`,
       clicks: clicksByOpportunity.get(id) ?? 0,
       applied: appliedByOpportunity.get(id) ?? 0,
     }))
