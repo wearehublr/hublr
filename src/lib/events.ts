@@ -3,6 +3,14 @@ import type { HublrEvent } from "@/types/event";
 import type { SavedEventWithDetails } from "@/types/saved-event";
 import { compareByDate } from "@/lib/sort-by-date";
 
+function sortEvents(events: HublrEvent[]): HublrEvent[] {
+  const sorted = [...events].sort((a, b) =>
+    (a.company ?? a.title).localeCompare(b.company ?? b.title),
+  );
+  sorted.sort((a, b) => compareByDate(a.event_date, b.event_date));
+  return sorted;
+}
+
 export async function getPublishedEvents(
   supabase: SupabaseClient,
 ): Promise<HublrEvent[]> {
@@ -12,12 +20,22 @@ export async function getPublishedEvents(
     .eq("is_published", true);
 
   if (error) throw error;
+  return sortEvents(data as HublrEvent[]);
+}
 
-  const sorted = [...(data as HublrEvent[])].sort((a, b) =>
-    (a.company ?? a.title).localeCompare(b.company ?? b.title),
-  );
-  sorted.sort((a, b) => compareByDate(a.event_date, b.event_date));
-  return sorted;
+// Excludes events whose date has already passed - used for the public
+// browse page so users aren't shown events they can no longer attend.
+export async function getUpcomingPublishedEvents(
+  supabase: SupabaseClient,
+): Promise<HublrEvent[]> {
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .eq("is_published", true)
+    .gte("event_date", new Date().toISOString());
+
+  if (error) throw error;
+  return sortEvents(data as HublrEvent[]);
 }
 
 export async function getUpcomingEvents(

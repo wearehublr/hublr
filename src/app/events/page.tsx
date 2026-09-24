@@ -1,12 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
-import { getPublishedEvents } from "@/lib/events";
+import { getUpcomingPublishedEvents } from "@/lib/events";
 import EventBrowser from "@/app/components/EventBrowser";
 
 export const dynamic = "force-dynamic";
 
 export default async function EventsPage() {
   const supabase = await createClient();
-  const events = await getPublishedEvents(supabase);
+  const events = await getUpcomingPublishedEvents(supabase);
   const {
     data: { user },
   } = await supabase.auth.getUser();
