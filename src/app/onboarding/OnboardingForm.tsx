@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import { completeOnboarding } from "./actions";
+import { useActionState, useEffect, useRef, useState } from "react";
+import { completeOnboarding, saveOnboardingProgress } from "./actions";
 import { inferRequiresSponsorship } from "@/lib/profile-sponsorship";
 import { INDUSTRIES, MAX_INTERESTED_INDUSTRIES } from "@/types/profile";
 import type { Profile } from "@/types/profile";
@@ -74,6 +74,23 @@ export default function OnboardingForm({
   const [regions, setRegions] = useState<string[]>(
     profile?.preferred_regions ?? [],
   );
+
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    saveOnboardingProgress({
+      interested_industries: industries,
+      preferred_categories: categories,
+      preferred_regions: regions,
+    });
+  }, [industries, categories, regions]);
+
+  const hasAnyPreference =
+    industries.length > 0 || categories.length > 0 || regions.length > 0;
+
   const inferredSponsorship = inferRequiresSponsorship(
     profile?.citizenship ?? null,
     profile?.visa_status ?? null,
@@ -202,13 +219,19 @@ export default function OnboardingForm({
         </p>
       </div>
 
+      {!hasAnyPreference && (
+        <p className="text-xs text-neutral-500 dark:text-neutral-400">
+          Pick at least one industry, role type, or region above to continue.
+        </p>
+      )}
+
       {state?.error && (
         <p className="text-sm text-red-600 dark:text-red-400">{state.error}</p>
       )}
 
       <button
         type="submit"
-        disabled={pending || sponsorship === ""}
+        disabled={pending || sponsorship === "" || !hasAnyPreference}
         className="self-start rounded-md bg-brand dark:bg-brand-light text-cream dark:text-neutral-900 text-sm font-medium px-4 py-2 hover:opacity-90 disabled:opacity-50"
       >
         {pending ? "Saving..." : "Show me my opportunities"}
