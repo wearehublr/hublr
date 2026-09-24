@@ -8,6 +8,7 @@ async function send(options: {
   to: string;
   subject: string;
   text: string;
+  html?: string;
 }): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -22,6 +23,7 @@ async function send(options: {
       to: options.to,
       subject: options.subject,
       text: options.text,
+      ...(options.html ? { html: options.html } : {}),
     });
     // The Resend SDK returns API-level errors (e.g. unverified domain)
     // in `error` rather than throwing, so this must be checked explicitly.
@@ -40,6 +42,7 @@ export async function sendEmail(options: {
   to: string;
   subject: string;
   text: string;
+  html?: string;
 }): Promise<void> {
   return send(options);
 }
