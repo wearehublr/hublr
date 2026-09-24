@@ -27,14 +27,7 @@ import { getProfile } from "@/lib/profiles";
 import { filterUpcomingDeadlines, ACTIVE_STAGES } from "@/lib/deadlines";
 import MarketingHome from "@/app/components/MarketingHome";
 import HomeFeed from "@/app/components/HomeFeed";
-import * as Sentry from "@sentry/nextjs";
-
-function withFallback<T>(promise: Promise<T>, fallback: T): Promise<T> {
-  return promise.catch((error) => {
-    Sentry.captureException(error);
-    return fallback;
-  });
-}
+import { withFallback } from "@/lib/with-fallback";
 
 export const dynamic = "force-dynamic";
 

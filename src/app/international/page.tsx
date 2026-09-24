@@ -6,6 +6,7 @@ import { INTL_RESOURCE_TYPE_LABELS } from "@/types/international-resource";
 import { CATEGORY_LABELS, REGION_LABELS } from "@/types/opportunity";
 import { buildOpportunitySlug } from "@/lib/slug";
 import { SPONSORSHIP_METHODOLOGY } from "@/lib/visa-sponsorship";
+import { withFallback } from "@/lib/with-fallback";
 import CompanyLogo from "@/app/components/CompanyLogo";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import VisaSponsorshipBadge from "@/app/components/VisaSponsorshipBadge";
@@ -15,8 +16,8 @@ export const dynamic = "force-dynamic";
 export default async function InternationalPage() {
   const supabase = await createClient();
   const [sponsors, resources] = await Promise.all([
-    getVisaSponsorshipOpportunities(supabase),
-    getPublishedInternationalResources(supabase),
+    withFallback(getVisaSponsorshipOpportunities(supabase), []),
+    withFallback(getPublishedInternationalResources(supabase), []),
   ]);
 
   return (

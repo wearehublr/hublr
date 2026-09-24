@@ -30,7 +30,21 @@ export function resolvePrivateKey(raw: string): string {
 
   const body = match[2].replace(/\s+/g, "");
   const lines = body.match(/.{1,64}/g)?.join("\n") ?? body;
-  return `-----BEGIN ${match[1]}-----\n${lines}\n-----END ${match[1]}-----\n`;
+  const normalized = `-----BEGIN ${match[1]}-----\n${lines}\n-----END ${match[1]}-----\n`;
+
+  // Some service-account key exports use the legacy PKCS#1 ("RSA PRIVATE
+  // KEY") encoding. Node's newer OpenSSL 3 "DECODER routines" can reject
+  // that encoding specifically in the JWT-signing code path
+  // google-auth-library uses, even though createPrivateKey() parses it
+  // fine on its own - re-exporting through Node's own crypto forces a
+  // clean, modern PKCS#8 PEM that both code paths handle consistently.
+  try {
+    return createPrivateKey(normalized)
+      .export({ type: "pkcs8", format: "pem" })
+      .toString();
+  } catch {
+    return normalized; // let privateKeyParses()/describeKeyShape() surface the real problem
+  }
 }
 
 export function privateKeyParses(pem: string): boolean {
