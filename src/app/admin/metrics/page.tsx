@@ -1,6 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getMetricsSummary, getStudentStats, getExcludedUserIds } from "@/lib/metrics";
+import {
+  getMetricsSummary,
+  getStudentStats,
+  getExcludedUserIds,
+  getSecondWeekReturnRate,
+} from "@/lib/metrics";
 import { getGA4Result, formatDuration } from "@/lib/ga4-metrics";
 import AdminSubNav from "../AdminSubNav";
 
@@ -10,20 +15,19 @@ export default async function AdminMetricsPage() {
   const supabase = await createClient();
   const adminSupabase = createAdminClient();
   const excludedUserIds = await getExcludedUserIds(adminSupabase);
-  const [metrics, studentStats, ga4Result] = await Promise.all([
+  const [metrics, studentStats, ga4Result, secondWeekReturn] = await Promise.all([
     getMetricsSummary(supabase, adminSupabase, excludedUserIds),
     getStudentStats(adminSupabase, excludedUserIds),
     getGA4Result(),
+    getSecondWeekReturnRate(adminSupabase, excludedUserIds),
   ]);
   const ga4 = ga4Result.metrics;
 
   const statusKnownCount = studentStats.homeCount + studentStats.internationalCount;
-  const homePercent = statusKnownCount
-    ? Math.round((studentStats.homeCount / statusKnownCount) * 100)
-    : null;
-  const internationalPercent = statusKnownCount
-    ? Math.round((studentStats.internationalCount / statusKnownCount) * 100)
-    : null;
+  const statusCoveragePercent =
+    studentStats.totalUsers > 0
+      ? Math.round((statusKnownCount / studentStats.totalUsers) * 100)
+      : null;
 
   const pctOfUsers = (n: number) =>
     studentStats.totalUsers > 0 ? Math.round((n / studentStats.totalUsers) * 100) : null;
@@ -148,6 +152,11 @@ export default async function AdminMetricsPage() {
         </>
       )}
 
+      <h2 className="text-sm font-semibold mb-1">Student activity (all-time)</h2>
+      <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
+        Unlike the traffic numbers above, these are not scoped to the last 28 days -
+        they cover every click, tracked opportunity and application ever recorded.
+      </p>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
           <p className="text-2xl font-bold">{metrics.uniqueClickUsers}</p>
@@ -178,7 +187,7 @@ export default async function AdminMetricsPage() {
         </div>
       </div>
 
-      <h2 className="text-sm font-semibold mb-3">Funnel (unique students, % of registered)</h2>
+      <h2 className="text-sm font-semibold mb-3">Funnel (unique students, all-time, % of registered)</h2>
       <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 mb-8 overflow-x-auto">
         <table className="w-full text-sm border-collapse">
           <thead>
@@ -205,7 +214,40 @@ export default async function AdminMetricsPage() {
         </table>
       </div>
 
-      <h2 className="text-sm font-semibold mb-3">Student base</h2>
+      <h2 className="text-sm font-semibold mb-1">Second-week meaningful use</h2>
+      <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
+        Of students who have had a full 13 days since signing up, the share who came back
+        and did something deliberate - clicked Apply, tracked a new opportunity, saved a
+        search, or saved an event - between day 7 and day 13. Excludes anything created
+        automatically (like onboarding&apos;s auto-save) or by background jobs.
+      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
+          <p className="text-2xl font-bold">
+            {secondWeekReturn.returnRatePercent !== null
+              ? `${secondWeekReturn.returnRatePercent}%`
+              : "-"}
+          </p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">Returned in week 2</p>
+        </div>
+        <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
+          <p className="text-2xl font-bold">{secondWeekReturn.returnedUsers}</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">Returned</p>
+        </div>
+        <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
+          <p className="text-2xl font-bold">{secondWeekReturn.eligibleUsers}</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            Eligible (13+ days old)
+          </p>
+        </div>
+      </div>
+
+      <h2 className="text-sm font-semibold mb-1">Student base</h2>
+      <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
+        Home/international status set for {statusKnownCount} of {studentStats.totalUsers} accounts
+        {statusCoveragePercent !== null && ` (${statusCoveragePercent}% coverage)`}.
+        The counts below are raw counts, not percentages, so a small sample can&apos;t look more complete than it is.
+      </p>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
           <p className="text-2xl font-bold">{studentStats.totalUsers}</p>
@@ -214,21 +256,15 @@ export default async function AdminMetricsPage() {
           </p>
         </div>
         <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
-          <p className="text-2xl font-bold">
-            {homePercent !== null ? `${homePercent}%` : "-"}
-          </p>
+          <p className="text-2xl font-bold">{studentStats.homeCount}</p>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            Home (UK) students{" "}
-            {statusKnownCount > 0 && `(of ${statusKnownCount} who set status)`}
+            Home (UK) students
           </p>
         </div>
         <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 p-4">
-          <p className="text-2xl font-bold">
-            {internationalPercent !== null ? `${internationalPercent}%` : "-"}
-          </p>
+          <p className="text-2xl font-bold">{studentStats.internationalCount}</p>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            International students{" "}
-            {statusKnownCount > 0 && `(of ${statusKnownCount} who set status)`}
+            International students
           </p>
         </div>
       </div>

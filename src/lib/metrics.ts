@@ -254,6 +254,81 @@ export async function getMetricsSummary(
   };
 }
 
+export type SecondWeekReturnStats = {
+  eligibleUsers: number;
+  returnedUsers: number;
+  returnRatePercent: number | null;
+};
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// "Meaningful use" is scoped to actions a student had to deliberately take:
+// clicking Apply, tracking a new opportunity, saving a search, or saving an
+// event. Deliberately excludes applications.updated_at - the deadline
+// reminder cron also bumps that column when it marks a reminder as sent, so
+// using it here would count a background job as a student "returning".
+export async function getSecondWeekReturnRate(
+  adminSupabase: SupabaseClient,
+  excludedUserIds: Set<string>,
+): Promise<SecondWeekReturnStats> {
+  const now = Date.now();
+
+  let page = 1;
+  const perPage = 1000;
+  const users: { id: string; createdAt: number }[] = [];
+  while (true) {
+    const { data, error } = await adminSupabase.auth.admin.listUsers({ page, perPage });
+    if (error || !data) break;
+    for (const u of data.users) {
+      if (!excludedUserIds.has(u.id)) {
+        users.push({ id: u.id, createdAt: new Date(u.created_at).getTime() });
+      }
+    }
+    if (data.users.length < perPage) break;
+    page += 1;
+  }
+
+  // Only students who have had the full 13-day observation period count -
+  // someone who signed up yesterday hasn't had the chance to return yet.
+  const eligible = users.filter((u) => now - u.createdAt >= 13 * DAY_MS);
+  if (eligible.length === 0) {
+    return { eligibleUsers: 0, returnedUsers: 0, returnRatePercent: null };
+  }
+
+  const [{ data: clicks }, { data: apps }, { data: searches }, { data: events }] =
+    await Promise.all([
+      adminSupabase.from("link_clicks").select("user_id, clicked_at"),
+      adminSupabase.from("applications").select("user_id, created_at"),
+      adminSupabase.from("saved_searches").select("user_id, created_at"),
+      adminSupabase.from("saved_events").select("user_id, created_at"),
+    ]);
+
+  const actionsByUser = new Map<string, number[]>();
+  const addAction = (userId: string | null, at: string) => {
+    if (!userId || excludedUserIds.has(userId)) return;
+    if (!actionsByUser.has(userId)) actionsByUser.set(userId, []);
+    actionsByUser.get(userId)!.push(new Date(at).getTime());
+  };
+  for (const c of clicks ?? []) addAction(c.user_id, c.clicked_at);
+  for (const a of apps ?? []) addAction(a.user_id, a.created_at);
+  for (const s of searches ?? []) addAction(s.user_id, s.created_at);
+  for (const e of events ?? []) addAction(e.user_id, e.created_at);
+
+  let returned = 0;
+  for (const u of eligible) {
+    const windowStart = u.createdAt + 7 * DAY_MS;
+    const windowEnd = u.createdAt + 13 * DAY_MS;
+    const times = actionsByUser.get(u.id) ?? [];
+    if (times.some((t) => t >= windowStart && t <= windowEnd)) returned += 1;
+  }
+
+  return {
+    eligibleUsers: eligible.length,
+    returnedUsers: returned,
+    returnRatePercent: Math.round((returned / eligible.length) * 100),
+  };
+}
+
 export type StudentStats = {
   totalUsers: number;
   totalProfilesCompleted: number;
