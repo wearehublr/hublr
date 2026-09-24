@@ -262,17 +262,17 @@ export type SecondWeekReturnStats = {
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
+type UserWithActions = { id: string; createdAt: number; actionTimestamps: number[] };
+
 // "Meaningful use" is scoped to actions a student had to deliberately take:
 // clicking Apply, tracking a new opportunity, saving a search, or saving an
 // event. Deliberately excludes applications.updated_at - the deadline
 // reminder cron also bumps that column when it marks a reminder as sent, so
 // using it here would count a background job as a student "returning".
-export async function getSecondWeekReturnRate(
+async function getUsersWithActions(
   adminSupabase: SupabaseClient,
   excludedUserIds: Set<string>,
-): Promise<SecondWeekReturnStats> {
-  const now = Date.now();
-
+): Promise<UserWithActions[]> {
   let page = 1;
   const perPage = 1000;
   const users: { id: string; createdAt: number }[] = [];
@@ -286,13 +286,6 @@ export async function getSecondWeekReturnRate(
     }
     if (data.users.length < perPage) break;
     page += 1;
-  }
-
-  // Only students who have had the full 13-day observation period count -
-  // someone who signed up yesterday hasn't had the chance to return yet.
-  const eligible = users.filter((u) => now - u.createdAt >= 13 * DAY_MS);
-  if (eligible.length === 0) {
-    return { eligibleUsers: 0, returnedUsers: 0, returnRatePercent: null };
   }
 
   const [{ data: clicks }, { data: apps }, { data: searches }, { data: events }] =
@@ -314,19 +307,90 @@ export async function getSecondWeekReturnRate(
   for (const s of searches ?? []) addAction(s.user_id, s.created_at);
   for (const e of events ?? []) addAction(e.user_id, e.created_at);
 
-  let returned = 0;
-  for (const u of eligible) {
-    const windowStart = u.createdAt + 7 * DAY_MS;
-    const windowEnd = u.createdAt + 13 * DAY_MS;
-    const times = actionsByUser.get(u.id) ?? [];
-    if (times.some((t) => t >= windowStart && t <= windowEnd)) returned += 1;
+  return users.map((u) => ({ ...u, actionTimestamps: actionsByUser.get(u.id) ?? [] }));
+}
+
+function hasReturnedInWindow(user: UserWithActions): boolean {
+  const windowStart = user.createdAt + 7 * DAY_MS;
+  const windowEnd = user.createdAt + 13 * DAY_MS;
+  return user.actionTimestamps.some((t) => t >= windowStart && t <= windowEnd);
+}
+
+export async function getSecondWeekReturnRate(
+  adminSupabase: SupabaseClient,
+  excludedUserIds: Set<string>,
+): Promise<SecondWeekReturnStats> {
+  const now = Date.now();
+  const users = await getUsersWithActions(adminSupabase, excludedUserIds);
+
+  // Only students who have had the full 13-day observation period count -
+  // someone who signed up yesterday hasn't had the chance to return yet.
+  const eligible = users.filter((u) => now - u.createdAt >= 13 * DAY_MS);
+  if (eligible.length === 0) {
+    return { eligibleUsers: 0, returnedUsers: 0, returnRatePercent: null };
   }
+
+  const returned = eligible.filter(hasReturnedInWindow).length;
 
   return {
     eligibleUsers: eligible.length,
     returnedUsers: returned,
     returnRatePercent: Math.round((returned / eligible.length) * 100),
   };
+}
+
+export type WeeklyCohort = {
+  weekStart: string;
+  signups: number;
+  eligibleForReturn: number;
+  returned: number;
+  returnRatePercent: number | null;
+};
+
+// Groups sign-ups by the Monday of their sign-up week, so a cohort's return
+// rate can be tracked over time rather than as one all-time snapshot.
+function mondayOfWeek(timestamp: number): number {
+  const d = new Date(timestamp);
+  const day = d.getUTCDay();
+  const diffToMonday = (day + 6) % 7;
+  return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - diffToMonday);
+}
+
+export async function getWeeklyReturnCohorts(
+  adminSupabase: SupabaseClient,
+  excludedUserIds: Set<string>,
+  weeks = 10,
+): Promise<WeeklyCohort[]> {
+  const now = Date.now();
+  const users = await getUsersWithActions(adminSupabase, excludedUserIds);
+
+  const buckets = new Map<number, { signups: number; eligible: number; returned: number }>();
+  for (const u of users) {
+    const wk = mondayOfWeek(u.createdAt);
+    if (!buckets.has(wk)) buckets.set(wk, { signups: 0, eligible: 0, returned: 0 });
+    const bucket = buckets.get(wk)!;
+    bucket.signups += 1;
+    if (now - u.createdAt >= 13 * DAY_MS) {
+      bucket.eligible += 1;
+      if (hasReturnedInWindow(u)) bucket.returned += 1;
+    }
+  }
+
+  return Array.from(buckets.keys())
+    .sort((a, b) => b - a)
+    .slice(0, weeks)
+    .sort((a, b) => a - b)
+    .map((wk) => {
+      const bucket = buckets.get(wk)!;
+      return {
+        weekStart: new Date(wk).toISOString().slice(0, 10),
+        signups: bucket.signups,
+        eligibleForReturn: bucket.eligible,
+        returned: bucket.returned,
+        returnRatePercent:
+          bucket.eligible > 0 ? Math.round((bucket.returned / bucket.eligible) * 100) : null,
+      };
+    });
 }
 
 export type StudentStats = {

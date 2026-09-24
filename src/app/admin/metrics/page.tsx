@@ -5,6 +5,7 @@ import {
   getStudentStats,
   getExcludedUserIds,
   getSecondWeekReturnRate,
+  getWeeklyReturnCohorts,
 } from "@/lib/metrics";
 import { getGA4Result, formatDuration } from "@/lib/ga4-metrics";
 import AdminSubNav from "../AdminSubNav";
@@ -15,11 +16,12 @@ export default async function AdminMetricsPage() {
   const supabase = await createClient();
   const adminSupabase = createAdminClient();
   const excludedUserIds = await getExcludedUserIds(adminSupabase);
-  const [metrics, studentStats, ga4Result, secondWeekReturn] = await Promise.all([
+  const [metrics, studentStats, ga4Result, secondWeekReturn, weeklyCohorts] = await Promise.all([
     getMetricsSummary(supabase, adminSupabase, excludedUserIds),
     getStudentStats(adminSupabase, excludedUserIds),
     getGA4Result(),
     getSecondWeekReturnRate(adminSupabase, excludedUserIds),
+    getWeeklyReturnCohorts(adminSupabase, excludedUserIds),
   ]);
   const ga4 = ga4Result.metrics;
 
@@ -240,6 +242,46 @@ export default async function AdminMetricsPage() {
             Eligible (13+ days old)
           </p>
         </div>
+      </div>
+
+      <h2 className="text-sm font-semibold mb-1">Weekly sign-ups and return use</h2>
+      <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-3">
+        Each row is one sign-up week (Monday start). &quot;Eligible&quot; only counts
+        that week&apos;s sign-ups once they&apos;ve had the full 13-day observation
+        period - recent weeks will show &quot;-&quot; until then.
+      </p>
+      <div className="rounded-lg border border-neutral-200 dark:border-neutral-800 mb-8 overflow-x-auto">
+        <table className="w-full text-sm border-collapse">
+          <thead>
+            <tr className="text-left border-b border-neutral-200 dark:border-neutral-800">
+              <th className="py-2 px-4">Week of</th>
+              <th className="py-2 px-4">Sign-ups</th>
+              <th className="py-2 px-4">Eligible</th>
+              <th className="py-2 px-4">Returned</th>
+              <th className="py-2 px-4">Return rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            {weeklyCohorts.map((w) => (
+              <tr key={w.weekStart} className="border-b border-neutral-100 dark:border-neutral-900 last:border-0">
+                <td className="py-2 px-4">{w.weekStart}</td>
+                <td className="py-2 px-4">{w.signups}</td>
+                <td className="py-2 px-4">{w.eligibleForReturn}</td>
+                <td className="py-2 px-4">{w.eligibleForReturn > 0 ? w.returned : "-"}</td>
+                <td className="py-2 px-4 text-neutral-500 dark:text-neutral-400">
+                  {w.returnRatePercent !== null ? `${w.returnRatePercent}%` : "-"}
+                </td>
+              </tr>
+            ))}
+            {weeklyCohorts.length === 0 && (
+              <tr>
+                <td colSpan={5} className="py-4 text-neutral-500 dark:text-neutral-400">
+                  No sign-ups yet.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       <h2 className="text-sm font-semibold mb-1">Student base</h2>
