@@ -10,6 +10,7 @@ const LINKS = [
   { href: "/admin/newsletter", label: "Newsletter" },
   { href: "/admin/contact-submissions", label: "Work With Us Submissions" },
   { href: "/admin/waitlist", label: "Launch Waitlist" },
+  { href: "/admin/accounts", label: "Accounts" },
   { href: "/admin/metrics", label: "Metrics" },
 ];
 

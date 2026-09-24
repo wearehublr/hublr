@@ -35,8 +35,13 @@ export default async function AdminMetricsPage() {
         Admin: Metrics
       </h1>
       <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-8">
-        Excludes the admin account{excludedUserIds.size === 0 && " (ADMIN_EMAIL not set — no exclusion applied)"}.
-        Other manual test accounts aren&apos;t flagged and are still counted.
+        Excludes {excludedUserIds.size} known team/test account{excludedUserIds.size === 1 ? "" : "s"}
+        {excludedUserIds.size === 0 && " (set ADMIN_EMAIL and/or TEST_ACCOUNT_EMAILS to exclude accounts)"}.
+        Any other account not listed there is still counted. See the{" "}
+        <a href="/admin/accounts" className="underline">
+          Accounts
+        </a>{" "}
+        page for the full list.
       </p>
 
       {!ga4 && ga4Result.problem && (

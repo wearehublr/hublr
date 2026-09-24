@@ -41,15 +41,21 @@ type ProfileForSegmentation = {
   requires_sponsorship: boolean | null;
 };
 
-// The only account we can positively identify as non-genuine is the admin's
-// own login. Other manual test accounts aren't flagged anywhere in the
-// schema, so they still show up in these numbers unless named explicitly.
+// Excludes the admin account (ADMIN_EMAIL) plus any known team/test accounts
+// listed in TEST_ACCOUNT_EMAILS (comma-separated). Accounts aren't flagged
+// anywhere in the schema itself, so anything not named in these env vars
+// still shows up in these numbers.
 export async function getExcludedUserIds(
   adminSupabase: SupabaseClient,
 ): Promise<Set<string>> {
-  const adminEmail = process.env.ADMIN_EMAIL;
-  if (!adminEmail) return new Set();
+  const excludedEmails = new Set(
+    [process.env.ADMIN_EMAIL, ...(process.env.TEST_ACCOUNT_EMAILS ?? "").split(",")]
+      .map((e) => e?.trim().toLowerCase())
+      .filter((e): e is string => !!e),
+  );
+  if (excludedEmails.size === 0) return new Set();
 
+  const excludedIds = new Set<string>();
   let page = 1;
   const perPage = 1000;
   while (true) {
@@ -58,12 +64,15 @@ export async function getExcludedUserIds(
       perPage,
     });
     if (error || !data) break;
-    const match = data.users.find((u) => u.email === adminEmail);
-    if (match) return new Set([match.id]);
+    for (const u of data.users) {
+      if (u.email && excludedEmails.has(u.email.toLowerCase())) {
+        excludedIds.add(u.id);
+      }
+    }
     if (data.users.length < perPage) break;
     page += 1;
   }
-  return new Set();
+  return excludedIds;
 }
 
 const APPLIED_OR_BEYOND = new Set([
