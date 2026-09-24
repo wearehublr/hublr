@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notifyWaitlistSignups } from "@/lib/waitlist-notify";
 
@@ -26,7 +27,15 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = createAdminClient();
-  const { sent } = await notifyWaitlistSignups(supabase);
-
-  return NextResponse.json({ sent });
+  try {
+    const { sent } = await notifyWaitlistSignups(supabase);
+    return NextResponse.json({ sent });
+  } catch (error) {
+    // Supabase's REST gateway occasionally returns a transient 502/503/504
+    // (see resilient-fetch.ts) that outlasts its retry window - this cron
+    // reruns every 15 minutes regardless, so failing softly here just means
+    // the next run picks up any still-unnotified signups.
+    Sentry.captureException(error, { tags: { source: "launch-check-cron" } });
+    return NextResponse.json({ error: "Failed, will retry next run" }, { status: 502 });
+  }
 }
