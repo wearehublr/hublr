@@ -3,11 +3,12 @@ import { createClient } from "@/lib/supabase/server";
 import { getUserApplications } from "@/lib/applications";
 import { getUserDocuments } from "@/lib/documents";
 import { filterUpcomingDeadlines } from "@/lib/deadlines";
-import { getPreferredName } from "@/lib/profiles";
+import { getProfile, isProfileComplete } from "@/lib/profiles";
 import { getUserSavedSearches } from "@/lib/saved-searches";
 import { STAGES, STAGE_LABELS } from "@/types/application";
 import AddApplicationForm from "./AddApplicationForm";
 import ApplicationCard from "./ApplicationCard";
+import CompleteProfileNudge from "./CompleteProfileNudge";
 import SavedSearchList from "./SavedSearchList";
 
 export const dynamic = "force-dynamic";
@@ -22,10 +23,10 @@ export default async function DashboardPage() {
 
   if (!user) return null;
 
-  const [applications, documents, preferredName, savedSearches] = await Promise.all([
+  const [applications, documents, profile, savedSearches] = await Promise.all([
     getUserApplications(supabase, user.id),
     getUserDocuments(supabase, user.id),
-    getPreferredName(supabase, user.id),
+    getProfile(supabase, user.id),
     getUserSavedSearches(supabase, user.id),
   ]);
 
@@ -33,8 +34,10 @@ export default async function DashboardPage() {
 
   return (
     <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
+      {!isProfileComplete(profile) && <CompleteProfileNudge />}
+
       <h1 className="text-xl sm:text-2xl font-bold tracking-tight mb-8">
-        {preferredName ? `Welcome back, ${preferredName}` : "Your applications"}
+        {profile?.preferred_name ? `Welcome back, ${profile.preferred_name}` : "Your applications"}
       </h1>
 
       {upcoming.length > 0 && (

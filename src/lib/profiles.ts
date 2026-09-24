@@ -15,6 +15,17 @@ export async function getProfile(
   return data as Profile | null;
 }
 
+export function isProfileComplete(profile: Profile | null): boolean {
+  if (!profile) return false;
+  return Boolean(
+    profile.preferred_name &&
+      profile.university &&
+      profile.degree &&
+      profile.graduation_year &&
+      profile.student_status,
+  );
+}
+
 export async function getPreferredName(
   supabase: SupabaseClient,
   userId: string,

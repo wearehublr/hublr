@@ -30,6 +30,7 @@ export default async function AdminAccountsPage() {
               <th className="py-2 pr-4">University</th>
               <th className="py-2 pr-4">Status</th>
               <th className="py-2 pr-4">Created</th>
+              <th className="py-2 pr-4">Last logged in</th>
               <th className="py-2 pr-4">Flagged</th>
             </tr>
           </thead>
@@ -48,12 +49,17 @@ export default async function AdminAccountsPage() {
                 <td className="py-2 pr-4">
                   {new Date(a.createdAt).toLocaleDateString()}
                 </td>
+                <td className="py-2 pr-4">
+                  {a.lastSignInAt
+                    ? new Date(a.lastSignInAt).toLocaleDateString()
+                    : "Never"}
+                </td>
                 <td className="py-2 pr-4">{a.isExcluded ? "Team/test" : ""}</td>
               </tr>
             ))}
             {accounts.length === 0 && (
               <tr>
-                <td colSpan={6} className="py-4 text-neutral-500 dark:text-neutral-400">
+                <td colSpan={7} className="py-4 text-neutral-500 dark:text-neutral-400">
                   No accounts yet.
                 </td>
               </tr>
