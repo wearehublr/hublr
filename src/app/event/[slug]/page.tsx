@@ -29,6 +29,7 @@ export default async function EventDetailPage({
 }) {
   const { slug } = await params;
   const id = eventIdFromSlug(slug);
+  if (!id) notFound();
 
   const supabase = await createClient();
   const [{ data: userData }, event] = await Promise.all([

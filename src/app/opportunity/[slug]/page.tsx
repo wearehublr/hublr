@@ -26,6 +26,7 @@ export default async function OpportunityDetailPage({
 }) {
   const { slug } = await params;
   const id = opportunityIdFromSlug(slug);
+  if (!id) notFound();
 
   const supabase = await createClient();
   const [{ data: userData }, opportunity] = await Promise.all([
