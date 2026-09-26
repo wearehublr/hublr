@@ -3,13 +3,28 @@
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 
+// redirect() and notFound() (used throughout this app, e.g. the homepage
+// sending an incomplete profile to /onboarding) work by throwing a special
+// object tagged with a "NEXT_REDIRECT" or "NEXT_HTTP_ERROR_FALLBACK" digest,
+// which Next.js's own router is meant to intercept before it becomes a real
+// error - it's navigation control flow, not a bug. If one of these ever
+// reaches this boundary anyway, capturing it in Sentry is just noise: it
+// shows up with no message and no useful stack (seen in production as
+// HUBLR-7, 240 events on the homepage with the reported type "I" and no
+// error message).
+function isNextRouterControlFlow(digest?: string): boolean {
+  return !!digest && (digest.startsWith("NEXT_REDIRECT") || digest.startsWith("NEXT_HTTP_ERROR_FALLBACK"));
+}
+
 export default function GlobalError({
   error,
 }: {
   error: Error & { digest?: string };
 }) {
   useEffect(() => {
-    Sentry.captureException(error);
+    if (!isNextRouterControlFlow(error.digest)) {
+      Sentry.captureException(error);
+    }
   }, [error]);
 
   return (
