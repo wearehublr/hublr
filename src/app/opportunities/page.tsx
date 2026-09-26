@@ -2,10 +2,11 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/get-user";
 import { getPublishedOpportunities } from "@/lib/opportunities";
-import { getProfile } from "@/lib/profiles";
+import { getProfile, isProfileComplete } from "@/lib/profiles";
 import { getUserApplications } from "@/lib/applications";
 import { countSavedAndInProgress } from "@/lib/deadlines";
 import OpportunityBrowser from "@/app/components/OpportunityBrowser";
+import CompleteProfileNudge from "@/app/dashboard/CompleteProfileNudge";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +30,8 @@ export default async function OpportunitiesPage() {
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
+      {user && !isProfileComplete(profile) && <CompleteProfileNudge />}
+
       <header className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
           Early Career Tracker
