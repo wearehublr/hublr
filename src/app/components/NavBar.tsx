@@ -1,14 +1,30 @@
 import Link from "next/link";
+import * as Sentry from "@sentry/nextjs";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/auth-actions";
 import MobileMenu, { type NavLink } from "./MobileMenu";
 import Logo from "./Logo";
 
+// A transient Supabase gateway failure here must not take down every page on
+// the site - NavBar renders in the root layout above {children}, so an
+// uncaught throw here crashes whatever route the visitor is on. Falling back
+// to "logged out" for that one render is a much smaller cost than a hard
+// crash on /signup or the homepage.
+async function getCurrentUser(supabase: Awaited<ReturnType<typeof createClient>>) {
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    return user;
+  } catch (error) {
+    Sentry.captureException(error, { tags: { source: "navbar-get-user" } });
+    return null;
+  }
+}
+
 export default async function NavBar() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser(supabase);
   const isAdmin = !!user && user.email === process.env.ADMIN_EMAIL;
 
   const links: NavLink[] = [
