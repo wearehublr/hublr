@@ -269,7 +269,7 @@ type UserWithActions = { id: string; createdAt: number; actionTimestamps: number
 // event. Deliberately excludes applications.updated_at - the deadline
 // reminder cron also bumps that column when it marks a reminder as sent, so
 // using it here would count a background job as a student "returning".
-async function getUsersWithActions(
+export async function getUsersWithActions(
   adminSupabase: SupabaseClient,
   excludedUserIds: Set<string>,
 ): Promise<UserWithActions[]> {
@@ -317,11 +317,9 @@ function hasReturnedInWindow(user: UserWithActions): boolean {
 }
 
 export async function getSecondWeekReturnRate(
-  adminSupabase: SupabaseClient,
-  excludedUserIds: Set<string>,
+  users: UserWithActions[],
 ): Promise<SecondWeekReturnStats> {
   const now = Date.now();
-  const users = await getUsersWithActions(adminSupabase, excludedUserIds);
 
   // Only students who have had the full 13-day observation period count -
   // someone who signed up yesterday hasn't had the chance to return yet.
@@ -357,12 +355,10 @@ function mondayOfWeek(timestamp: number): number {
 }
 
 export async function getWeeklyReturnCohorts(
-  adminSupabase: SupabaseClient,
-  excludedUserIds: Set<string>,
+  users: UserWithActions[],
   weeks = 10,
 ): Promise<WeeklyCohort[]> {
   const now = Date.now();
-  const users = await getUsersWithActions(adminSupabase, excludedUserIds);
 
   const buckets = new Map<number, { signups: number; eligible: number; returned: number }>();
   for (const u of users) {

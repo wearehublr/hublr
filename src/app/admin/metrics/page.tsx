@@ -4,6 +4,7 @@ import {
   getMetricsSummary,
   getStudentStats,
   getExcludedUserIds,
+  getUsersWithActions,
   getSecondWeekReturnRate,
   getWeeklyReturnCohorts,
 } from "@/lib/metrics";
@@ -16,12 +17,18 @@ export default async function AdminMetricsPage() {
   const supabase = await createClient();
   const adminSupabase = createAdminClient();
   const excludedUserIds = await getExcludedUserIds(adminSupabase);
+  // getSecondWeekReturnRate and getWeeklyReturnCohorts both need the same
+  // per-user action history - computing it once here instead of once per
+  // caller halves the full-table scans (link_clicks, applications,
+  // saved_searches, saved_events) and listUsers pagination this page does,
+  // which was pushing it past its execution deadline as those tables grew.
+  const usersWithActions = await getUsersWithActions(adminSupabase, excludedUserIds);
   const [metrics, studentStats, ga4Result, secondWeekReturn, weeklyCohorts] = await Promise.all([
     getMetricsSummary(supabase, adminSupabase, excludedUserIds),
     getStudentStats(adminSupabase, excludedUserIds),
     getGA4Result(),
-    getSecondWeekReturnRate(adminSupabase, excludedUserIds),
-    getWeeklyReturnCohorts(adminSupabase, excludedUserIds),
+    getSecondWeekReturnRate(usersWithActions),
+    getWeeklyReturnCohorts(usersWithActions),
   ]);
   const ga4 = ga4Result.metrics;
 
