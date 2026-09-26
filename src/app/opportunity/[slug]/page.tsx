@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 import { getPublishedOpportunityById } from "@/lib/opportunities";
 import { opportunityIdFromSlug } from "@/lib/slug";
 import { CATEGORY_LABELS, REGION_LABELS, STATUS_LABELS } from "@/types/opportunity";
@@ -29,8 +30,8 @@ export default async function OpportunityDetailPage({
   if (!id) notFound();
 
   const supabase = await createClient();
-  const [{ data: userData }, opportunity] = await Promise.all([
-    supabase.auth.getUser(),
+  const [user, opportunity] = await Promise.all([
+    getUser(supabase),
     getPublishedOpportunityById(supabase, id),
   ]);
 
@@ -129,11 +130,11 @@ export default async function OpportunityDetailPage({
           opportunityId={opportunity.id}
           company={opportunity.company}
           roleTitle={opportunity.role_title}
-          isLoggedIn={!!userData.user}
+          isLoggedIn={!!user}
         />
         <TrackButton
           opportunityId={opportunity.id}
-          isLoggedIn={!!userData.user}
+          isLoggedIn={!!user}
         />
       </div>
     </main>

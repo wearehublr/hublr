@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 import { MAX_INTERESTED_INDUSTRIES } from "@/types/profile";
 import { CATEGORIES, REGIONS, type Category, type Region } from "@/types/opportunity";
 
@@ -27,9 +28,7 @@ export async function saveOnboardingProgress(preferences: {
   preferred_regions: string[];
 }): Promise<void> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user) return;
 
   const interested_industries = preferences.interested_industries
@@ -65,9 +64,7 @@ export async function completeOnboarding(
   formData: FormData,
 ): Promise<OnboardingState> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user) redirect("/login");
 
   const sponsorshipRaw = formData.get("requires_sponsorship");

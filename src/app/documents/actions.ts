@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 import { DOC_TYPES, type DocType } from "@/types/document";
 
 const BUCKET = "documents";
@@ -9,9 +10,7 @@ const MAX_SIZE_BYTES = 8 * 1024 * 1024;
 
 async function requireUser() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user) throw new Error("Unauthorized");
   return { supabase, user };
 }

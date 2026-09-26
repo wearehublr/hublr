@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isPreLaunch } from "@/lib/launch-status";
+import { getUser } from "@/lib/supabase/get-user";
 
 const LOGIN_PATH = "/login";
 const DASHBOARD_PATH = "/opportunities";
@@ -60,9 +61,7 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
 
   const pathname = request.nextUrl.pathname;
   const isAdmin = !!user && user.email === process.env.ADMIN_EMAIL;

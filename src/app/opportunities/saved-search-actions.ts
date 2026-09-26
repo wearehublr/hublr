@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 
 export type SavedSearchFilters = {
   region: string | null;
@@ -14,9 +15,7 @@ export type SavedSearchFilters = {
 
 export async function saveSearch(label: string, filters: SavedSearchFilters) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user) redirect("/login");
 
   const { error } = await supabase.from("saved_searches").insert({
@@ -36,9 +35,7 @@ export async function saveSearch(label: string, filters: SavedSearchFilters) {
 
 export async function deleteSavedSearch(id: string) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user) redirect("/login");
 
   const { error } = await supabase

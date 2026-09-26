@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 import { getUserApplications } from "@/lib/applications";
 import { getUserDocuments } from "@/lib/documents";
 import { filterUpcomingDeadlines } from "@/lib/deadlines";
@@ -17,9 +18,7 @@ const UPCOMING_WINDOW_DAYS = 14;
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
 
   if (!user) return null;
 

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 import { getPublishedOpportunities } from "@/lib/opportunities";
 import { getProfile } from "@/lib/profiles";
 import { getUserApplications } from "@/lib/applications";
@@ -10,20 +11,20 @@ export const dynamic = "force-dynamic";
 
 export default async function OpportunitiesPage() {
   const supabase = await createClient();
-  const [{ data: userData }, opportunities] = await Promise.all([
-    supabase.auth.getUser(),
+  const [user, opportunities] = await Promise.all([
+    getUser(supabase),
     getPublishedOpportunities(supabase),
   ]);
-  const profile = userData.user
-    ? await getProfile(supabase, userData.user.id)
+  const profile = user
+    ? await getProfile(supabase, user.id)
     : null;
 
-  if (userData.user && !profile?.onboarding_completed_at) {
+  if (user && !profile?.onboarding_completed_at) {
     redirect("/onboarding?next=%2Fopportunities");
   }
 
-  const { saved: savedCount, inProgress: inProgressCount } = userData.user
-    ? countSavedAndInProgress(await getUserApplications(supabase, userData.user.id))
+  const { saved: savedCount, inProgress: inProgressCount } = user
+    ? countSavedAndInProgress(await getUserApplications(supabase, user.id))
     : { saved: 0, inProgress: 0 };
 
   return (
@@ -40,7 +41,7 @@ export default async function OpportunitiesPage() {
 
       <OpportunityBrowser
         opportunities={opportunities}
-        isLoggedIn={!!userData.user}
+        isLoggedIn={!!user}
         initialIndustry={profile?.interested_industries?.[0] ?? null}
         initialCategory={profile?.preferred_categories?.[0] ?? null}
         initialRegion={profile?.preferred_regions?.[0] ?? null}

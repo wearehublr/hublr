@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 import { getUserDocuments } from "@/lib/documents";
 import type { Document, DocType } from "@/types/document";
 import UploadForm from "./UploadForm";
@@ -36,9 +37,7 @@ function DocumentSection({
 
 export default async function DocumentsPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
 
   if (!user) return null;
 

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
   MAX_INTERESTED_INDUSTRIES,
@@ -39,9 +40,7 @@ export async function updateProfile(
   formData: FormData,
 ): Promise<FormState> {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user) redirect("/login");
 
   const student_status = str(formData, "student_status") as StudentStatus | null;
@@ -130,9 +129,7 @@ export async function deleteAccount(
   }
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user) redirect("/login");
 
   // Remove uploaded files first; deleting the DB rows (via cascade below)

@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 
 export type UpdatePasswordState = { error: string | null };
 
@@ -15,9 +16,7 @@ export async function updatePassword(
   }
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user) {
     return {
       error: "Your reset link has expired. Request a new one from the login page.",

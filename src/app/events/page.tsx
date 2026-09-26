@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 import { getUpcomingPublishedEvents } from "@/lib/events";
 import EventBrowser from "@/app/components/EventBrowser";
 
@@ -7,9 +8,7 @@ export const dynamic = "force-dynamic";
 export default async function EventsPage() {
   const supabase = await createClient();
   const events = await getUpcomingPublishedEvents(supabase);
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-12">

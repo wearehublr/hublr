@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 import { getUserApplications } from "@/lib/applications";
 import {
   getPublishedOpportunitiesCount,
@@ -35,9 +36,7 @@ const UPCOMING_WINDOW_DAYS = 14;
 
 export default async function Home() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
 
   if (!user) {
     const [

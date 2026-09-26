@@ -3,12 +3,11 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 
 export async function saveEvent(eventId: string) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user) redirect("/login");
 
   const { error } = await supabase.from("saved_events").insert({
@@ -28,9 +27,7 @@ export async function saveEvent(eventId: string) {
 
 export async function markEventRegistered(eventId: string) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user) return;
 
   const { error } = await supabase

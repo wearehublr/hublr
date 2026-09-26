@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 import { sendEmail } from "@/lib/email";
 import { buildWelcomeEmail } from "@/lib/welcome-email";
 
@@ -9,9 +10,7 @@ import { buildWelcomeEmail } from "@/lib/welcome-email";
 async function sendWelcomeEmailOnce(
   supabase: Awaited<ReturnType<typeof createClient>>,
 ) {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user?.email || user.user_metadata?.welcome_email_sent) return;
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://wearehublr.com";

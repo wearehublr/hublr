@@ -3,14 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 import { sendUserEmail } from "@/lib/email";
 import { getPreferredName } from "@/lib/profiles";
 
 export async function trackApplication(opportunityId: string) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user) redirect("/login");
 
   const { data: opportunity, error: fetchError } = await supabase
@@ -65,9 +64,7 @@ export async function trackApplication(opportunityId: string) {
 // that an explicit Track click sends.
 export async function ensureApplicationSaved(opportunityId: string) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user) return;
 
   const { data: opportunity } = await supabase
@@ -100,9 +97,7 @@ export async function markApplicationOutcome(
   outcome: { applied: boolean; reason?: string | null },
 ) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user) return;
 
   const { error } = await supabase

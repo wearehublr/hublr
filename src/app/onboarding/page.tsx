@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 import { getProfile } from "@/lib/profiles";
 import OnboardingForm from "./OnboardingForm";
 
@@ -12,9 +13,7 @@ export default async function OnboardingPage({
   const next = rawNext && rawNext.startsWith("/") ? rawNext : "/opportunities";
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
   if (!user) redirect(`/login?next=${encodeURIComponent(`/onboarding?next=${next}`)}`);
 
   const profile = await getProfile(supabase, user.id);

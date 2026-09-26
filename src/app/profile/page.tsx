@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 import { getProfile } from "@/lib/profiles";
 import ProfileForm from "./ProfileForm";
 import DeleteAccountSection from "./DeleteAccountSection";
@@ -7,9 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getUser(supabase);
 
   const profile = user ? await getProfile(supabase, user.id) : null;
 

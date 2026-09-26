@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/get-user";
 import { getPublishedEventById } from "@/lib/events";
 import { eventIdFromSlug } from "@/lib/slug";
 import {
@@ -32,8 +33,8 @@ export default async function EventDetailPage({
   if (!id) notFound();
 
   const supabase = await createClient();
-  const [{ data: userData }, event] = await Promise.all([
-    supabase.auth.getUser(),
+  const [user, event] = await Promise.all([
+    getUser(supabase),
     getPublishedEventById(supabase, id),
   ]);
 
@@ -41,7 +42,7 @@ export default async function EventDetailPage({
     notFound();
   }
 
-  const isLoggedIn = !!userData.user;
+  const isLoggedIn = !!user;
 
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
