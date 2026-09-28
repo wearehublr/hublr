@@ -1,19 +1,29 @@
+import * as Sentry from "@sentry/nextjs";
 import { Resend } from "resend";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getEmailNotificationsEnabled } from "@/lib/profiles";
 
 const FROM_ADDRESS = "Hublr <noreply@wearehublr.com>";
 
+// Returns whether the send actually succeeded. Callers on a critical path
+// (e.g. signup confirmation) must check this rather than assuming delivery -
+// a swallowed failure here previously left accounts stuck "confirmed: never"
+// with no error surfaced anywhere.
 async function send(options: {
   to: string;
   subject: string;
   text: string;
   html?: string;
-}): Promise<void> {
+}): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    console.error("[email] RESEND_API_KEY is not set; skipping send.");
-    return;
+    const error = new Error("[email] RESEND_API_KEY is not set; skipping send.");
+    console.error(error.message);
+    Sentry.captureException(error, {
+      tags: { source: "email-send", to: options.to },
+      extra: { subject: options.subject },
+    });
+    return false;
   }
 
   try {
@@ -29,21 +39,31 @@ async function send(options: {
     // in `error` rather than throwing, so this must be checked explicitly.
     if (error) {
       console.error("[email] Resend API returned an error:", error);
+      Sentry.captureException(new Error(error.message ?? "Resend API error"), {
+        tags: { source: "email-send", to: options.to },
+        extra: { subject: options.subject, resendError: error },
+      });
+      return false;
     }
+    return true;
   } catch (err) {
-    // Email delivery is a nice-to-have, never block the calling action on it.
     console.error("[email] Failed to send email:", err);
+    Sentry.captureException(err, {
+      tags: { source: "email-send", to: options.to },
+      extra: { subject: options.subject },
+    });
+    return false;
   }
 }
 
 // For admin-facing emails (e.g. Work With Us notifications) that aren't
-// subject to student email preferences.
+// subject to student email preferences. Returns whether the send succeeded.
 export async function sendEmail(options: {
   to: string;
   subject: string;
   text: string;
   html?: string;
-}): Promise<void> {
+}): Promise<boolean> {
   return send(options);
 }
 
@@ -68,6 +88,5 @@ export async function sendUserEmail(
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://wearehublr.com";
   const text = `${options.text}\n\n---\nManage or stop these emails: ${siteUrl}/unsubscribe/${userId}`;
 
-  await send({ ...options, text });
-  return true;
+  return send({ ...options, text });
 }

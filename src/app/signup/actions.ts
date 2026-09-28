@@ -85,7 +85,7 @@ export async function signUp(
       });
 
       if (!probe.error && !probe.data.user.email_confirmed_at) {
-        await sendEmail({
+        const sent = await sendEmail({
           to: email,
           subject: "Confirm your Hublr account",
           text: [
@@ -97,6 +97,12 @@ export async function signUp(
             "If you didn't request this, you can ignore this email.",
           ].join("\n"),
         });
+        if (!sent) {
+          return {
+            error: "Something went wrong sending your confirmation email. Please try again in a moment.",
+            success: false,
+          };
+        }
         return { error: null, success: true };
       }
     }
@@ -108,7 +114,7 @@ export async function signUp(
     return { error: message, success: false };
   }
 
-  await sendEmail({
+  const sent = await sendEmail({
     to: email,
     subject: "Confirm your Hublr account",
     text: [
@@ -120,6 +126,13 @@ export async function signUp(
       "If you didn't create this account, you can ignore this email.",
     ].join("\n"),
   });
+
+  if (!sent) {
+    return {
+      error: "Something went wrong sending your confirmation email. Please try again in a moment.",
+      success: false,
+    };
+  }
 
   // Fires for a genuinely new account only, not the resend-confirmation
   // branch above for an existing-but-unconfirmed signup.
