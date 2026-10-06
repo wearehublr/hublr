@@ -85,3 +85,6 @@ update public.opportunities set logo_url = 'https://upload.wikimedia.org/wikiped
 update public.opportunities set logo_url = 'https://www.bny.com/content/dam/bnymellon/web/favicons/favicon-128.png' where company = 'BNY Mellon' and (logo_url is null or logo_url = '');  -- 18 rows
 update public.opportunities set logo_url = 'https://tbcdn.talentbrew.com/company/34155/gst_v1/img/unilever-favicon-799.png' where company = 'Unilever' and (logo_url is null or logo_url = '');  -- 1 rows
 update public.opportunities set logo_url = 'https://www.kpmgcareers.co.uk/favicon.ico' where company = 'KPMG' and (logo_url is null or logo_url = '');  -- 1 rows
+
+-- Events: the Lazard Madrid event had no logo; reuse Lazard's existing logo.
+update public.events set logo_url = (select logo_url from public.opportunities where company = 'Lazard' and logo_url is not null limit 1) where company = 'Lazard' and (logo_url is null or logo_url = '');
