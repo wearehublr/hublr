@@ -15,7 +15,7 @@ import {
   VISA_SPONSORSHIP_LABELS,
 } from "@/types/opportunity";
 import { getSponsorshipDisplay } from "@/lib/visa-sponsorship";
-import { isClosingWithinDays } from "@/lib/recommendations";
+import { isAddedWithinDays, isClosingWithinDays } from "@/lib/recommendations";
 import DeadlineBadge from "@/app/components/DeadlineBadge";
 import CompanyLogo from "@/app/components/CompanyLogo";
 import VisaSponsorshipBadge from "@/app/components/VisaSponsorshipBadge";
@@ -41,8 +41,10 @@ type SortOption = (typeof SORT_OPTIONS)[number];
 const SORT_LABELS: Record<SortOption, string> = {
   deadline: "Sort: Closest deadline",
   company: "Sort: Company A-Z",
-  newest: "Sort: Newest added",
+  newest: "Sort: Recently added",
 };
+
+const RECENTLY_ADDED_DAYS = 7;
 
 export default function OpportunityBrowser({
   opportunities,
@@ -106,7 +108,9 @@ export default function OpportunityBrowser({
     urlFilter === "sponsors_visas" ? "yes" : "all",
   );
   const [year, setYear] = useState<number | "all">("all");
-  const [sortBy, setSortBy] = useState<SortOption>("deadline");
+  const [sortBy, setSortBy] = useState<SortOption>(
+    urlFilter === "recently_added" ? "newest" : "deadline",
+  );
   const [tracked, setTracked] = useState<Set<string>>(new Set());
   const [isPending, startTransition] = useTransition();
   const [alertSaved, setAlertSaved] = useState(false);
@@ -120,6 +124,10 @@ export default function OpportunityBrowser({
   );
   const sponsorsVisaCount = useMemo(
     () => opportunities.filter((o) => o.visa_sponsorship === "yes").length,
+    [opportunities],
+  );
+  const recentlyAddedCount = useMemo(
+    () => opportunities.filter((o) => isAddedWithinDays(o, RECENTLY_ADDED_DAYS)).length,
     [opportunities],
   );
   const hasRecommendation = !!(
@@ -149,6 +157,10 @@ export default function OpportunityBrowser({
 
   function toggleClosingSoon() {
     setClosingSoonOnly((prev) => !prev);
+  }
+
+  function toggleRecentlyAdded() {
+    setSortBy((prev) => (prev === "newest" ? "deadline" : "newest"));
   }
 
   function toggleSponsorsVisa() {
@@ -246,8 +258,11 @@ export default function OpportunityBrowser({
     if (sortBy === "company") {
       sorted.sort((a, b) => a.company.localeCompare(b.company));
     } else if (sortBy === "newest") {
+      // Bulk imports share one created_at, so break ties by company.
       sorted.sort(
-        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime() ||
+          a.company.localeCompare(b.company),
       );
     } else {
       sorted.sort((a, b) => compareByDate(a.deadline, b.deadline));
@@ -345,6 +360,24 @@ export default function OpportunityBrowser({
           </p>
           <p className="text-sm text-neutral-600 dark:text-neutral-300">
             🌍 Sponsors visas (UK)
+          </p>
+        </button>
+
+        <button
+          type="button"
+          onClick={toggleRecentlyAdded}
+          aria-pressed={sortBy === "newest"}
+          className={`flex-1 min-w-[150px] rounded-lg border p-3 text-left transition-colors ${
+            sortBy === "newest"
+              ? "border-sky-400 dark:border-sky-800 bg-sky-50 dark:bg-sky-950/30"
+              : "border-neutral-200 dark:border-neutral-800 hover:border-sky-300 dark:hover:border-sky-800"
+          }`}
+        >
+          <p className="text-2xl font-bold tracking-tight text-sky-600 dark:text-sky-400">
+            {recentlyAddedCount}
+          </p>
+          <p className="text-sm text-neutral-600 dark:text-neutral-300">
+            🆕 Recently added (7 days)
           </p>
         </button>
 

@@ -112,6 +112,11 @@ export function isClosingWithinDays(opportunity: Opportunity, days: number): boo
   return deadlineMs >= now && deadlineMs <= windowEnd;
 }
 
+export function isAddedWithinDays(opportunity: Opportunity, days: number): boolean {
+  if (opportunity.status === "closed") return false;
+  return new Date(opportunity.created_at).getTime() >= Date.now() - days * 24 * 60 * 60 * 1000;
+}
+
 export function countClosingWithinDays(
   opportunities: Opportunity[],
   days: number,
