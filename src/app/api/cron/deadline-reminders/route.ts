@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendUserEmail } from "@/lib/email";
+import { sendUserEmailWithOutcome } from "@/lib/email";
 import { getPreferredName } from "@/lib/profiles";
 import { processJobAlerts } from "@/lib/job-alerts";
 import { closeExpiredOpportunities } from "@/lib/close-expired-opportunities";
@@ -19,6 +19,10 @@ const MILESTONES: Milestone[] = [
   { daysOut: 0, column: "reminder_0d_sent", label: "today" },
 ];
 
+// Keeps room in Resend's 100/day free quota for signup and password-reset
+// emails. Reminders over the cap are not marked as sent.
+const MAX_REMINDERS_PER_RUN = 15;
+
 function isoDateDaysFromNow(days: number): string {
   const d = new Date();
   d.setUTCDate(d.getUTCDate() + days);
@@ -34,8 +38,10 @@ export async function GET(request: NextRequest) {
 
   const supabase = createAdminClient();
   let sent = 0;
+  let quotaExceeded = false;
 
   for (const milestone of MILESTONES) {
+    if (quotaExceeded || sent >= MAX_REMINDERS_PER_RUN) break;
     const targetDate = isoDateDaysFromNow(milestone.daysOut);
 
     const { data: applications, error } = await supabase
@@ -48,6 +54,7 @@ export async function GET(request: NextRequest) {
     if (error || !applications) continue;
 
     for (const application of applications) {
+      if (sent >= MAX_REMINDERS_PER_RUN) break;
       const { data: userData } = await supabase.auth.admin.getUserById(
         application.user_id,
       );
@@ -56,7 +63,7 @@ export async function GET(request: NextRequest) {
 
       const preferredName = await getPreferredName(supabase, application.user_id);
 
-      const wasSent = await sendUserEmail(supabase, application.user_id, {
+      const outcome = await sendUserEmailWithOutcome(supabase, application.user_id, {
         to: email,
         subject: `Deadline ${milestone.label}: ${application.company} - ${application.role_title}`,
         text: [
@@ -73,16 +80,24 @@ export async function GET(request: NextRequest) {
           .join("\n"),
       });
 
+      if (outcome === "quota_exceeded") {
+        quotaExceeded = true;
+        break;
+      }
+      // A failed send is left unmarked so a later run retries it; an
+      // opted-out user is marked so we stop re-checking them.
+      if (outcome === "failed") continue;
+
       await supabase
         .from("applications")
         .update({ [milestone.column]: true, reminder_sent_at: new Date().toISOString() })
         .eq("id", application.id);
 
-      if (wasSent) sent += 1;
+      if (outcome === "sent") sent += 1;
     }
   }
 
-  const jobAlertsSent = await processJobAlerts(supabase);
+  const jobAlertsSent = quotaExceeded ? 0 : await processJobAlerts(supabase);
   const opportunitiesClosed = await closeExpiredOpportunities(supabase);
 
   return NextResponse.json({ sent, jobAlertsSent, opportunitiesClosed });

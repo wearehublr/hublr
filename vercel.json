@@ -14,7 +14,7 @@
     },
     {
       "path": "/api/cron/weekly-matches",
-      "schedule": "0 8 * * 1"
+      "schedule": "0 8 * * *"
     },
     {
       "path": "/api/cron/launch-check",

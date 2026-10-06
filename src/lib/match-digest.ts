@@ -3,11 +3,19 @@ import type { Profile } from "@/types/profile";
 import { getPublishedOpportunities } from "@/lib/opportunities";
 import { scoreOpportunity, isClosingWithinDays } from "@/lib/recommendations";
 import { getSponsorshipDisplay } from "@/lib/visa-sponsorship";
-import { sendUserEmail } from "@/lib/email";
+import { sendUserEmailWithOutcome } from "@/lib/email";
 import { buildOpportunitySlug } from "@/lib/slug";
 
 const MAX_LISTED = 5;
 const FALLBACK_LOOKBACK_DAYS = 7;
+
+// Resend's free plan allows 100 emails/day, shared with signup confirmations
+// and password resets. The cron runs daily, each user gets a digest at most
+// once per ~week, and each run sends at most this many, so the digest spreads
+// over several days instead of using up the whole day's quota on Mondays.
+// 6.5 days (not 7) so cron start-time jitter never pushes a user back a day.
+const MAX_SENDS_PER_RUN = 30;
+const MIN_HOURS_BETWEEN_DIGESTS = 6.5 * 24;
 
 function hasPreferences(profile: Profile): boolean {
   return (
@@ -32,8 +40,24 @@ export async function processMatchDigest(
   const now = new Date();
   let sent = 0;
 
-  for (const profile of profiles as Profile[]) {
+  // Never-sent users first, then longest-waiting, so the cap is fair.
+  const ordered = [...(profiles as Profile[])].sort(
+    (a, b) =>
+      (a.last_match_digest_sent_at ? new Date(a.last_match_digest_sent_at).getTime() : 0) -
+      (b.last_match_digest_sent_at ? new Date(b.last_match_digest_sent_at).getTime() : 0),
+  );
+
+  for (const profile of ordered) {
+    if (sent >= MAX_SENDS_PER_RUN) break;
     if (!hasPreferences(profile)) continue;
+
+    if (
+      profile.last_match_digest_sent_at &&
+      now.getTime() - new Date(profile.last_match_digest_sent_at).getTime() <
+        MIN_HOURS_BETWEEN_DIGESTS * 60 * 60 * 1000
+    ) {
+      continue;
+    }
 
     const since = profile.last_match_digest_sent_at
       ? new Date(profile.last_match_digest_sent_at)
@@ -74,7 +98,7 @@ export async function processMatchDigest(
         : null,
     ].filter((line): line is string => line !== null);
 
-    const wasSent = await sendUserEmail(adminSupabase, profile.id, {
+    const outcome = await sendUserEmailWithOutcome(adminSupabase, profile.id, {
       to: email,
       subject: `${matched.length} new opportunit${matched.length === 1 ? "y matches" : "ies match"} your profile`,
       text: [
@@ -98,7 +122,8 @@ export async function processMatchDigest(
         .join("\n"),
     });
 
-    if (wasSent) {
+    if (outcome === "quota_exceeded") break;
+    if (outcome === "sent") {
       await adminSupabase
         .from("profiles")
         .update({ last_match_digest_sent_at: now.toISOString() })
