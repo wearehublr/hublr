@@ -16,6 +16,25 @@ export function looksEarlyCareer(title: string): boolean {
   return EARLY_CAREER_PATTERN.test(title);
 }
 
+// Key used to decide whether a posting is already tracked. Workday links for
+// the same posting come in several shapes (with or without "/en-US/" and the
+// career-site segment), so compare host + the "/job/..." path instead of the
+// raw string; otherwise every curated Workday row looks "new" and gets
+// re-drafted.
+export function canonicalUrl(url: string): string {
+  try {
+    const u = new URL(url.trim());
+    const host = u.hostname.toLowerCase();
+    if (host.endsWith(".myworkdayjobs.com")) {
+      const i = u.pathname.indexOf("/job/");
+      if (i !== -1) return `${host}${u.pathname.slice(i)}`.replace(/\/+$/, "").toLowerCase();
+    }
+    return `${host}${u.pathname}${u.search}`.replace(/\/+$/, "").toLowerCase();
+  } catch {
+    return url.trim().toLowerCase();
+  }
+}
+
 function stripHtml(html: string | null | undefined): string | null {
   if (!html) return null;
   const text = html
@@ -171,7 +190,8 @@ async function listWorkdayJobs(board: Extract<Board, { source: "workday" }>): Pr
         if (!p.title || !p.externalPath || !looksEarlyCareer(p.title)) continue;
         candidates.push({
           role_title: p.title,
-          apply_url: `https://${board.hostname}${p.externalPath}`,
+          // Without the career-site segment the link does not resolve to the posting.
+          apply_url: `https://${board.hostname}/en-US/${board.site}${p.externalPath}`,
           // Workday's list endpoint doesn't include full descriptions;
           // those only come from the single-job CXS endpoint, which would
           // mean one extra request per candidate. Left null here and
@@ -222,7 +242,7 @@ export async function discoverNewOpportunities(
   const existing = await fetchAllExisting(supabase);
   if (!existing) return { found: 0, inserted: 0 };
 
-  const existingUrls = new Set(existing.map((r) => r.apply_url));
+  const existingUrls = new Set(existing.map((r) => canonicalUrl(r.apply_url)));
   const logoByCompany = new Map<string, string>();
   for (const row of existing) {
     if (row.logo_url && !logoByCompany.has(row.company)) {
@@ -245,7 +265,7 @@ export async function discoverNewOpportunities(
             ? await listLeverJobs(board)
             : await listWorkdayJobs(board);
 
-      const newCandidates = candidates.filter((c) => !existingUrls.has(c.apply_url));
+      const newCandidates = candidates.filter((c) => !existingUrls.has(canonicalUrl(c.apply_url)));
       found += newCandidates.length;
 
       for (const candidate of newCandidates) {
@@ -266,7 +286,7 @@ export async function discoverNewOpportunities(
         });
         if (!insertError) {
           inserted += 1;
-          existingUrls.add(candidate.apply_url);
+          existingUrls.add(canonicalUrl(candidate.apply_url));
         }
       }
     } catch {
