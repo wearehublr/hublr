@@ -6,30 +6,14 @@ const TIMEOUT_MS = 15000;
 // postings on the same board) before creating a review draft. Not a
 // substitute for human review -- expect occasional false positives and
 // false negatives, tune the list after seeing real output.
-const EARLY_CAREER_KEYWORDS = [
-  "intern",
-  "internship",
-  "graduate",
-  "campus",
-  "placement",
-  "trainee",
-  "apprentice",
-  "summer analyst",
-  "off-cycle",
-  "off cycle",
-  "insight",
-  "spring week",
-  "vacation scheme",
-  "entry level",
-  "entry-level",
-  "new grad",
-  "early career",
-  "early-career",
-];
+// Whole-word matches only: a plain substring test treated "Internal Audit",
+// "International" and "Postgraduate" as early-career, which filled the
+// review queue with senior hires.
+const EARLY_CAREER_PATTERN =
+  /\b(?:intern(?:ship)?s?|graduates?|campus|placements?|trainees?|apprentic(?:e|es|eship|eships)|summer analyst|off[- ]cycle|insight|spring week|vacation scheme|entry[- ]level|new grad|early[- ]careers?)\b/i;
 
-function looksEarlyCareer(title: string): boolean {
-  const lower = title.toLowerCase();
-  return EARLY_CAREER_KEYWORDS.some((kw) => lower.includes(kw));
+export function looksEarlyCareer(title: string): boolean {
+  return EARLY_CAREER_PATTERN.test(title);
 }
 
 function stripHtml(html: string | null | undefined): string | null {
@@ -211,14 +195,32 @@ async function listWorkdayJobs(board: Extract<Board, { source: "workday" }>): Pr
 // are invisible to the public site (is_published: false is enforced by
 // both the public query functions in opportunities.ts and RLS) until a
 // human reviews and publishes them from /admin.
+// PostgREST returns at most 1,000 rows per request, so this must page through
+// the whole table. Reading only the first page made the job forget every
+// existing posting beyond row 1,000 and re-insert it as a new draft each run.
+async function fetchAllExisting(
+  supabase: SupabaseClient,
+): Promise<{ company: string; apply_url: string; logo_url: string | null }[] | null> {
+  const PAGE = 1000;
+  const rows: { company: string; apply_url: string; logo_url: string | null }[] = [];
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await supabase
+      .from("opportunities")
+      .select("company, apply_url, logo_url")
+      .order("id")
+      .range(from, from + PAGE - 1);
+    // A partial list would cause duplicate inserts, so give up entirely.
+    if (error || !data) return null;
+    rows.push(...data);
+    if (data.length < PAGE) return rows;
+  }
+}
+
 export async function discoverNewOpportunities(
   supabase: SupabaseClient,
 ): Promise<{ found: number; inserted: number }> {
-  const { data: existing, error } = await supabase
-    .from("opportunities")
-    .select("company, apply_url, logo_url");
-
-  if (error || !existing) return { found: 0, inserted: 0 };
+  const existing = await fetchAllExisting(supabase);
+  if (!existing) return { found: 0, inserted: 0 };
 
   const existingUrls = new Set(existing.map((r) => r.apply_url));
   const logoByCompany = new Map<string, string>();
